@@ -1,0 +1,233 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>혜빈이와 아이들 프로젝트</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+/* ====== 전체 기본 스타일 ====== */
+body {
+  margin:0;
+  font-family:'Orbitron', sans-serif;
+  color:#fff;
+  overflow-x:hidden;
+  background: radial-gradient(circle at center, #0d1b3c, #0a0f1a);
+  position: relative;
+}
+
+/* ====== 별, 블록 배경 ====== */
+.star {
+  position: fixed;
+  width: 2px; height: 2px;
+  background:white; border-radius:50%;
+  animation: twinkle 3s infinite ease-in-out;
+  z-index:0;
+}
+@keyframes twinkle {0%,100%{opacity:0.3;}50%{opacity:1;}}
+
+.background-block {
+  position: fixed; width:10px; height:10px;
+  background:#ffcc00; border:2px solid #d4a017; border-radius:50%;
+  animation: float 3s ease-in-out infinite, twinkle 3s infinite ease-in-out;
+  z-index:0;
+}
+@keyframes float {0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+
+/* ====== 메인 컨테이너 ====== */
+.container {position:relative;width:1200px;margin:0 auto;text-align:center;padding-bottom:50px;z-index:1;}
+h1,h2{font-family:'Orbitron', sans-serif;color:#00fff7;text-shadow:0 0 5px #00fff7,0 0 20px #00fff7;}
+.header {padding:50px 0;border-bottom:2px solid #00fff7;}
+.header .subtitle {color:#ff00ff;margin-bottom:20px;text-shadow:0 0 5px #ff00ff,0 0 15px #ff00ff;font-size:18px;}
+.header-buttons {margin-top:20px;display:flex;justify-content:center;gap:20px;}
+.header-buttons button {
+  padding:10px 25px;font-size:16px;font-weight:bold;color:#fff;
+  background:linear-gradient(135deg,#00fff7,#ff00ff);
+  border:none;border-radius:10px;cursor:pointer;
+  box-shadow:0 0 15px rgba(0,255,255,0.5);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.header-buttons button:hover {transform:scale(1.1);box-shadow:0 0 25px #ff00ff,0 0 50px #00fff7;}
+
+/* ====== 닌텐도 스위치 UI (고정 크기) ====== */
+html, body {font-family:'Press Start 2P', cursive;}
+.switch {width:900px; height:420px; background:rgba(51,51,51,0.9); border-radius:75px; display:flex; box-shadow:0 0 20px #000 inset,0 0 30px #555; position:relative;margin:50px auto;z-index:2;}
+.joycon-left,.joycon-right {width:23%; height:100%; padding:20px; box-sizing:border-box; position:relative; z-index:2; border:2px solid #666;}
+.joycon-left {background:linear-gradient(145deg,#39c5bb,#1c8e85);border-top-left-radius:75px;border-bottom-left-radius:75px;box-shadow:3px 3px 8px #000 inset;}
+.joycon-right {background:linear-gradient(145deg,#ff5555,#cc2222);border-top-right-radius:75px;border-bottom-right-radius:75px;box-shadow:3px 3px 8px #000 inset;}
+.screen {flex-grow:1;background:linear-gradient(to bottom,#fffae5,#e0f7ff);margin:12px; border-radius:30px; box-shadow: inset 0 0 20px #fff5,0 0 20px #000; display:flex; justify-content:center; align-items:flex-end; position:relative; overflow:hidden;}
+
+/* 버튼/스틱 디자인 (고정) */
+.btn-round {background-color:#fff;border:3px solid #555;border-radius:50%;color:#222;cursor:pointer;box-shadow:2px 2px 0 #333;display:flex;align-items:center;justify-content:center;font-weight:bold;z-index:2;overflow:visible;text-align:center;white-space:nowrap;font-size:16px;width:50px;height:50px;}
+.btn-round:active {transform:translate(2px,2px);box-shadow:none;}
+.btn-round:focus {outline:none;}
+.stick {width:150px;height:100px;position:absolute;border-radius:25%;background:linear-gradient(135deg,#0ff,#08f);box-shadow:0 0 15px #0ff,inset 0 0 5px #08f;display:flex;align-items:center;justify-content:center;text-align:center;color:white;font-weight:bold;font-size:14px;}
+.stick:hover {box-shadow:0 0 25px #0ff,inset 0 0 10px #08f;transform:translateY(-2px);}
+.joycon-left .stick {top:60px; left:30px;}
+.joycon-right .stick {bottom:60px; right:25px;}
+
+/* D-Pad 고정 */
+.dpad-joycon {position:absolute; bottom:50px; left:40px; display:grid; grid-template-columns:50px 30px 50px; grid-template-rows:50px 30px 50px; place-items:center; z-index:2;}
+.dpad-joycon .btn-round {width:50px; height:50px; font-size:14px;}
+#dpad-up { grid-column: 2; grid-row: 1; }
+#dpad-down { grid-column: 2; grid-row: 3; }
+#dpad-left { grid-column: 1; grid-row: 2; }
+#dpad-right { grid-column: 3; grid-row: 2; }
+
+/* ABXY 버튼 고정 */
+.buttons {position:absolute; top:60px; right:45px; display:grid; grid-template-columns:50px 50px; grid-template-rows:50px 50px; gap:30px; z-index:2;}
+.buttons button {width:70px;height:70px;font-size:14px;}
+
+/* 설명창 */
+#description {width:800px; background: linear-gradient(135deg,#9b59b6,#e91e63); border-radius:10px; padding:20px; box-shadow:0 0 20px #e91e63,inset 0 0 10px #9b59b6; transform:translateY(-20px); opacity:0; transition:all 0.4s ease; margin:20px auto; font-size:16px; line-height:1.6; color:#fff; text-shadow:1px 1px 2px #9b59b6; letter-spacing:0.05em; font-family:'Press Start 2P',cursive; white-space:pre-wrap; z-index:3;}
+#description.show{transform:translateY(0); opacity:1;}
+
+/* 게임 카드 */
+.game-cards {width:1200px; margin:50px auto; display:flex; flex-direction:column; gap:50px;}
+.game-card {display:flex; gap:20px; width:100%; align-items:flex-start;}
+.game-card.reverse {flex-direction:row-reverse;}
+.card-left {display:flex; flex-direction:column; gap:10px; flex-shrink:0;}
+.game-image {width:250px; height:250px; background:linear-gradient(135deg,#ffb6ff,#00f9ff); border-radius:15px;}
+.game-info {flex-grow:1; text-align:left;}
+.game-info h3 {font-size:1.5rem; margin-bottom:10px;}
+.game-info p {font-size:1rem;}
+.card-left button {width:250px; padding:0.8em 0; font-size:1rem; font-weight:bold; background:linear-gradient(135deg,#00fff7,#ff00ff); color:#fff; border:none; border-radius:10px; cursor:pointer; transition:0.2s;}
+.card-left button:hover {transform:scale(1.05); box-shadow:0 0 15px #ff00ff,0 0 25px #00fff7;}
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+<div id="blocks"></div>
+
+<script>
+// 별 생성
+for(let i=0;i<100;i++){
+  const s=document.createElement('div'); s.className='star';
+  s.style.top=Math.random()*100+'vh';
+  s.style.left=Math.random()*100+'vw';
+  s.style.animationDuration=(2+Math.random()*3)+'s';
+  document.body.appendChild(s);
+}
+// 블록 생성
+for(let i=0;i<50;i++){
+  const b=document.createElement('div'); b.className='background-block';
+  b.style.bottom=Math.random()*100+'vh';
+  b.style.left=Math.random()*100+'vw';
+  document.body.appendChild(b);
+}
+</script>
+
+<div class="container">
+<div class="header">
+  <div class="subtitle">Welcome to the Game </div>
+  <h1>혜빈이와 아이들</h1>
+  <h1>Game play</h1>
+  <div class="header-buttons">
+    <button id="login-btn">로그인</button>
+    <button id="signup-btn">회원가입</button>
+  </div>
+</div>
+
+<div class="switch">
+  <div class="joycon-left">
+    <button class="stick btn-round" id="stick-left">◉</button>
+    <div class="dpad-joycon">
+      <button class="btn-round" id="dpad-up">▲</button>
+      <button class="btn-round" id="dpad-left">◀</button>
+      <button class="btn-round" id="dpad-right">▶</button>
+      <button class="btn-round" id="dpad-down">▼</button>
+    </div>
+  </div>
+  <div class="screen" id="screen">INSERT COIN</div>
+  <div class="joycon-right">
+    <div class="buttons">
+      <button id="btn-x" class="btn-round">혜빈</button>
+      <button id="btn-y" class="btn-round">범찬</button>
+      <button id="btn-b" class="btn-round">승진</button>
+      <button id="btn-a" class="btn-round">유승</button>
+    </div>
+    <button class="stick btn-round" id="stick-right">First Project</button>
+  </div>
+</div>
+
+<div id="description"><p id="description-text"></p></div>
+
+<!-- 게임 카드 -->
+<div class="game-cards">
+  <div class="game-card">
+    <div class="card-left">
+      <div class="game-image"></div>
+      <button>즐기러 가기</button>
+    </div>
+    <div class="game-info">
+      <h3>Game 1</h3>
+      <p>혜빈 게임 입니다용</p>
+    </div>
+  </div>
+
+  <div class="game-card reverse">
+    <div class="card-left">
+      <div class="game-image"></div>
+      <button>즐기러 가기</button>
+    </div>
+    <div class="game-info">
+      <h3>Game 2</h3>
+      <p>범찬 게임 입니다용</p>
+    </div>
+  </div>
+
+  <div class="game-card">
+    <div class="card-left">
+      <div class="game-image"></div>
+      <button>즐기러 가기</button>
+    </div>
+    <div class="game-info">
+      <h3>Game 3</h3>
+      <p>승진 게임 입니다용</p>
+    </div>
+  </div>
+
+  <div class="game-card reverse">
+    <div class="card-left">
+      <div class="game-image"></div>
+      <button>즐기러 가기</button>
+    </div>
+    <div class="game-info">
+      <h3>Game 4</h3>
+      <p>유승 게임 입니다용</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// 설명창 타자기 효과
+const fullText = `1조의 첫번째 프로젝트에 오신 것을 환영합니다!!!`;
+const description = document.getElementById("description");
+const descText = document.getElementById("description-text");
+document.getElementById("stick-right").addEventListener("click",()=>{
+  description.classList.toggle("show");
+  if(description.classList.contains("show")){
+    descText.textContent="";
+    let i=0;
+    function typeWriter(){if(i<fullText.length){descText.textContent+=fullText.charAt(i);i++;setTimeout(typeWriter,15);}}
+    typeWriter();
+  }
+});
+
+$("#signup-btn").on("click", function(){ //회원가입 페이지이동
+	window.location.href = "/signuppage.MembersController"; 
+});
+
+$("#login-btn").on("click", function(){ //로그인 페이지이동
+	window.location.href = "/loginpgae.MembersController";
+});
+
+</script>
+</body>
+</html>
