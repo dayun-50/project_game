@@ -248,11 +248,11 @@
         let check = false; //유효성 검사 전부 통과시에만 페이지넘어가게 false걸어둠
         const idRegex = /^[a-z0-9]{6,12}$/;
         const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,12}$/;
-        const nicknameRegex = /^[a-z]{2,8}$/;
-        const nameRegex = /^[가-힣]{2,6}$/; //!영이름 받을건지 물어보기! /^[가-힣a-zA-Z]{2,12}$/;
+        const nicknameRegex = /^[a-z0-9]{4,12}$/;
+        const nameRegex = /^[가-힣]{2,6}$/; 
         const phoneRegex = /^010-?[0-9]{4}-?[0-9]{4}$/;
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
-        //개인정보 동의란 무조건 동의후에 넘어가게할건지 물어볼것 !
+        //개인정보 동의란 무조건 동의후에 넘어가게할건지 물어볼것 ! > 동의안하면 안넘어가게
         
         $("#id").on("input", function(){ 
         	//유효성 검사해서 if문 묵고 통과면 그린으로 완료띄우고 check true로 바꾸기 아니면 false다시 선언
@@ -292,7 +292,7 @@
         		$("#nicknametext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
         		check = true;
         	}else{
-        		$("#nicknametext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("");
+        		$("#nicknametext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("영문, 숫자 4~12자 입력");
         		check = false;
         	}
         });
