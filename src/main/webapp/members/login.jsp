@@ -145,7 +145,7 @@
 				type: "POST",
 				success:function(resp){
 					if(resp === "1"){
-						window.location.href = "/gamapage.gameController"	 
+						window.location.href = "/gamapage.gameController?id="+$("#id").val(); 
 					}else{
 						alert("아이디 또는 비밀번호가 일치하지 않습니다.");
 						$("#id").val("");

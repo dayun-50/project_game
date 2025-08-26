@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.List;
+import java.sql.ResultSet;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -50,7 +50,7 @@ public class MembersDAO {
 	}
 	
 	public int insert(MembersDTO dto) throws Exception { //회원가입 members insert
-		String sql = "insert into users values(?,?,?,?,?,?,?,?,?)";
+		String sql = "insert into users values(?,?,?,?,?,?,?,?)";
 		try(PreparedStatement stat = getConnection().prepareStatement(sql);
 				){
 			stat.setString(1, dto.getUser_id());
@@ -61,7 +61,6 @@ public class MembersDAO {
 			stat.setString(6, dto.getUser_email());
 			stat.setTimestamp(7, new java.sql.Timestamp(System.currentTimeMillis()));
 			stat.setString(8, dto.getAgree());
-			stat.setString(9, "N");
 			return stat.executeUpdate();
 		}
 	}
@@ -102,6 +101,22 @@ public class MembersDAO {
 				return true;
 			}else {
 				return false;
+			}
+		}
+	}
+	
+	public String nicknameSerch(String id) throws Exception{
+		String sql = "select user_nickname from users where user_id = ?";
+		try(Connection con = this.getConnection();
+				PreparedStatement stat = con.prepareStatement(sql);){
+			stat.setString(1, id);
+			
+			try(ResultSet rs = stat.executeQuery()){
+				if(rs.next()) {
+					return rs.getString("user_nickname");
+				}else {
+					return null;
+				}
 			}
 		}
 	}

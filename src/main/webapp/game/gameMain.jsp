@@ -285,7 +285,7 @@ body {
 
   <!-- 좌측 Joy-Con -->
   <div class="joycon-left">
-    <button class="stick btn-round" id="stick-left">◉</button>
+    <button class="stick btn-round" id="stick-left">${nickname }</button>
 
     <!-- D-Pad 방향 버튼 -->
     <div class="dpad-joycon">
@@ -304,12 +304,12 @@ body {
   <!-- 우측 Joy-Con -->
   <div class="joycon-right">
     <div class="buttons">
-      <button id="btn-x" class="btn-round">혜빈</button>
-      <button id="btn-y" class="btn-round">범판</button>
-      <button id="btn-b" class="btn-round">승진</button>
-      <button id="btn-a" class="btn-round">유승</button>
+      <button id="btn-x" class="btn-round">Game 1</button>
+      <button id="btn-y" class="btn-round">Game 2</button>
+      <button id="btn-b" class="btn-round">Game 3</button>
+      <button id="btn-a" class="btn-round">Game 4</button>
     </div>
-    <button class="stick btn-round" id="stick-right">Login</button>
+    <button class="stick btn-round" id="stick-right">Menu</button>
   </div>
 </div>
 
