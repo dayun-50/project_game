@@ -255,6 +255,7 @@
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
         
         $("#id").on("input", function(){ // id 유효성검사
+        	check2 = false;
         	if(idRegex.test($("#id").val())){
         		$("#idtext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
         		check = true;
@@ -305,6 +306,7 @@
         });
         
         $("#nickname").on("input", function(){ // 닉네임 유효성검사
+        	check2 = false;
         	if(nicknameRegex.test($("#nickname").val())){
         		$("#nicknametext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
         		check = true;
