@@ -23,7 +23,7 @@ public class MembersController extends HttpServlet {
 			}else if(cmd.equals("/loginpgae.MembersController")) { //로그인 페이지 이동
 				response.sendRedirect("/members/login.jsp");
 			
-			}else if(cmd.equals("indexpage.MembersController")) { //메인 페이지 이동
+			}else if(cmd.equals("/indexpage.MembersController")) { //메인 페이지 이동
 				response.sendRedirect("/index.jsp");
 				
 			}else if(cmd.equals("/signup.MembersController")) { //회원가입 데이터 저장
@@ -41,11 +41,32 @@ public class MembersController extends HttpServlet {
 				request.setAttribute("nickname", nickname);
 				request.getRequestDispatcher("/members/logincomplete.jsp").forward(request, response);
 			
+			}else if(cmd.equals("/idCheck.MembersController")) { //id 중복검사
+				String id = request.getParameter("id");
+				
+				boolean result = dao.idCheck(id);
+				response.getWriter().write(String.valueOf(result));
+				
+			}else if(cmd.equals("/nicknameCheck.MembersController")) { //닉네임 중복검사
+				String nickname = request.getParameter("nickname");
+				
+				boolean result = dao.nicknameCheck(nickname);
+				response.getWriter().write(String.valueOf(result));
+				
 			}else if(cmd.equals("/login.MembersController")) { //로그인 유효한 id,pw인지 확인
 				String id = request.getParameter("id");
 				String password = request.getParameter("pw");
 				String pw = dao.encrypt(password);
 				
+				int result = dao.login(id, pw);
+				if(result > 0) {
+					request.setAttribute("id", id);
+					request.getRequestDispatcher("").forward(request, response);
+					//여기 로그인 완료 이동 좌표찍어라
+				}else {
+					response.sendRedirect("");
+					//로그인 실패 이동좌표?
+				}
 				
 			}
 		}catch(Exception e ) {
@@ -55,6 +76,8 @@ public class MembersController extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8"); 
+		response.setContentType("text/html; charset=UTF-8");
 		doGet(request, response);
 	}
 

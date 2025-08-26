@@ -50,7 +50,7 @@ public class MembersDAO {
 	}
 	
 	public int insert(MembersDTO dto) throws Exception { //회원가입 members insert
-		String sql = "insert into users values(?,?,?,?,?,?,?,?)";
+		String sql = "insert into users values(?,?,?,?,?,?,?,?,?)";
 		try(PreparedStatement stat = getConnection().prepareStatement(sql);
 				){
 			stat.setString(1, dto.getUser_id());
@@ -61,19 +61,48 @@ public class MembersDAO {
 			stat.setString(6, dto.getUser_email());
 			stat.setTimestamp(7, new java.sql.Timestamp(System.currentTimeMillis()));
 			stat.setString(8, dto.getAgree());
-			
+			stat.setString(9, "N");
 			return stat.executeUpdate();
 		}
 	}
 	
 	public int login(String id , String pw) throws Exception{ //로그인 유효한 id,pw인지 확인
-		String sql = "select user_id, user_pw from users where user_id = ? and user_pw = ?";
+		String sql = "SELECT u.user_id, u.user_nickname FROM users u WHERE u.user_id = ? AND u.user_pw = ? AND NOT EXISTS SELECT 1"
+				+ " FROM BlackList b WHERE b.black_user_id = u.user_id";
 		try(Connection con = this.getConnection();
 				PreparedStatement stat = con.prepareStatement(sql);){
 				stat.setString(1, id);
 				stat.setString(2, pw);
 				
 				return stat.executeUpdate();
+		}
+	}
+	
+	public boolean idCheck(String id) throws Exception{ //id 중복검사
+		String sql = "select user_id from users where user_id = ?";
+		try(Connection con = this.getConnection();
+				PreparedStatement stat = con.prepareStatement(sql);){
+			stat.setString(1, id);
+			int result = stat.executeUpdate();
+			if(result > 0) {
+				return true;
+			}else {
+				return false;
+			}
+		}
+	}
+	
+	public boolean nicknameCheck(String nickname) throws Exception{ //닉네임 중복검사
+		String sql = "select user_nickname from users where user_nickname = ?";
+		try(Connection con = this.getConnection();
+				PreparedStatement stat = con.prepareStatement(sql);){
+			stat.setString(1, nickname);
+			int result = stat.executeUpdate();
+			if(result > 0) {
+				return true;
+			}else {
+				return false;
+			}
 		}
 	}
 }

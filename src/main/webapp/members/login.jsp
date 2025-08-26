@@ -116,7 +116,7 @@
     <div class="login-container">
         <h1>Login</h1>
         <form action="/login.MembersController" method="post">
-        <input type="text" placeholder="ID" id="id" name="id">
+        <input type="te	xt" placeholder="ID" id="id" name="id">
         <input type="password" placeholder="PW" id="pw" name="pw">
         <button>로그인</button>
         </form>
