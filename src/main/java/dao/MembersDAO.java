@@ -67,8 +67,8 @@ public class MembersDAO {
 	}
 	
 	public int login(String id , String pw) throws Exception{ //로그인 유효한 id,pw인지 확인
-		String sql = "SELECT u.user_id, u.user_nickname FROM users u WHERE u.user_id = ? AND u.user_pw = ? AND NOT EXISTS SELECT 1"
-				+ " FROM BlackList b WHERE b.black_user_id = u.user_id";
+		String sql = "SELECT u.user_id, u.user_nickname FROM users u WHERE u.user_id = ? AND u.user_pw = ? AND NOT EXISTS (SELECT 1"
+				+ " FROM BlackList b WHERE b.black_user_id = u.user_id)";
 		try(Connection con = this.getConnection();
 				PreparedStatement stat = con.prepareStatement(sql);){
 				stat.setString(1, id);

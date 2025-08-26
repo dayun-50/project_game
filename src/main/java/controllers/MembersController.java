@@ -59,19 +59,11 @@ public class MembersController extends HttpServlet {
 				String pw = dao.encrypt(password);
 				
 				int result = dao.login(id, pw);
-				if(result > 0) {
-					request.setAttribute("id", id);
-					request.getRequestDispatcher("").forward(request, response);
-					//여기 로그인 완료 이동 좌표찍어라
-				}else {
-					response.sendRedirect("");
-					//로그인 실패 이동좌표?
-				}
-				
+				response.getWriter().write(String.valueOf(result)); // 로그인성고 1/ 실패 0
 			}
 		}catch(Exception e ) {
 			e.printStackTrace();
-			System.out.println("이동중 오류발생");
+			System.out.println("이동중 오류발생//members");
 		}
 	}
 

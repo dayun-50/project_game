@@ -115,11 +115,9 @@
 <body>
     <div class="login-container">
         <h1>Login</h1>
-        <form action="/login.MembersController" method="post">
         <input type="text" placeholder="ID" id="id" name="id">
         <input type="password" placeholder="PW" id="pw" name="pw">
-        <button>로그인</button>
-        </form>
+        <button id="btn">로그인</button>
         <div class="links">
             <a href="#">아이디 찾기</a> /
             <a href="#">비밀번호 찾기</a> /
@@ -136,6 +134,26 @@
             s.style.animationDuration = (2 + Math.random() * 3) + 's';
             document.body.appendChild(s);
         }
+        
+        $("#btn").on("click", function(){
+        	$.ajax({
+        		url:"/login.MembersController",
+				data:{
+					id:$("#id").val(),
+					pw:$("#pw").val()
+					},
+				type: "POST",
+				success:function(resp){
+					if(resp === "1"){
+						window.location.href = "/gamapage.gameController"	 
+					}else{
+						alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+						$("#id").val("");
+						$("#pw").val("");
+					}
+				}
+			});
+        });
     </script>
 </body>
 </html>
