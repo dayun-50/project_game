@@ -246,6 +246,7 @@
         }
         
         let check = false; //유효성 검사 전부 통과시에만 페이지넘어가게 false걸어둠
+        let check2 = false; //아이디, 닉네임 중복검사
         const idRegex = /^[a-z0-9]{6,12}$/;
         const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,12}$/;
         const nicknameRegex = /^[a-zA-Z가-힣0-9]{4,12}$/;
@@ -271,8 +272,11 @@
 				success:function(reps){
 					if(reps == "true"){
 						alert("사용중인 ID입니다.");
+						$("#id").val("");
+						check2 = false;
 					}else if(reps == "false"){
 						alert("사용가능한 ID입니다.");
+						check2 = true;
 					}
 				}
 			});
@@ -318,8 +322,10 @@
     				success:function(reps){
     					if(reps == "true"){
     						alert("사용중인 닉네임입니다.");
+    						check2 = false;
     					}else if(reps == "false"){
     						alert("사용가능한 닉네임입니다.");
+    						check2 = true;
     					}
     				}
     			});
@@ -364,6 +370,12 @@
         		e.preventDefault();
         		return;
         	}
+        	
+        	if(check2 === false){
+        		alert("ID, 닉네임 중복검사는 필수사항입니다.");
+        		e.preventDefault();
+        	}
+        	
         	
         	if(check === false){
         		alert("모든 입력창에 정보를 알맞게 기입해주세요.");
