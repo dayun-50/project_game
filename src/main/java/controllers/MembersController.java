@@ -72,22 +72,9 @@ public class MembersController extends HttpServlet {
 				String name = request.getParameter("id");
 				String email = request.getParameter("email");
 				String phone = request.getParameter("phone");
-				ArrayList<String> list = dao.idSerch(name, email, phone);
-				ArrayList<String> result = new ArrayList<>();
-				if(list!=null) { //찾은 id가 한개이상일때(존재할때)
-					for(String id : list) { //한개씩 블랙리스트 확인
-						if(dao.blackCheck(id) == 0) {
-				            result.add(id);
-				        }else {
-				        	result.add(id+"블랙");
-				        }
-					}
-					response.getWriter().write(String.valueOf(result));
-				}else { //id 찾기 실패시(null)
-					response.getWriter().write(String.valueOf("-1"));
-				}
+				
 			}else if(cmd.equals("/idSerchResult.MembersController")) { //id 서칭 결과 페이지
-				response.sendRedirect("/members/idSerchResult.jsp");
+				
 			}
 		}catch(Exception e ) {
 			e.printStackTrace();
