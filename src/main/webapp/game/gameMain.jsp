@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,6 +9,7 @@
 
 <!-- 구글 폰트 불러오기: Press Start 2P, 레트로 게임 느낌 -->
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
 html, body {
     margin:0; padding:0; width:100%; height:100%;
@@ -104,7 +106,7 @@ html, body {
 <body>
 <div class="switch">
     <div class="joycon-left">
-        <button class="stick btn-round" id="stick-left">◉</button>
+        <button class="stick btn-round" id="stick-left">${nickname }</button>
         <div class="dpad-joycon">
             <button class="btn-round" id="dpad-up">▲</button>
             <button class="btn-round" id="dpad-left">◀</button>
@@ -120,7 +122,7 @@ html, body {
             <button id="btn-b" class="btn-round">Game3</button>
             <button id="btn-a" class="btn-round">Game4</button>
         </div>
-        <button class="stick btn-round" id="stick-right">Login</button>
+        <button class="stick btn-round" id="stick-right">Menu</button>
     </div>
 </div>
 
