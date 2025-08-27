@@ -69,11 +69,31 @@ public class MembersController extends HttpServlet {
 				response.getWriter().write(String.valueOf(result)); // 로그인성고 1/ 실패 0
 
 			}else if(cmd.equals("/idSerch.MembersController")) { //id 찾기 
-				String name = request.getParameter("id");
+				String name = request.getParameter("name");
 				String email = request.getParameter("email");
 				String phone = request.getParameter("phone");
 				
-			}else if(cmd.equals("/idSerchResult.MembersController")) { //id 서칭 결과 페이지
+				ArrayList<String> idList = dao.idSerch(name, email, phone);
+				if(idList != null) {//id존재 경우
+					ArrayList<String> result = new ArrayList<>();
+					for(String id : idList) {
+						System.out.println(id);
+						int blackCheck = dao.blackCheck(id);
+						if(blackCheck > 0) { //블랙리스트 id인 경우 사용 불가 계정 표기
+							result.add(id+"  ( 사용 불가 계정 )");
+						}else {
+							result.add(id);
+						}
+					}
+					request.setAttribute("name", name);
+					request.setAttribute("id", result);
+					request.getRequestDispatcher("/members/idSerchResult.jsp").forward(request, response);
+				}else { // 검색한 정보에 해당되는 id가 없을경우
+					request.setAttribute("name", "null");
+					request.getRequestDispatcher("/members/idSerchResult.jsp").forward(request, response);
+				}
+				
+			}else if(cmd.equals("")) { 
 				
 			}
 		}catch(Exception e ) {

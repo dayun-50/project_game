@@ -32,7 +32,7 @@
             /* 기존 Welcome 색상 */
             text-shadow: 0 0 5px #ff00ff, 0 0 15px #ff00ff;
             /* 기존 스타일 */
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         h1 {
@@ -40,8 +40,9 @@
             color: #00ffff;
             /* 민트 계열 */
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             text-shadow: 0 0 5px #ffff66, 0 0 15px #fffaaa;
+            margin-top: 10px;
         }
 
         .form-group {
@@ -124,9 +125,10 @@
         }
 
         .btn-submit {
+        	float:left;
             width: 30%;
             padding: 10px;
-            margin: 20px auto 0 auto;
+            margin: 20px 15px 0 auto;
             border: none;
             border-radius: 15px;
             background: linear-gradient(to right, #00ffff, #ff4fc6);
@@ -136,6 +138,18 @@
             display: block;
         }
 
+		#btn{
+			width: 30%;
+            padding: 10px;
+            margin: 20px auto 0 15px;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(to right, #678989, #304242);
+            color: #0d0d1a;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+		}
         /* ====== 별, 블록 배경 ====== */
         .star {
             position: fixed;
@@ -231,7 +245,10 @@
             <input type="radio" name="agree" id="agree-no" value="N" class="radio"><label for="agree-no">동의하지 않습니다.</label>
         </div>
 
-        <button class="btn-submit">가입완료</button>
+		<div class="form-group">
+        	<button class="btn-submit">가입완료</button>
+        	<button type="button" id="btn">뒤로가기</button>
+        </div>
         </form>
     </div>
 
@@ -319,7 +336,7 @@
         $("#nicknamecheck").on("click", function(){ // 닉네임 중복검사
             	$.ajax({
             		url:"/nicknameCheck.MembersController",
-    				data:{id:$("#id").val()},
+    				data:{nickname:$("#nickname").val()},
     				type: "POST",
     				success:function(reps){
     					if(reps == "true"){
@@ -366,9 +383,9 @@
         
         $(".btn-submit").on("click", function(e){ // 회원가입완료 버튼 누를시 개인정보동의, 모든유효성 검사 통과시 가입완료
         	let radio = $(".radio:checked").val();
-        	
-        	if(radio === "N"){
-        		alert("개인정보 비동의시 가입이 불가합니다.");
+        
+        	if(check === false){
+        		alert("모든 입력창에 정보를 알맞게 기입해주세요.");
         		e.preventDefault();
         		return;
         	}
@@ -376,13 +393,22 @@
         	if(check2 === false){
         		alert("ID, 닉네임 중복검사는 필수사항입니다.");
         		e.preventDefault();
+        		return;
         	}
         	
-        	
-        	if(check === false){
-        		alert("모든 입력창에 정보를 알맞게 기입해주세요.");
+        	if(radio === "N"){
+        		alert("개인정보 비동의시 가입이 불가합니다.");
         		e.preventDefault();
         	}
+        	
+        });
+        
+        $("#btn").on("click", function(){ // 뒤로가기버튼 메인홈페이지로 이동
+        	 if (document.referrer) { // 이전 페이지가 존재하면
+        	        history.back();
+        	    } else {
+        	        window.location.href = "/indexpage.MembersController"; // 이전 페이지가 없으면 홈으로
+        	    }
         });
         
     </script>

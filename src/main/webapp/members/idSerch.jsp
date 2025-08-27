@@ -90,6 +90,7 @@ body {
             font-size: 18px;
             width: 500px;
             height: 33px;
+            margin-bottom: 10px; 
     }
 
     input::placeholder {
@@ -154,6 +155,7 @@ body {
 	<div class="container">
 	<h4><a href="/indexpage.MembersController">혜빈이와 아이들</a></h4>
     <h1>아이디 찾기</h1>
+    <form action="/idSerch.MembersController" method="post">
         <div>
             <label for="name">이름</label>
             <input type="text" id="name" name="name" placeholder="이름 입력">
@@ -169,8 +171,9 @@ body {
         
         <div id="butbox">
         	<button id="serch-btn" class="btn-submit">아이디 찾기</button>
-        	<button id="btn" class="btn-submit">로그인</button>
+        	<button id="btn" type="button" class="btn-submit">로그인</button>
         </div>
+      </form> 
 </div>
 
 	<script>
@@ -188,25 +191,19 @@ body {
         	window.location.href = "/loginpgae.MembersController";
         });
 		
-		$("#serch-btn").on("click", function(){
-			$.ajax({
-        		url:"/idSerch.MembersController",
-				data:{
-					name:$("#name").val(),
-					email:$("#email").val(),
-					phone:$("#phone").val()
-					},
-				type: "POST",
-				success:function(resp){
-					if(resp==="-1"){// id가 없을시
-						alert("없는 회원정보입니다.");
-						$("#name,#email,#phone").val("");
-					}else{ // 검색 id 존재시
-						window.location.href = "/idSerchResult.MembersController?id="+resp;
-					}
-				}
-			});
+		$("#serch-btn").on("click", function(e){ //null값인 경우 폼 차단
+			let name = $("#name").val();
+			let email = $("#email").val();
+			let phone = $("#phone").val();
+			
+			if(name==="" || email ==="" || phone === ""){
+				alert("모든 정보를 입력해 주세요.");
+				e.preventDefault();
+				return;
+			}
+			
 		});
+		
 	</script>
 </body>
 </html>
