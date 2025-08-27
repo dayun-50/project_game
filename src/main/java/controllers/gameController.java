@@ -18,10 +18,8 @@ public class gameController extends HttpServlet {
 		try {
 			if(cmd.equals("/gamapage.gameController")) { //게임 메인홈페이지 이동
 				String id = request.getParameter("id");
-				System.out.println(id);
 				String nickname = dao.nicknameSerch(id);
-//				response.setContentType("text/html; charset=UTF-8");
-				System.out.println(nickname);
+				response.setContentType("text/html; charset=UTF-8");
 				if(nickname!=null) { 
 					request.setAttribute("nickname", nickname);
 					request.getRequestDispatcher("/game/gameMain.jsp").forward(request, response);

@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -105,7 +106,7 @@ public class MembersDAO {
 		}
 	}
 	
-	public String nicknameSerch(String id) throws Exception{
+	public String nicknameSerch(String id) throws Exception{ //게임메인페이지 유저 닉네임 출력
 		String sql = "select user_nickname from users where user_id = ?";
 		try(Connection con = this.getConnection();
 				PreparedStatement stat = con.prepareStatement(sql);){
@@ -118,6 +119,34 @@ public class MembersDAO {
 					return null;
 				}
 			}
+		}
+	}
+	
+	public ArrayList<String> idSerch(String name, String email, String phone) throws Exception { //id찾기
+		String sql = "select user_id from users where user_name = ? and user_email = ? and user_phone = ?";
+		try(Connection con = this.getConnection();
+				PreparedStatement stat = con.prepareStatement(sql);){
+			stat.setString(1, name);
+			stat.setString(2, email);
+			stat.setString(3, phone);
+			ArrayList<String> list = new ArrayList<>();
+			
+			try(ResultSet rs = stat.executeQuery()){
+				while(rs.next()) {
+					list.add(rs.getString("user_id"));
+				}
+				return list;
+			}
+		}
+	}
+	
+	public int blackCheck(String id) throws Exception { //블랙리스트 체크
+		String sql = "select black_user_id from BlackList where black_user_id = ?";
+		try(Connection con = this.getConnection();
+				PreparedStatement stat = con.prepareStatement(sql);){
+			stat.setString(1, id);
+			
+			return stat.executeUpdate();
 		}
 	}
 }
