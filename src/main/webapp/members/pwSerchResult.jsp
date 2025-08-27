@@ -264,7 +264,7 @@
        $("#btn").on("click",function(){
     	   let pw = $("#pw").val();
            let pwcheck = $("#pw-check").val();
-           if(name==="" || id ==="" || phone === ""){ //모든 정보가 입력되어야 통과
+           if(pw==="" || pwcheck ==="" ){ //모든 정보가 입력되어야 통과
         	   alert("모든 정보를 입력해 주세요.");
 			   e.preventDefault();
 			   return;
@@ -273,6 +273,7 @@
            if(check = false){ //모든 유효성 검사 통과시 통과
         	   alert("모든 입력창에 정보를 알맞게 기입해주세요.");
        		   e.preventDefault();
+       		   return;
            }
        });
         

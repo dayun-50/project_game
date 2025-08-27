@@ -109,7 +109,8 @@ public class MembersController extends HttpServlet {
 				String pw = dao.encrypt(password);
 				
 				dao.pwUpdate(id, pw);
-				response.sendRedirect("/members/pwUpdateComplete.jsp");
+				request.setAttribute("id", id);
+				request.getRequestDispatcher("/members/pwUpdateComplete.jsp").forward(request, response);
 				
 			}
 		}catch(Exception e ) {

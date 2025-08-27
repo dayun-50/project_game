@@ -155,6 +155,8 @@ public class MembersDAO {
 		try(Connection con = this.getConnection();
 				PreparedStatement stat = con.prepareStatement(sql);){
 			stat.setString(1, id);
+			stat.setString(2, name);
+			stat.setString(3, phone);
 			
 			return stat.executeUpdate();
 		}
