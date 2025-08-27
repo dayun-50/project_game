@@ -93,7 +93,23 @@ public class MembersController extends HttpServlet {
 					request.getRequestDispatcher("/members/idSerchResult.jsp").forward(request, response);
 				}
 				
-			}else if(cmd.equals("")) { 
+			}else if(cmd.equals("/pwSerch.MembersController")) { // 비번 찾기
+				String id = request.getParameter("id");
+				String name = request.getParameter("name");
+				String phone = request.getParameter("phone");
+				
+				int result = dao.pwSerch(id, name, phone);
+				request.setAttribute("result", result);
+				request.setAttribute("id", id);
+				request.getRequestDispatcher("/members/pwSerchResult.jsp").forward(request, response);
+			
+			}else if(cmd.equals("/pwUpdate.MembersController")) {
+				String id = request.getParameter("id");
+				String password = request.getParameter("pw");
+				String pw = dao.encrypt(password);
+				
+				dao.pwUpdate(id, pw);
+				response.sendRedirect("/members/pwUdateComplete.jsp");
 				
 			}
 		}catch(Exception e ) {

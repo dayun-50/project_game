@@ -132,22 +132,22 @@ h4 a{
 <body>
 <div class="container">
     <h4><a href="/indexpage.MembersController">혜빈이와 아이들</a></h4>
-    <h1>비밀번호 찾기</h1>
-    <form>
+    <h1>비밀번호 찾기 & 변경</h1>
+    <form action="/pwSerch.MembersController" method="post">
         <div>
             <label for="id">아이디</label>
             <input type="text" id="id" name="id" placeholder="아이디 입력">
         </div>
         <div>
-            <label for="email">이메일</label>
-            <input type="email" id="email" name="email" placeholder="이메일 입력">
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" placeholder="이름 입력">
         </div>
         <div>
             <label for="phone">전화번호</label>
             <input type="text" id="phone" name="phone" placeholder="전화번호 입력">
         </div>
         <div id="butbox">
-            <button type="submit" class="btn-submit">비밀번호 찾기</button>
+            <button type="submit" id="serch-btn" class="btn-submit">비밀번호 찾기</button>
             <button type="button" id="btn" class="btn-submit">로그인</button>
         </div>
     </form>
@@ -167,6 +167,18 @@ for (let i = 0; i < 200; i++) {
 // 로그인 버튼 클릭 시 이동
 $("#btn").on("click", function(){
     window.location.href = "/loginpgae.MembersController";
+});
+
+$("#serch-btn").on("click", function(e){
+	let id = $("#id").val();
+	let name = $("#name").val();
+	let phone = $("#phone").val();
+	
+	if(name==="" || id ==="" || phone === ""){
+		alert("모든 정보를 입력해 주세요.");
+		e.preventDefault();
+		return;
+	}
 });
 </script>
 </body>

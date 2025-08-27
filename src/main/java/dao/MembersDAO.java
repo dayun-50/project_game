@@ -149,4 +149,25 @@ public class MembersDAO {
 			return stat.executeUpdate();
 		}
 	}
+	
+	public int pwSerch(String id, String name, String phone) throws Exception { //계정 존재 여부 (pw찾기)
+		String sql = "select user_pw from users where user_id = ? and user_name = ? and user_phone = ?";
+		try(Connection con = this.getConnection();
+				PreparedStatement stat = con.prepareStatement(sql);){
+			stat.setString(1, id);
+			
+			return stat.executeUpdate();
+		}
+	}
+	
+	public int pwUpdate(String id, String pw) throws Exception { // 비번 변경
+		String sql = "update users set user_pw = ? where user_id = ?";
+		try(Connection con = this.getConnection();
+				PreparedStatement stat = con.prepareStatement(sql);){
+			stat.setString(1, pw);
+			stat.setString(2, id);
+			
+			return stat.executeUpdate();
+		}
+	}
 }

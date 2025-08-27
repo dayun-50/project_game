@@ -64,7 +64,7 @@
     	}	
 	
 	
-       .input {
+       input {
             flex: 1;
             padding: 5px;
             border: none;
@@ -181,29 +181,44 @@
         
 
 <c:choose>
-    <c:when test="${name == null}">
+    <c:when test="${id == '0'}">
     	<div class="page-title">혜빈이와 아이들</div>
         <h1>검색하신 정보가 <br> 존재하지 않습니다.</h1>
+        
+        <div class="form-group">
+        	<button type="button" class="btn-submit" id="main-btn">메인홈페이지</button>
+        	<button id="btn">변경완료</button>
+        </div>
     </c:when>
     <c:otherwise>
+    <form action="/pwUpdate.MembersController" method="post">
     	<div class="page-title">혜빈이와 아이들</div>
-        <h1>${name } 님<br> 아이디찾기 결과</h1>
-    
-        <c:forEach var="id" items="${id}" varStatus="status">
-        	<div class="form-group">
-            	<label for="id">ID ${status.index + 1}</label>
-            	<div class="input">
-            		${id}
-            	</div>
+        <h1>[ ${id } ] 계정<br> 비밀번호 변경</h1>
+        <input type="hidden" name="id" value="${id}">
+    	<div class="form-group">
+            <label for="pw">PW</label>
+            <div class="box">
+            <input type="password" id="pw" name="pw" placeholder="변경하실 비밀번호 입력">
+            <div id="pwtext"></div>
             </div>
-     	</c:forEach>
+        </div>
+
+        <div class="form-group">
+            <label for="pw-check">PW check</label>
+            <div class="box">
+            <input type="password" id="pw-check" placeholder="동일 비밀번호 입력">
+            <div id="pw-checktext"></div>
+            </div>
+        </div>
+        	
+        <div class="form-group">
+        	<button type="button" class="btn-submit" id="main-btn">메인홈페이지</button>
+        	<button id="btn">변경완료</button>
+        	
+        </div>	
+     	</form>
     </c:otherwise>
 </c:choose>
-
-		<div class="form-group">
-        	<button type="button" class="btn-submit" id="main-btn">메인홈페이지</button>
-        	<button type="button" id="btn">로그인</button>
-        </div>
       
     </div>
 
@@ -216,15 +231,50 @@
             s.style.animationDuration = (2 + Math.random() * 3) + 's';
             document.body.appendChild(s);
         }
-        
-       $("#btn").on("click", function(){ // 로그인창 이동
-    	   window.location.href = "/loginpgae.MembersController";
-       });
        
        $("#main-btn").on("click", function(){ // 메인 홈페이지 이동
     	   window.location.href = "/indexpage.MembersController";
        });
        
+       const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,12}$/;
+       let check = false;
+       
+       $("#pw").on("input", function(){ // pw 유효성검사
+       	if(pwRegex.test($("#pw").val())){
+       		$("#pwtext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
+       		check = true;
+       	}else{
+       		$("#pwtext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("영문 대소문자,숫자,특수문자 1개이상 8~12자리 입력");
+       		check = false;
+       	}
+       });
+       
+       $("#pw-check, #pw").on("input", function(){ // pw 재확인
+       	let pw = $("#pw").val();
+       	let pwcheck = $("#pw-check").val();
+       	if(pw === pwcheck){
+       		$("#pw-checktext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("입력하신 비밀번호와 일치하지합니다.");
+       		check=true;
+       	}else{
+       		$("#pw-checktext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("입력하신 비밀번호와 일치하지 않습니다.");	
+       		check=false;
+       	}
+       });
+       
+       $("#btn").on("click",function(){
+    	   let pw = $("#pw").val();
+           let pwcheck = $("#pw-check").val();
+           if(name==="" || id ==="" || phone === ""){ //모든 정보가 입력되어야 통과
+        	   alert("모든 정보를 입력해 주세요.");
+			   e.preventDefault();
+			   return;
+           }
+           
+           if(check = false){ //모든 유효성 검사 통과시 통과
+        	   alert("모든 입력창에 정보를 알맞게 기입해주세요.");
+       		   e.preventDefault();
+           }
+       });
         
     </script>
 </body>
