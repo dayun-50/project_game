@@ -114,7 +114,9 @@ html, body {
             <button class="btn-round" id="dpad-down">▼</button>
         </div>
     </div>
-    <div class="screen" id="screen">INSERT COIN</div>
+    <div class="screen" id="screen"> 
+    	<div id="mypage"><button id="mypage-btn">마이페이지</button></div>
+    </div>
     <div class="joycon-right">
         <div class="buttons">
             <button id="btn-x" class="btn-round">Game1</button>
@@ -135,6 +137,7 @@ html, body {
 </div>
 
 <script>
+$("#mypage").hide();
 function createStars(count, topRange=[0,100], leftRange=[0,100], sizeRange=[1,3]){
     for(let i=0;i<count;i++){
         const s=document.createElement('div');
@@ -183,6 +186,14 @@ window.addEventListener('resize', updateTutorialPositions);
 
 // 튜토리얼 닫기
 document.getElementById('tutorial-close').addEventListener('click',()=>{ document.getElementById('tutorial-overlay').style.display='none'; });
+
+$("#stick-right").on("click", function(){ //메뉴버튼
+	$("#mypage").show();
+});
+
+$("#mypage-btn").on("click", function(){ //마이페이지 이동버튼
+	window.location.href = "/mypage.MembersController?id=${id}"
+});
 
 
 </script>

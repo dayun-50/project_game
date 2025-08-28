@@ -9,18 +9,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import dao.MembersDAO;
 
-@WebServlet("*.gameController")
-public class gameController extends HttpServlet {
+@WebServlet("*.GameController")
+public class GameController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String cmd = request.getRequestURI();
 		MembersDAO dao = MembersDAO.getInstance();
 		try {
-			if(cmd.equals("/gamapage.gameController")) { //게임 메인홈페이지 이동
+			if(cmd.equals("/gamapage.GameController")) { //게임 메인홈페이지 이동
 				String id = request.getParameter("id");
 				String nickname = dao.nicknameSerch(id);
 				response.setContentType("text/html; charset=UTF-8");
 				if(nickname!=null) { 
+					request.setAttribute("id", id);
 					request.setAttribute("nickname", nickname);
 					request.getRequestDispatcher("/game/gameMain.jsp").forward(request, response);
 				} 

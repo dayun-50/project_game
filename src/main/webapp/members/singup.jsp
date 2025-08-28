@@ -262,23 +262,36 @@
             document.body.appendChild(s);
         }
         
-        let check = false; //유효성 검사 전부 통과시에만 페이지넘어가게 false걸어둠
-        let check2 = false; //아이디, 닉네임 중복검사
+        
         const idRegex = /^[a-z0-9]{6,12}$/;
+        let idValCheck = false;
+        let idCheck = false;
+        
         const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,12}$/;
+        let pwValCheck = false;
+        let pwCheck = false;
+        
         const nicknameRegex = /^[a-zA-Z가-힣0-9]{4,12}$/;
+        let nicValCheck = false;
+        let nicCheck = false;
+        
         const nameRegex = /^[가-힣]{2,6}$/; 
+        let nameValCheck = false;
+        
         const phoneRegex = /^010-?[0-9]{4}-?[0-9]{4}$/;
+        let phoneValCheck = false;
+        
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
+        let emailValCheck = false;
         
         $("#id").on("input", function(){ // id 유효성검사
-        	check2 = false;
+        	idCheck = false;
         	if(idRegex.test($("#id").val())){
         		$("#idtext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
-        		check = true;
+        		idValCheck = true;
         	}else{
         		$("#idtext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("영문 소문자, 숫자 조합 6~12자리 입력");
-        		check = false;
+        		idValCheck = false;
         	}
         });
         
@@ -291,10 +304,10 @@
 					if(reps == "true"){
 						alert("사용중인 ID입니다.");
 						$("#id").val("");
-						check2 = false;
+						idCheck = false;
 					}else if(reps == "false"){
 						alert("사용가능한 ID입니다.");
-						check2 = true;
+						idCheck = true;
 					}
 				}
 			});
@@ -303,10 +316,10 @@
         $("#pw").on("input", function(){ // pw 유효성검사
         	if(pwRegex.test($("#pw").val())){
         		$("#pwtext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
-        		check = true;
+        		pwValCheck = true;
         	}else{
         		$("#pwtext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("영문 대소문자,숫자,특수문자 1개이상 8~12자리 입력");
-        		check = false;
+        		pwValCheck = false;
         	}
         });
         
@@ -314,22 +327,22 @@
         	let pw = $("#pw").val();
         	let pwcheck = $("#pw-check").val();
         	if(pw === pwcheck){
-        		$("#pw-checktext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("입력하신 비밀번호와 일치하지합니다.");
-        		check=true;
+        		$("#pw-checktext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("입력하신 비밀번호와 일치합니다.");
+        		pwCheck=true;
         	}else{
         		$("#pw-checktext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("입력하신 비밀번호와 일치하지 않습니다.");	
-        		check=false;
+        		pwCheck=false;
         	}
         });
         
         $("#nickname").on("input", function(){ // 닉네임 유효성검사
-        	check2 = false;
+        	nicCheck = false;
         	if(nicknameRegex.test($("#nickname").val())){
         		$("#nicknametext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
-        		check = true;
+        		nicValCheck = true;
         	}else{
         		$("#nicknametext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("영문,한글,숫자 4~12자 입력");
-        		check = false;
+        		nicValCheck = false;
         	}
         });
         
@@ -340,11 +353,12 @@
     				type: "POST",
     				success:function(reps){
     					if(reps == "true"){
+    						$("#nickname").val("");
     						alert("사용중인 닉네임입니다.");
-    						check2 = false;
+    						nicCheck = false;
     					}else if(reps == "false"){
     						alert("사용가능한 닉네임입니다.");
-    						check2 = true;
+    						nicCheck = true;
     					}
     				}
     			});
@@ -353,30 +367,30 @@
         $("#name").on("input", function(){ // 이름 유효성검사
         	if(nameRegex.test($("#name").val())){
         		$("#nametext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
-        		check = true;
+        		nameValCheck = true;
         	}else{
         		$("#nametext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("한글 2~6자리 이름 입력");
-        		check = false;
+        		nameValCheck = false;
         	}
         });
         
         $("#phone").on("input", function(){ // 전화번호 유효성검사
         	if(phoneRegex.test($("#phone").val())){
         		$("#phonetext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
-        		check = true;
+        		phoneValCheck = true;
         	}else{
         		$("#phonetext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("010 이후 8자 숫자 입력.ex)010-1234-1234");
-        		check = false;
+        		phoneValCheck = false;
         	}
         });
         
         $("#email").on("input", function(){ // e-mail 유효성검사
         	if(emailRegex.test($("#email").val())){
         		$("#emailtext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
-        		check = true;
+        		emailValCheck = true;
         	}else{
         		$("#emailtext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("e-mail형식에 알맞게 입력");
-        		check = false;
+        		emailValCheck = false;
         	}
         });
         
@@ -384,13 +398,15 @@
         $(".btn-submit").on("click", function(e){ // 회원가입완료 버튼 누를시 개인정보동의, 모든유효성 검사 통과시 가입완료
         	let radio = $(".radio:checked").val();
         
-        	if(check === false){
+        	if(idValCheck === false || pwValCheck === false || pwCheck === false 
+        			|| nicValCheck === false || nameValCheck === false 
+        			|| phoneValCheck === false || emailValCheck === false){
         		alert("모든 입력창에 정보를 알맞게 기입해주세요.");
         		e.preventDefault();
         		return;
         	}
         	
-        	if(check2 === false){
+        	if(idCheck === false || nicCheck === false){
         		alert("ID, 닉네임 중복검사는 필수사항입니다.");
         		e.preventDefault();
         		return;

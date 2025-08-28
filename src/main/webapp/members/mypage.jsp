@@ -63,7 +63,7 @@
         .form-group {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 25px;
             justify-content: center;
         }
 
@@ -132,7 +132,20 @@
             cursor: pointer;
             display: block;
         }
-
+	
+		#btn2 {
+        	background: linear-gradient(to right, #678989, #304242);
+            color: #0d0d1a;
+            float: left;
+            width: 25%;
+            padding: 10px;
+            margin-left: 150px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+        }
         /* ====== 별, 블록 배경 ====== */
         .star {
             position: fixed;
@@ -214,8 +227,8 @@
 <body>
    <div class="container">
         <div id="titlebox">
-            <h1>nicname</h1>
-            <h6>가입일 : </h6>
+            <h1>${nickname }</h1>
+            <h6>가입일 : ${date }</h6>
         </div>
         <table>
         <thead>
@@ -227,37 +240,42 @@
         <form action="/signup.MembersController" method="post">
             <div class="form-group">
                 <label for="id">ID</label>
-                <div class="input"></div>
+                <div class="input" id="id">${id }</div>
             </div>
 
-            <div class="form-group">
-                <label for="nickname">NickName</label>
-                <div class="input update"></div>
-            </div>
+            
 
             <div class="form-group">
                 <label for="name">Name</label>
-                <div class="input"></div>
+                <div class="input" id="name">${name }</div>
+                <div id="nametext"></div>
             </div>
 
             <div class="form-group">
                 <label for="phone">Phone</label>
-                <div class="input update"></div>
+                <div class="input update" id="phone">${phone }</div>
+                <div id="phonetext"></div>
             </div>
 
 
             <div class="form-group">
                 <label for="email">E-mail</label>
-                <div class="input update"></div>
+                <div class="input update" id="email">${email }</div>
+                <div id="emailtext"></div>
             </div>
 
             <div id="btnbox">
 
-                <div class="page-title"><a href="/indexpage.MembersController">혜빈이와 아이들</a></div>
+                <div class="page-title"><a href="/gamapage.GameController?id=${id }">혜빈이와 아이들</a></div>
 
-                <div class="form-group">
+                <div class="form-group" id="original">
                 	<button type="button" id="btn">회원탈퇴</button>
                     <button type="button" class="btn-submit" id="btnup">정보수정</button>
+                </div> 
+                
+                <div class="form-group" id="change" >
+                	<button type="button" id="btn2">수정취소</button>
+                    <button type="button" class="btn-submit" id="btnup2">수정완료</button>
                 </div> 
 
             </div>
@@ -265,7 +283,10 @@
     </div>
 
     <script>
-        // 별 생성
+		$("#change").hide();
+        
+		
+		// 별 생성
         for (let i = 0; i < 200; i++) {
             const s = document.createElement('div'); s.className = 'star';
             s.style.top = Math.random() * 100 + 'vh';
@@ -273,13 +294,113 @@
             s.style.animationDuration = (2 + Math.random() * 3) + 's';
             document.body.appendChild(s);
         }
-
-
-        $(".btn-submit").on("click", function (e) {
-
+		
+       $("#btn").on("click", function(){ //회원탈퇴 버튼 클릭시
+    	   let result = confirm("정말로 회원 탈퇴하시겠습니까?");
+    	   
+    	   if(result){
+    		   alert("탈퇴 완료되셨습니다.");
+    		   $.ajax({
+       				url: "/secession.MembersController",
+       				data: {
+       				id:$("#id").text()
+       				},
+       				type: "post",
+       				success: function(resp){
+       				if(resp === "1"){
+       					window.location.href = "/indexpage.MembersController";
+       				}	
+       			}
+       		})  
+    	   }
+    	   
+        });
+		
+		const nameRegex = /^[가-힣]{2,6}$/; 
+        let nameValCheck = true;
+        
+        const phoneRegex = /^010-?[0-9]{4}-?[0-9]{4}$/;
+        let phoneValCheck = true;
+        
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
+        let emailValCheck = true;
+        
+        
+        $("#btnup").on("click", function () { //정보수정 버튼 클릭시
+        	$("#original").hide();
+        	$("#change").show();
+        	
+        	$("#name, #phone, #email").attr("contenteditable", true).css({"background":"rgba(240, 255, 255, 0.208)"});
+        });
+        
+        $("#name").on("input", function(){ // 이름 유효성검사
+        	nameValCheck = false;
+        	if(nameRegex.test($("#name").text())){
+        		$("#nametext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
+        		nameValCheck = true;
+        	}else{
+        		$("#nametext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("한글 2~6자리 이름 입력");
+        	}
+        });
+        
+        $("#phone").on("input", function(){ // 전화번호 유효성검사
+        	phoneValCheck = false;
+        	if(phoneRegex.test($("#phone").text())){
+        		$("#phonetext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
+        		phoneValCheck = true;
+        	}else{
+        		$("#phonetext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("010 이후 8자 숫자 입력.ex)010-1234-1234");	
+        	}
+        });
+        
+        $("#email").on("input", function(){ // e-mail 유효성검사
+        	emailValCheck = false;
+        	if(emailRegex.test($("#email").text())){
+        		$("#emailtext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
+        		emailValCheck = true;
+        	}else{
+        		$("#emailtext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("e-mail형식에 알맞게 입력");
+        	}
         });
 
+        $("#btnup2").on("click", function(e){ //수정 완료 클릭시
+        	//유효성검사
+        	if(nameValCheck === false || phoneValCheck === false || emailValCheck === false){
+        		alert("모든 입력창에 정보를 알맞게 기입해주세요.");
+        		e.preventDefault();
+        		return;	
+        	}
+        	
+        	//유효성 검사 통과시 div 입력속성 차단, 백그라운드컬러 원상복귀, 버튼도 original로 복구
+        	$("#name, #phone, #email").attr("contenteditable", false).css({"background":"transparent"});	
+        	$("#original").show();
+        	$("#change").hide();
+        	
+        	//유효성 검사 설명 text 초기화
+        	$("#nametext").html("");
+        	$("#phonetext").html("");
+        	$("#emailtext").html("");
+        	
+        	$.ajax({
+        		url: "/update.MembersController",
+        		data: {
+        			id:$("#id").text(),
+        			name:$("#name").text(),
+        			phone:$("#phone").text(),
+        			email:$("#email").text()
+        		},
+        		type: "post",
+        		success: function(resp){
+        			if(resp === "1"){
+        				window.location.href = "/mypage.MembersController?id=${id }";
+        			}	
+        		}
+        	})
+        });
         
+        $("#btn2").on("click", function(){ //수정 취소시 페이지 재로딩으로 다시 원본내용 나오도록함
+        	window.location.href = "/mypage.MembersController?id=${id }";
+        });
 
     </script>
 </body>
