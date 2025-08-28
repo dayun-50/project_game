@@ -39,14 +39,7 @@ body {
 keyframes twinkle { 0%,100%{
 	opacity: 0.3;
 }
-
-50
-%
-{
-opacity
-:
-1;
-}
+50%{opacity:1;}
 }
 .background-block {
 	position: fixed;
@@ -441,6 +434,7 @@ for(let i=0;i<50;i++){
 </script>
 
 	<div class="container">
+	
 		<div class="header">
 			<div class="subtitle">Welcome to the Game</div>
 			<h1>혜빈이와 아이들</h1>
@@ -448,6 +442,7 @@ for(let i=0;i<50;i++){
 			<div class="header-buttons">
 				<button id="login-btn">로그인</button>
 				<button id="signup-btn">회원가입</button>
+			
 			</div>
 		</div>
 
