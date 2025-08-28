@@ -408,6 +408,11 @@ html, body {
   margin-top: 30px;
   text-align: center;
 }
+
+#stick-right{
+	font-size: 20px;
+
+}
 </style>
 </head>
 <body>
@@ -464,8 +469,8 @@ for(let i=0;i<50;i++){
 					<button id="btn-b" class="btn-round">승진</button>
 					<button id="btn-a" class="btn-round">유승</button>
 				</div>
-				<button class="stick btn-round" id="stick-right">First
-					Project</button>
+				<button class="stick btn-round" id="stick-right">
+					PlayEX</button>
 			</div>
 		</div>
 
@@ -523,19 +528,7 @@ for(let i=0;i<50;i++){
 	</div>
 
 	<script>
-// 설명창 타자기 효과
-const fullText = `1조의 첫번째 프로젝트에 오신 것을 환영합니다!!!`;
-const description = document.getElementById("description");
-const descText = document.getElementById("description-text");
-document.getElementById("stick-right").addEventListener("click",()=>{
-  description.classList.toggle("show");
-  if(description.classList.contains("show")){
-    descText.textContent="";
-    let i=0;
-    function typeWriter(){if(i<fullText.length){descText.textContent+=fullText.charAt(i);i++;setTimeout(typeWriter,15);}}
-    typeWriter();
-  }
-});
+
 
 $("#signup-btn").on("click", function(){ //회원가입 페이지이동
 	window.location.href = "/signuppage.MembersController"; 

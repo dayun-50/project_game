@@ -29,9 +29,20 @@
 
         .login-container h1 {
             color: #00ffff;
-            font-size: 50px;
+            font-size: 70px;
             margin-bottom: 40px;
+            margin-top: 10px;
             text-shadow: 0 0 5px #ffff66, 0 0 15px #fffaaa;
+        }
+        
+        h4{
+        	margin-bottom: 5px; 
+        }
+        
+        h4 a{
+        	text-decoration: none;
+        	color: #ffffff;
+        	text-shadow: 0 0 5px #ff00ff, 0 0 15px #ff00ff;
         }
 
         .login-container input[type="text"],
@@ -52,9 +63,11 @@
         }
 
         .login-container button {
+        	float: left;
             width: 100%;
             padding: 15px;
             margin-top: 25px;
+            margin-bottom: 15px;
             border: none;
             border-radius: 15px;
             font-size: 18px;
@@ -110,20 +123,21 @@
                 opacity: 1;
             }
         }
+        
+       
     </style>
 </head>
 <body>
     <div class="login-container">
+    	<h4><a href="/indexpage.MembersController">혜빈이와 아이들</a></h4>
         <h1>Login</h1>
-        <form action="/login.MembersController" method="post">
         <input type="text" placeholder="ID" id="id" name="id">
         <input type="password" placeholder="PW" id="pw" name="pw">
-        <button>로그인</button>
-        </form>
+        <button id="btn">로그인</button>
         <div class="links">
-            <a href="#">아이디 찾기</a> /
-            <a href="#">비밀번호 찾기</a> /
-            <a href="#">회원가입</a>
+            <a href="/idSerchpage.MembersController">아이디 찾기</a> /
+            <a href="/pwSerchpage.MembersController">비밀번호 찾기</a> /
+            <a href="/signuppage.MembersController">회원가입</a>
         </div>
     </div>
 
@@ -136,6 +150,26 @@
             s.style.animationDuration = (2 + Math.random() * 3) + 's';
             document.body.appendChild(s);
         }
+        
+        $("#btn").on("click", function(){
+        	$.ajax({
+        		url:"/login.MembersController",
+				data:{
+					id:$("#id").val(),
+					pw:$("#pw").val()
+					},
+				type: "POST",
+				success:function(resp){
+					if(resp === "1"){
+						window.location.href = "/gamapage.GameController?id="+$("#id").val(); 
+					}else{
+						alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+						$("#id").val("");
+						$("#pw").val("");
+					}
+				}
+			});
+        });
     </script>
 </body>
 </html>

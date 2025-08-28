@@ -32,7 +32,7 @@
             /* 기존 Welcome 색상 */
             text-shadow: 0 0 5px #ff00ff, 0 0 15px #ff00ff;
             /* 기존 스타일 */
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         h1 {
@@ -40,8 +40,9 @@
             color: #00ffff;
             /* 민트 계열 */
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             text-shadow: 0 0 5px #ffff66, 0 0 15px #fffaaa;
+            margin-top: 10px;
         }
 
         .form-group {
@@ -124,9 +125,10 @@
         }
 
         .btn-submit {
+        	float:left;
             width: 30%;
             padding: 10px;
-            margin: 20px auto 0 auto;
+            margin: 20px 15px 0 auto;
             border: none;
             border-radius: 15px;
             background: linear-gradient(to right, #00ffff, #ff4fc6);
@@ -136,6 +138,18 @@
             display: block;
         }
 
+		#btn{
+			width: 30%;
+            padding: 10px;
+            margin: 20px auto 0 15px;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(to right, #678989, #304242);
+            color: #0d0d1a;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+		}
         /* ====== 별, 블록 배경 ====== */
         .star {
             position: fixed;
@@ -173,7 +187,7 @@
             <input type="text" id="id" name="id">
             <div id="idtext"></div>
             </div>
-            <button class="check-btn">중복확인</button>
+            <button type="button" class="check-btn" id="idcheck">중복확인</button>
         </div>
 
         <div class="form-group">
@@ -198,7 +212,7 @@
             <input type="text" id="nickname" name="nickname">
             <div id="nicknametext"></div>
             </div>
-            <button class="check-btn">중복확인</button>
+            <button type="button" class="check-btn" id="nicknamecheck">중복확인</button>
         </div>
 
         <div class="form-group">
@@ -227,11 +241,14 @@
         </div>
 
         <div class="agreement">
-            <input type="radio" name="agree" id="agree-yes" value="Y"><label for="agree-yes">동의합니다.</label>
-            <input type="radio" name="agree" id="agree-no" value="N"><label for="agree-no">동의하지 않습니다.</label>
+            <input type="radio" name="agree" id="agree-yes" value="Y" class="radio"><label for="agree-yes">동의합니다.</label>
+            <input type="radio" name="agree" id="agree-no" value="N" class="radio"><label for="agree-no">동의하지 않습니다.</label>
         </div>
 
-        <button class="btn-submit">가입완료</button>
+		<div class="form-group">
+        	<button class="btn-submit">가입완료</button>
+        	<button type="button" id="btn">뒤로가기</button>
+        </div>
         </form>
     </div>
 
@@ -245,93 +262,169 @@
             document.body.appendChild(s);
         }
         
-        let check = false; //유효성 검사 전부 통과시에만 페이지넘어가게 false걸어둠
-        const idRegex = /^[a-z0-9]{6,12}$/;
-        const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,12}$/;
-        const nicknameRegex = /^[a-z0-9]{4,12}$/;
-        const nameRegex = /^[가-힣]{2,6}$/; 
-        const phoneRegex = /^010-?[0-9]{4}-?[0-9]{4}$/;
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
-        //개인정보 동의란 무조건 동의후에 넘어가게할건지 물어볼것 ! > 동의안하면 안넘어가게
         
-        $("#id").on("input", function(){ 
-        	//유효성 검사해서 if문 묵고 통과면 그린으로 완료띄우고 check true로 바꾸기 아니면 false다시 선언
+        const idRegex = /^[a-z0-9]{6,12}$/;
+        let idValCheck = false;
+        let idCheck = false;
+        
+        const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,12}$/;
+        let pwValCheck = false;
+        let pwCheck = false;
+        
+        const nicknameRegex = /^[a-zA-Z가-힣0-9]{4,12}$/;
+        let nicValCheck = false;
+        let nicCheck = false;
+        
+        const nameRegex = /^[가-힣]{2,6}$/; 
+        let nameValCheck = false;
+        
+        const phoneRegex = /^010-?[0-9]{4}-?[0-9]{4}$/;
+        let phoneValCheck = false;
+        
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
+        let emailValCheck = false;
+        
+        $("#id").on("input", function(){ // id 유효성검사
+        	idCheck = false;
         	if(idRegex.test($("#id").val())){
         		$("#idtext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
-        		check = true;
+        		idValCheck = true;
         	}else{
         		$("#idtext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("영문 소문자, 숫자 조합 6~12자리 입력");
-        		check = false;
+        		idValCheck = false;
         	}
         });
         
-        $("#pw").on("input", function(){
+        $("#idcheck").on("click", function(){ // id 중복확인
+        	$.ajax({
+        		url:"/idCheck.MembersController",
+				data:{id:$("#id").val()},
+				type: "POST",
+				success:function(reps){
+					if(reps == "true"){
+						alert("사용중인 ID입니다.");
+						$("#id").val("");
+						idCheck = false;
+					}else if(reps == "false"){
+						alert("사용가능한 ID입니다.");
+						idCheck = true;
+					}
+				}
+			});
+        });
+        
+        $("#pw").on("input", function(){ // pw 유효성검사
         	if(pwRegex.test($("#pw").val())){
         		$("#pwtext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
-        		check = true;
+        		pwValCheck = true;
         	}else{
         		$("#pwtext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("영문 대소문자,숫자,특수문자 1개이상 8~12자리 입력");
-        		check = false;
+        		pwValCheck = false;
         	}
         });
         
-        $("#pw-check, #pw").on("input", function(){
+        $("#pw-check, #pw").on("input", function(){ // pw 재확인
         	let pw = $("#pw").val();
         	let pwcheck = $("#pw-check").val();
         	if(pw === pwcheck){
-        		$("#pw-checktext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("입력하신 비밀번호와 일치하지합니다.");
-        		check=true;
+        		$("#pw-checktext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("입력하신 비밀번호와 일치합니다.");
+        		pwCheck=true;
         	}else{
         		$("#pw-checktext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("입력하신 비밀번호와 일치하지 않습니다.");	
-        		check=false;
+        		pwCheck=false;
         	}
         });
         
-        $("#nickname").on("input", function(){
+        $("#nickname").on("input", function(){ // 닉네임 유효성검사
+        	nicCheck = false;
         	if(nicknameRegex.test($("#nickname").val())){
         		$("#nicknametext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
-        		check = true;
+        		nicValCheck = true;
         	}else{
-        		$("#nicknametext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("영문, 숫자 4~12자 입력");
-        		check = false;
+        		$("#nicknametext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("영문,한글,숫자 4~12자 입력");
+        		nicValCheck = false;
         	}
         });
         
-        $("#name").on("input", function(){
+        $("#nicknamecheck").on("click", function(){ // 닉네임 중복검사
+            	$.ajax({
+            		url:"/nicknameCheck.MembersController",
+    				data:{nickname:$("#nickname").val()},
+    				type: "POST",
+    				success:function(reps){
+    					if(reps == "true"){
+    						$("#nickname").val("");
+    						alert("사용중인 닉네임입니다.");
+    						nicCheck = false;
+    					}else if(reps == "false"){
+    						alert("사용가능한 닉네임입니다.");
+    						nicCheck = true;
+    					}
+    				}
+    			});
+        });
+        
+        $("#name").on("input", function(){ // 이름 유효성검사
         	if(nameRegex.test($("#name").val())){
         		$("#nametext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
-        		check = true;
+        		nameValCheck = true;
         	}else{
         		$("#nametext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("한글 2~6자리 이름 입력");
-        		check = false;
+        		nameValCheck = false;
         	}
         });
         
-        $("#phone").on("input", function(){
+        $("#phone").on("input", function(){ // 전화번호 유효성검사
         	if(phoneRegex.test($("#phone").val())){
         		$("#phonetext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
-        		check = true;
+        		phoneValCheck = true;
         	}else{
         		$("#phonetext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("010 이후 8자 숫자 입력.ex)010-1234-1234");
-        		check = false;
+        		phoneValCheck = false;
         	}
         });
         
-        $("#email").on("input", function(){
+        $("#email").on("input", function(){ // e-mail 유효성검사
         	if(emailRegex.test($("#email").val())){
         		$("#emailtext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
-        		check = true;
+        		emailValCheck = true;
         	}else{
         		$("#emailtext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("e-mail형식에 알맞게 입력");
-        		check = false;
+        		emailValCheck = false;
         	}
         });
         
-        $(".btn-submit").on("click", function(e){
-        	if(check === false){
+        
+        $(".btn-submit").on("click", function(e){ // 회원가입완료 버튼 누를시 개인정보동의, 모든유효성 검사 통과시 가입완료
+        	let radio = $(".radio:checked").val();
+        
+        	if(idValCheck === false || pwValCheck === false || pwCheck === false 
+        			|| nicValCheck === false || nameValCheck === false 
+        			|| phoneValCheck === false || emailValCheck === false){
         		alert("모든 입력창에 정보를 알맞게 기입해주세요.");
         		e.preventDefault();
+        		return;
         	}
+        	
+        	if(idCheck === false || nicCheck === false){
+        		alert("ID, 닉네임 중복검사는 필수사항입니다.");
+        		e.preventDefault();
+        		return;
+        	}
+        	
+        	if(radio === "N"){
+        		alert("개인정보 비동의시 가입이 불가합니다.");
+        		e.preventDefault();
+        	}
+        	
+        });
+        
+        $("#btn").on("click", function(){ // 뒤로가기버튼 메인홈페이지로 이동
+        	 if (document.referrer) { // 이전 페이지가 존재하면
+        	        history.back();
+        	    } else {
+        	        window.location.href = "/indexpage.MembersController"; // 이전 페이지가 없으면 홈으로
+        	    }
         });
         
     </script>
