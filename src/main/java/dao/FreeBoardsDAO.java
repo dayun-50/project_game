@@ -40,7 +40,16 @@ public class FreeBoardsDAO {
 
 	}
 
-
+	public boolean update(FreeBoardsDTO dto) throws Exception{
+		String sql = "update freeBoards set fb_Title=?, fb_write=?, fb_id=?";
+		try(Connection con = this.getConnection();
+				PreparedStatement stat = con.prepareStatement(sql);){
+			stat.setString(1, dto.getFb_Title());
+			stat.setString(2, dto.getFb_write());
+			stat.setInt(3, dto.getFb_id());
+			return stat.executeUpdate() > 0;
+		}
+	}
 
 
 }
