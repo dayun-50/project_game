@@ -18,8 +18,7 @@ public class MembersController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String cmd = request.getRequestURI();
 		MembersDAO dao = MembersDAO.getInstance();
-		HttpSession session = request.getSession();
-		
+		HttpSession session = request.getSession(); 
 		try {
 			if(cmd.equals("/signuppage.MembersController")) { //회원가입 페이지 이동
 				response.sendRedirect("/members/singup.jsp");
