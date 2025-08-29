@@ -165,36 +165,45 @@
 		margin-top: 10px;
 		
 		}
-		form{
+		#btnform{
 		display: flex;
 		justify-content: end;
 		width: 100%;
 		}
+		form{
+		width: 100px;
+		height: 30px;
+		font-weight: bold;
+		}
+		
+	
 	</style>
 </head>
 
 <body>
 	<div class="con">
-	<h1><img src="/members/로고.png" id="logo"> 혜빈이와 아이들 </h1>
+	<h1><img src="/board/로고.png" id="logo"> 혜빈이와 아이들 </h1>
 	<h2>게시판 글쓰기</h2>
 	
 	<div id="line"></div>
 	
 		<div id="postname" contenteditable="true"></div>
-	
+			
 		<div id="editor"></div>
 	
 	<div class="btns">
-	<form action="" method="post">
+	<form action="/postdone.free" method="post" id="btnform">
 	<button id="postdone">작성완료</button>
 	<button id="cancel">취소</button>
 </form>
 </div>
-
+ 
 	</div>
 
 
 	<script>
+	
+	
 		const editor = new toastui.Editor({
 			el: document.querySelector('#editor'),
 			height: '500px',
