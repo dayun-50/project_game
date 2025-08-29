@@ -210,7 +210,6 @@ public class MembersDAO {
 				PreparedStatement stat = con.prepareStatement(sql);){
 			stat.setString(1, id);
 
-			ArrayList<MembersDTO> list = new ArrayList<>();
 			try(ResultSet rs = stat.executeQuery();){
 				if(rs.next()) {
 					String nickname = rs.getString("user_nickname");
@@ -252,4 +251,5 @@ public class MembersDAO {
 			return stat.executeUpdate();
 		}
 	}
+	
 }
