@@ -215,6 +215,19 @@
     padding-bottom: 10px;
     text-align: left;            /* 텍스트 왼쪽 정렬 */
 }
+
+#title{
+	width: 45%;
+}
+
+td{
+	text-align: center;
+}
+
+th{
+	text-align: center;
+}
+
     </style>
 </head>
 <body>
@@ -244,7 +257,7 @@
             <c:forEach var="dto" items="${list}">
                 <tr>
                     <td>${dto.game_seq }</td>
-                    <td>${dto.gameboardtitle }</td>
+                    <td id="title">${dto.gameboardtitle }</td>
                     <td>${dto.gamewrtier }</td>
                     <td>${dto.game_board_date }</td>
                     <td>${dto.view_count}</td>
