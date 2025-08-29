@@ -23,7 +23,7 @@ public class Game1BoardController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String cmd = request.getRequestURI();
 		HttpSession session = request.getSession();
-		MembersDAO mdao = MembersDAO.getInstance();
+		MembersDAO mdao = MembersDAO.getInstance();//
 		Game1BoardDAO gbdao = Game1BoardDAO.getInstance();
 		
 		try {
