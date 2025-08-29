@@ -6,6 +6,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import dao.MembersDAO;
 
@@ -15,9 +16,11 @@ public class GameController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String cmd = request.getRequestURI();
 		MembersDAO dao = MembersDAO.getInstance();
+		HttpSession session = request.getSession();
+		
 		try {
 			if(cmd.equals("/gamapage.GameController")) { //게임 메인홈페이지 이동
-				String id = request.getParameter("id");
+				String id = (String) session.getAttribute("loginId");
 				String nickname = dao.nicknameSerch(id);
 				response.setContentType("text/html; charset=UTF-8");
 				if(nickname!=null) { 

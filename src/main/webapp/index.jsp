@@ -538,6 +538,10 @@ $("#login-btn").on("click", function(){ //로그인 페이지이동
 	window.location.href = "/loginpgae.MembersController";
 });
 
+$("#play-btn").on("click", function(){ // 즐기러가기 버튼
+	 $('html, body').animate({ scrollTop: 0 }, 300); // 300ms 동안 부드럽게 스크롤
+});
+
 </script>
 </body>
 </html>
