@@ -384,7 +384,6 @@
         	$.ajax({
         		url: "/update.MembersController",
         		data: {
-        			id:$("#id").text(),
         			name:$("#name").text(),
         			phone:$("#phone").text(),
         			email:$("#email").text()
@@ -392,7 +391,7 @@
         		type: "post",
         		success: function(resp){
         			if(resp === "1"){
-        				window.location.href = "/mypage.MembersController?id=${id }";
+        				window.location.href = "/mypage.MembersController";
         			}	
         		}
         	})

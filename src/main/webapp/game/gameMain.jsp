@@ -192,7 +192,7 @@ $("#stick-right").on("click", function(){ //메뉴버튼
 });
 
 $("#mypage-btn").on("click", function(){ //마이페이지 이동버튼
-	window.location.href = "/mypage.MembersController?id=${id}"
+	window.location.href = "/mypage.MembersController"
 });
 
 
