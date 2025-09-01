@@ -119,7 +119,7 @@ html, body {
     </div>
     <div class="joycon-right">
         <div class="buttons">
-            <button id="btn-x" class="btn-round">Game1</button>
+            <button id="btn-x" class="btn-round"><a href="/board/post.jsp">Game1</a></button>
             <button id="btn-y" class="btn-round">Game2</button>
             <button id="btn-b" class="btn-round">Game3</button>
             <button id="btn-a" class="btn-round">Game4</button>

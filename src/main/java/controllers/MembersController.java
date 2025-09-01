@@ -67,6 +67,7 @@ public class MembersController extends HttpServlet {
 				String password = request.getParameter("pw");
 				String pw = dao.encrypt(password);
 				
+				
 				int result = dao.login(id, pw);
 				if(result == 1) {
 					response.getWriter().write(String.valueOf(result)); // 로그인성공 1/ 실패 0
