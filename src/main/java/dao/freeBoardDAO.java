@@ -46,46 +46,49 @@ public class freeBoardDAO {
 	
 	//  Read - 전체 목록
 	public List<freeBoardDTO> selectAll() throws Exception {
-		String sql = "select * from freeBoard order by fb_id desc";
-		try(Connection con = this.getConnection();
-			PreparedStatement stat = con.prepareStatement(sql);
-			ResultSet rs = stat.executeQuery()){
-			
-			List<freeBoardDTO> list = new ArrayList<>();
-			while(rs.next()) {
-				freeBoardDTO dto = new freeBoardDTO(
-						rs.getInt("fb_id"),
-						rs.getString("fb_user_name"),
-						rs.getString("fb_Title"),
-						rs.getString("fb_write"),
-						rs.getTimestamp("fb_date")
-				);
-				list.add(dto);
-			}
-			return list;
-		}
+	    String sql = "select * from freeBoard order by fb_id desc";
+	    try(Connection con = this.getConnection();
+	        PreparedStatement stat = con.prepareStatement(sql);
+	        ResultSet rs = stat.executeQuery()){
+
+	        List<freeBoardDTO> list = new ArrayList<>();
+	        while(rs.next()) {
+	            freeBoardDTO dto = new freeBoardDTO(
+	                    rs.getInt("fb_id"),
+	                    rs.getString("fb_user_name"),
+	                    rs.getString("fb_Title"),
+	                    rs.getString("fb_write"),
+	                    rs.getTimestamp("fb_date")
+	            );
+	            dto.setView_count(rs.getInt("view_count")); // ✅ 여기 반드시 필요
+	            list.add(dto);
+	        }
+	        return list;
+	    }
 	}
 	
 	//  Read - 단일 조회
 	public freeBoardDTO selectById(int fb_id) throws Exception {
-		String sql = "select * from freeBoard where fb_id=?";
-		try(Connection con = this.getConnection();
-			PreparedStatement stat = con.prepareStatement(sql)){
-			
-			stat.setInt(1, fb_id);
-			try(ResultSet rs = stat.executeQuery()){
-				if(rs.next()) {
-					return new freeBoardDTO(
-							rs.getInt("fb_id"),
-							rs.getString("fb_user_name"),
-							rs.getString("fb_Title"),
-							rs.getString("fb_write"),
-							rs.getTimestamp("fb_date")
-					);
-				}
-				return null;
-			}
-		}
+	    String sql = "select * from freeBoard where fb_id=?";
+	    try(Connection con = this.getConnection();
+	        PreparedStatement stat = con.prepareStatement(sql)){
+
+	        stat.setInt(1, fb_id);
+	        try(ResultSet rs = stat.executeQuery()){
+	            if(rs.next()) {
+	                freeBoardDTO dto = new freeBoardDTO(
+	                        rs.getInt("fb_id"),
+	                        rs.getString("fb_user_name"),
+	                        rs.getString("fb_Title"),
+	                        rs.getString("fb_write"),
+	                        rs.getTimestamp("fb_date")
+	                );
+	                dto.setView_count(rs.getInt("view_count")); // 조회수 반영
+	                return dto;
+	            }
+	            return null;
+	        }
+	    }
 	}
 	
 	//  Update
@@ -112,4 +115,14 @@ public class freeBoardDAO {
 			return stat.executeUpdate() > 0;
 		}
 	}
+	
+	public void incrementViewCount(int fb_id) throws Exception {
+	    String sql = "update freeBoard set view_count = view_count + 1 where fb_id = ?";
+	    try(Connection con = this.getConnection();
+	        PreparedStatement stat = con.prepareStatement(sql)) {
+	        stat.setInt(1, fb_id);
+	        stat.executeUpdate();
+	    }
+	}
+	
 }

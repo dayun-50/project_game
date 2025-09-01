@@ -61,16 +61,21 @@ public class freeBoardController extends HttpServlet {
             
          //  4. 게시글 상세보기 (Read - Detail)
          } else if(cmd.equals("/detail.free")) {
-            int fb_id = Integer.parseInt(request.getParameter("id"));
-            freeBoardDTO dto = dao.selectById(fb_id);
+        	    int fb_id = Integer.parseInt(request.getParameter("id"));
+        	    
+        	    // 조회수 증가
+        	    dao.incrementViewCount(fb_id);
 
-            // 댓글 가져오기
-            FreeCommentDAO cdao = FreeCommentDAO.getInstance();
-            List<FreeCommentDTO> comments = cdao.selectByBoardId(fb_id);
+        	    freeBoardDTO dto = dao.selectById(fb_id);
 
-            request.setAttribute("dto", dto);
-            request.setAttribute("comments", comments);
-            request.getRequestDispatcher("/board/detail.jsp").forward(request, response);
+        	    // 댓글 가져오기
+        	    FreeCommentDAO cdao = FreeCommentDAO.getInstance();
+        	    List<FreeCommentDTO> comments = cdao.selectByBoardId(fb_id);
+
+        	    request.setAttribute("dto", dto);
+        	    request.setAttribute("comments", comments);
+        	    request.getRequestDispatcher("/board/detail.jsp").forward(request, response);
+        	
             
          //  5. 게시글 수정페이지 이동
          } else if(cmd.equals("/edit.free")) {

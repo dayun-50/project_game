@@ -34,6 +34,13 @@ public class freeBoardDTO {
 	}
 
 	// Getter / Setter
+	public int getView_count() {
+	    return view_count;
+	}
+
+	public void setView_count(int view_count) {
+	    this.view_count = view_count;
+	}
 	public int getfb_id() { 
 		return fb_id; 
 		}
