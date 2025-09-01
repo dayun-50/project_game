@@ -204,7 +204,7 @@ html, body {
     <!-- 메뉴 오버레이 -->
     <div id="menu-overlay">
         	<div class="menu-buttons">
-            	<button class="menu-btn">자유게시판</button>
+            	<button class="menu-btn" id="freebtn">자유게시판</button>
             	<button class="menu-btn">게임랭크</button>
             	<button class="menu-btn">게임게시판</button>
             	<button class="menu-btn">마이페이지</button>
@@ -216,7 +216,7 @@ html, body {
 
     <div class="joycon-right">
         <div class="buttons">
-            <button id="btn-x" class="btn-round"><a href="/board/post.jsp">Game1</a></button>
+            <button id="btn-x" class="btn-round">Game1</button>
             <button id="btn-y" class="btn-round">Game2</button>
             <button id="btn-b" class="btn-round">Game3</button>
             <button id="btn-a" class="btn-round">Game4</button>
@@ -287,6 +287,11 @@ document.getElementById('tutorial-close').addEventListener('click', ()=>{
 // 메뉴 토글
 $("#stick-right").on("click", function(){
     $("#menu-overlay").toggleClass("hide"); // 클릭 시 오버레이 나타나거나 사라짐
+});
+//자유게시판 버튼
+$("#freebtn").on("click", function() {
+    // 컨트롤러 경로로 이동
+    window.location.href = "/list.free";
 });
 
 </script>
