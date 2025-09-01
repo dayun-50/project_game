@@ -45,6 +45,9 @@ public class Game1BoardController extends HttpServlet {
 				request.setAttribute("list", list);
 				request.getRequestDispatcher("/board/game1boardList.jsp").forward(request, response);
 				
+			}else if(cmd.equals("/game1boradDetil.Game1Controller")) { //글 내용 출력
+				String seq = request.getParameter("seq");
+				ArrayList<GameBoardDTO> list = gbdao.listCheck(Integer.parseInt(seq));
 			}
 		}catch (Exception e) {
 			e.printStackTrace();

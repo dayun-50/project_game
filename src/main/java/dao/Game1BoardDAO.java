@@ -52,15 +52,38 @@ public class Game1BoardDAO {
 				PreparedStatement stat = con.prepareStatement(sql);){
 			stat.setInt(1, 1); // 게임 1만 출력하게끔
 			
-			ArrayList<GameBoardDTO> list = new ArrayList<>();
 			try(ResultSet rs = stat.executeQuery()){
+				ArrayList<GameBoardDTO> list = new ArrayList<>();
 				while(rs.next()) {
 					int seq = rs.getInt("game_seq");
 					String title = rs.getString("gameboardtitle");
-					String coment = rs.getString("gamecoment");
 					String wrtier = rs.getString("gamewrtier");
 					Timestamp date = rs.getTimestamp("game_board_date"); 
 					String regdate = new SimpleDateFormat("yyyy.MM.dd").format(date);
+					int count = rs.getInt("view_count");
+					
+					list.add(new GameBoardDTO(seq, 1, title, "", wrtier, regdate, count));
+				}
+				return list;
+			}
+		}
+	}
+	
+	//게임1 게시판 내용 출력
+	public ArrayList<GameBoardDTO> listCheck(int seq) throws Exception {
+		String sql = "select game_seq from game_board where game_seq = ?";
+		try(Connection con = this.getConnection();
+				PreparedStatement stat = con.prepareStatement(sql);){
+			stat.setInt(1, seq);
+			
+			try(ResultSet rs = stat.executeQuery()){
+				ArrayList<GameBoardDTO> list = new ArrayList<>();
+				while(rs.next()) {
+					String title = rs.getString("");
+					String coment = rs.getString("");
+					String wrtier = rs.getString("");
+					Timestamp date = rs.getTimestamp("game_board_date"); 
+					String regdate = new SimpleDateFormat("yyyy.MM.dd HH:mm").format(date);
 					int count = rs.getInt("view_count");
 					
 					list.add(new GameBoardDTO(seq, 1, title, coment, wrtier, regdate, count));

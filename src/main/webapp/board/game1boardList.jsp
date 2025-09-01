@@ -174,17 +174,7 @@
             }
         }
 
-        @keyframes shootingStar {
-            0% {
-                transform: translateY(-5vh) translateX(0) rotate(0deg);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateY(120vh) translateX(50px) rotate(45deg);
-                opacity: 0;
-            }
-        }
+        
 
         .shooting-star {
             width: 2px;
@@ -257,7 +247,9 @@ th{
             <c:forEach var="dto" items="${list}">
                 <tr>
                     <td>${dto.game_seq }</td>
-                    <td id="title">${dto.gameboardtitle }</td>
+                    <td id="title">
+                    	<a href="/game1boradDetil.Game1Controller?sep=${dto.gameboardtitle }">${dto.gameboardtitle }</a>
+                    </td>
                     <td>${dto.gamewrtier }</td>
                     <td>${dto.game_board_date }</td>
                     <td>${dto.view_count}</td>
@@ -303,8 +295,7 @@ th{
         createStars(800);
         createStars(400, [20, 50], [20, 80], [1, 2]);
 
-        // 일정 시간마다 별똥별 생성
-        setInterval(createShootingStar, 2000);
+
 
         // 튜토리얼 위치
         function updateTutorialPositions() {
