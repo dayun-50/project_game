@@ -124,5 +124,44 @@ public class freeBoardDAO {
 	        stat.executeUpdate();
 	    }
 	}
-	
+	// 페이지 단위로 글 조회
+	public List<freeBoardDTO> selectPage(int start, int end) throws Exception {
+	    String sql = "SELECT * FROM (" +
+	                 " SELECT ROWNUM rnum, a.* FROM (" +
+	                 "  SELECT * FROM freeBoard ORDER BY fb_id DESC" +
+	                 " ) a WHERE ROWNUM <= ?" +
+	                 ") WHERE rnum >= ?";
+	    try(Connection con = this.getConnection();
+	        PreparedStatement stat = con.prepareStatement(sql)){
+
+	        stat.setInt(1, end);
+	        stat.setInt(2, start);
+	        try(ResultSet rs = stat.executeQuery()){
+	            List<freeBoardDTO> list = new ArrayList<>();
+	            while(rs.next()){
+	                freeBoardDTO dto = new freeBoardDTO(
+	                        rs.getInt("fb_id"),
+	                        rs.getString("fb_user_name"),
+	                        rs.getString("fb_Title"),
+	                        rs.getString("fb_write"),
+	                        rs.getTimestamp("fb_date")
+	                );
+	                dto.setView_count(rs.getInt("view_count"));
+	                list.add(dto);
+	            }
+	            return list;
+	        }
+	    }
+	}
+
+	// 총 게시글 수
+	public int getTotalCount() throws Exception {
+	    String sql = "SELECT COUNT(*) FROM freeBoard";
+	    try(Connection con = this.getConnection();
+	        PreparedStatement stat = con.prepareStatement(sql);
+	        ResultSet rs = stat.executeQuery()){
+	        if(rs.next()) return rs.getInt(1);
+	        return 0;
+	    }
+	}
 }

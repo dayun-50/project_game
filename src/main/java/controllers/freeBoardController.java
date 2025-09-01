@@ -54,11 +54,32 @@ public class freeBoardController extends HttpServlet {
             response.sendRedirect("/board/post.jsp");
             
          // 3. 게시글 목록 (Read - List)
-         } else if(cmd.equals("/list.free")) {
-            List<freeBoardDTO> list = dao.selectAll();
-            request.setAttribute("list", list);
-            request.getRequestDispatcher("/board/list.jsp").forward(request, response);
-            
+         }else if(cmd.equals("/list.free")) {
+        		    int page = 1; // 현재 페이지
+        		    String pageParam = request.getParameter("page");
+        		    if(pageParam != null && !pageParam.isEmpty()) {
+        		        page = Integer.parseInt(pageParam);
+        		    }
+
+        		    int pageSize = 10; // 한 페이지 글 개수
+        		    int start = (page - 1) * pageSize + 1;
+        		    int end = page * pageSize;
+
+        		    List<freeBoardDTO> list = dao.selectPage(start, end); // DAO에 새 메소드 필요
+        		    int totalCount = dao.getTotalCount(); // DAO에 전체 글 개수 가져오는 메소드 필요
+        		    int totalPage = (int)Math.ceil(totalCount / (double)pageSize);
+
+        		    int blockSize = 10; // 한 블록에 표시할 페이지 수
+        		    int currentBlock = (int)Math.ceil(page / (double)blockSize);
+        		    int startPage = (currentBlock - 1) * blockSize + 1;
+        		    int endPage = Math.min(startPage + blockSize - 1, totalPage);
+
+        		    request.setAttribute("list", list);
+        		    request.setAttribute("currentPage", page);
+        		    request.setAttribute("totalPage", totalPage);
+        		    request.setAttribute("startPage", startPage);
+        		    request.setAttribute("endPage", endPage);
+        		    request.getRequestDispatcher("/board/list.jsp").forward(request, response);
          //  4. 게시글 상세보기 (Read - Detail)
          } else if(cmd.equals("/detail.free")) {
         	    int fb_id = Integer.parseInt(request.getParameter("id"));

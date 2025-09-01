@@ -59,27 +59,40 @@
             font-weight: bold;
             width: 30px;
         }
+		.button-group {
+    display: flex;
+    justify-content: center; /* 버튼들 가운데 정렬 */
+    gap: 50px; /* 버튼 사이 간격 */
+    margin-top: 30px; /* 위아래 여백 */
+}
 
-        .write-btn {
-            display: block;
-            width: 100px;
-            margin: 10px auto;
-            padding: 10px 0;
-            text-align: center;
-            font-weight: bold;
-            color: #fff;
-            background: linear-gradient(135deg, #9b59b6, #e91e63);
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 0 15px #e91e63, inset 0 0 5px #9b59b6;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+.write-btn, .gamepage {
+    width: 150px;
+    padding: 10px 0;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, #9b59b6, #e91e63);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 15px #e91e63, inset 0 0 5px #9b59b6;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
 
-        .write-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px #e91e63, 0 0 50px #9b59b6;
-        }
+.write-btn:hover, .gamepage:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #e91e63, 0 0 50px #9b59b6;
+}
+		 .post-title {
+   			color: #ffffff; /* 흰색 글씨 */
+    		text-decoration: none; /* 밑줄 제거 */
+		}
+
+		.post-title:hover {
+    		color: #ff9800; /* 마우스 오버 시 강조 색 */
+		}
+        
 
         .pagination {
             text-align: center;
@@ -117,6 +130,7 @@
             0% { transform: translateY(-5vh) translateX(0) rotate(0deg); opacity: 1; }
             100% { transform: translateY(120vh) translateX(50px) rotate(45deg); opacity: 0; }
         }
+       
     </style>
 </head>
 
@@ -141,7 +155,7 @@
                         <c:forEach var="dto" items="${list}">
                             <tr>
                                 <td>${num}</td>
-                                <td><a href="detail.free?id=${dto.fb_id}">${dto.fb_Title}</a></td>
+                                <td><a href="detail.free?id=${dto.fb_id}" class="post-title">${dto.fb_Title}</a></td>
                                 <td>${dto.fb_user_name}</td>
                                 <td><fmt:formatDate value="${dto.fb_date}" pattern="yyyy-MM-dd" /></td>
                                 <td>${dto.view_count}</td>
@@ -157,15 +171,35 @@
                 </c:choose>
             </tbody>
         </table>
+        
 
-        <form action="/post.free" method="get">
-            <button type="submit" class="write-btn">글작성</button>
-        </form>
+        <!-- 페이지네비게이터 자리 -->
+    <div class="pagination">
+    <c:if test="${startPage > 1}">
+        <a href="list.free?page=${startPage - 1}">&lt;&lt;</a>
+    </c:if>
 
-        <!-- 페이지네비게이터 자리 (나중에 JS로 동적 생성 가능) -->
-        <div class="pagination">
-            <!-- 예: <span>1</span><span>2</span> ... -->
-        </div>
+    <c:forEach begin="${startPage}" end="${endPage}" var="i">
+        <c:choose>
+            <c:when test="${i == currentPage}">
+                <span style="color:#ff9800;">${i}</span>
+            </c:when>
+            <c:otherwise>
+                <a href="list.free?page=${i}"><span>${i}</span></a>
+            </c:otherwise>
+        </c:choose>
+    </c:forEach>
+
+    <c:if test="${endPage < totalPage}">
+        <a href="list.free?page=${endPage + 1}">>></a>
+    </c:if>
+</div>
+
+<form class="button-group" action="/post.free" method="get">
+    <button type="submit" class="write-btn">글작성</button>
+    <button type="button" class="gamepage" onclick="location.href='/gamepage'">게임화면으로 가기</button>
+</form>
+
     </div>
 
     <script>
