@@ -413,6 +413,24 @@ html, body {
 	font-size: 20px;
 
 }
+.footer {
+    width: 100%;
+    background-color: #111;             /* 어두운 배경 */
+    color: #ccc;                        /* 글자 색상 */
+    font-family: 'Montserrat', sans-serif;
+    /* border-top: 1px solid orangered;    위쪽 경계선 */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;          /* 글자를 아래쪽으로 정렬 */
+    align-items: center;            /* 왼쪽 정렬 */
+    padding: 10px 20px;                 /* 위/아래 여백 조절, 글자와 경계선 간격 */
+}
+
+.footer p {
+    margin: 2px 0;                      /* 문단 간 간격 최소화 */
+    font-size: 12px;
+}
 </style>
 </head>
 <body>
@@ -430,7 +448,7 @@ for(let i=0;i<100;i++){
   document.body.appendChild(s);
 }
 // 블록 생성
-for(let i=0;i<50;i++){
+for(let i=0;i<30;i++){
   const b=document.createElement('div'); b.className='background-block';
   b.style.bottom=Math.random()*100+'vh';
   b.style.left=Math.random()*100+'vw';
@@ -543,5 +561,13 @@ $("#play-btn").on("click", function(){ // 즐기러가기 버튼
 });
 
 </script>
+
+
+<footer class="footer">
+        <p>(주)자바 스프링 리액트로 완성하는 클라우드 활용 풀스택 개발 | 대표이사 조성태 | 주소 : 서울 관악구 봉천로 227 보라매샤르망 5층 한국정보교육원 | 전화 : 010-9006-2139 | Fax:02-856-9742</p>
+        <p>E-mail : kyoungwon199@naver.com | 사업자 등록번호 : 202-506-09 | 개인정보보호책임자 : 김선경 (kyoungwon199@naver.com)</p>
+        <p>&copy; 2025 Your Company. 한국정보교육원은 항상 여러분과 함께합니다.</p>
+        <p>문의 : 010-9006-2139</p>
+    </footer>
 </body>
 </html>
