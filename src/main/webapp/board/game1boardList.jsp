@@ -206,8 +206,8 @@
     text-align: left;            /* 텍스트 왼쪽 정렬 */
 }
 
-#title{
-	width: 45%;
+.title{
+	width: 40%;
 }
 
 td{
@@ -218,6 +218,12 @@ th{
 	text-align: center;
 }
 
+a {
+text-decoration: none;
+color: inherit; 
+}
+
+
     </style>
 </head>
 <body>
@@ -227,10 +233,10 @@ th{
     <h1>게임 게시판</h1>
 </div>
         <div class="tabs">
-            <div class="tab active">Game 1</div>
-            <div class="tab">Game 2</div>
-            <div class="tab">Game 3</div>
-            <div class="tab">Game 4</div>
+            <div class="tab active"><a href="/game1borad.Game1Controlle">Game 1</a></div>
+            <div class="tab"><a href="">Game 2</a> </div>
+            <div class="tab"><a href="">Game 3</a></div>
+            <div class="tab"><a href="">Game 4</a></div>
         </div>
 
         <table>
@@ -247,8 +253,8 @@ th{
             <c:forEach var="dto" items="${list}">
                 <tr>
                     <td>${dto.game_seq }</td>
-                    <td id="title">
-                    	<a href="/game1boradDetil.Game1Controller?sep=${dto.gameboardtitle }">${dto.gameboardtitle }</a>
+                    <td class="title">
+                    	<a href="/game1boradDetil.Game1Controller?seq=${dto.game_seq }">${dto.gameboardtitle }</a>
                     </td>
                     <td>${dto.gamewrtier }</td>
                     <td>${dto.game_board_date }</td>
@@ -258,12 +264,10 @@ th{
             </tbody>
         </table>
 
-        <div class="pagination">
-            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-            <span>6</span><span>7</span><span>8</span><span>9</span><span>&gt;</span>
-        </div>
+       <div  class="pagination" id="pageNavi"></div>
 
-        <div class="write-btn">글작성</div>
+        <div class="write-btn" id="btn">글작성</div>
+        <div class="write-btn" id="backbtn">뒤로가기</div>
     </div>
 
     <script>
@@ -311,6 +315,55 @@ th{
         }
         updateTutorialPositions();
         window.addEventListener('resize', updateTutorialPositions);
+        
+        $("#btn").on("click", function(){ //글작성버튼
+        	window.location.href = "/boardInsert.Game1Controller";
+        });
+        
+        
+        let recordTotalCount = parseInt("${recordTotalCount}");
+		let recordCountPerPage = parseInt("${recordCountPerPage}");
+		let naviCountPerPage = parseInt("${naviCountPerPage}");
+		let currentPage = parseInt("${currentPage}");
+
+		let pageTotalCount = Math.ceil(recordTotalCount / recordCountPerPage);
+		if(currentPage < 1) {
+			currentPage=1;
+		}else if(currentPage > pageTotalCount) {
+			currentPage = pageTotalCount;
+		}
+		
+		let startNavi = Math.floor((currentPage - 1) / naviCountPerPage)
+				* naviCountPerPage + 1;
+		
+		let endNavi = startNavi + (naviCountPerPage - 1);
+		if (endNavi > pageTotalCount)
+			endNavi = pageTotalCount;
+
+		let html = "";
+		let needPrev = true;
+		let needNext = true;
+		
+		if(startNavi == 1) {needPrev = false;}
+		if(endNavi == pageTotalCount) {needNext = false;}
+
+		if (needPrev) {
+			html += "<a href='/game1borad.Game1Controller?cpage=" + (startNavi - 1) + "'>< </a>";
+	      }
+
+	      for (let i = startNavi; i <= endNavi; i++) {
+	    	  html += "<a href='/game1borad.Game1Controller?cpage=" + i + "'>" + i + "</a> ";
+	      }
+
+	      if (needNext) {
+	    	  html += "<a href='/game1borad.Game1Controller?cpage=" + (endNavi + 1) + "'>> </a>";
+	      }
+	    
+		document.getElementById("pageNavi").innerHTML = html;
+		
+		$("#backbtn").on("click", function(){ // 뒤로가기버튼
+			window.location.href = "/gamapage.GameController"	
+		});
     </script>
 </body>
 </html>
