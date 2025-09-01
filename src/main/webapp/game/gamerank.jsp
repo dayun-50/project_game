@@ -1,12 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
 <meta charset="UTF-8">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<title>Insert title here</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Ranker</title>
 <style>
     body {
         margin: 0;
@@ -149,6 +148,7 @@
     }
 </style>
 </head>
+
 <body>
 <h1>Game Ranker</h1>
 
@@ -158,26 +158,10 @@
         <th>Nick Name</th>
         <th>Score</th>
     </tr>
-    <tr>
-        <td onclick="showGame(1)">Game 1</td>
-        <td>name 1</td>
-        <td>100 p</td>
-    </tr>
-    <tr>
-        <td onclick="showGame(2)">Game 2</td>
-        <td>name 2</td>
-        <td>200 p</td>
-    </tr>
-    <tr>
-        <td onclick="showGame(3)">Game 3</td>
-        <td>name 3</td>
-        <td>100 p</td>
-    </tr>
-    <tr>
-        <td onclick="showGame(4)">Game 4</td>
-        <td>name 4</td>
-        <td>200 p</td>
-    </tr>
+    <tr><td onclick="showGame(1)">Game 1</td><td>name 1</td><td>100 p</td></tr>
+    <tr><td onclick="showGame(2)">Game 2</td><td>name 2</td><td>200 p</td></tr>
+    <tr><td onclick="showGame(3)">Game 3</td><td>name 3</td><td>100 p</td></tr>
+    <tr><td onclick="showGame(4)">Game 4</td><td>name 4</td><td>200 p</td></tr>
 </table>
 
 <div class="tabs">
@@ -189,10 +173,7 @@
 
 <div id="gameTableContainer">
     <table id="gameTable">
-        <tr>
-            <th>Nick Name</th>
-            <th>Score</th>
-        </tr>
+        <tr><th>Nick Name</th><th>Score</th></tr>
     </table>
 </div>
 
@@ -212,8 +193,6 @@ let currentGame = 1;
 
 function renderTable() {
     const table = document.getElementById('gameTable');
-    
-    // 깜빡이기
     table.style.opacity = 0;
     setTimeout(() => {
         const start = (currentPage - 1) * rowsPerPage;
@@ -225,7 +204,6 @@ function renderTable() {
             html += `<tr><td>${row.nick}</td><td>${row.score}</td></tr>`;
         });
         table.innerHTML = html;
-
         table.style.opacity = 1;
     }, 1000);
 
@@ -242,25 +220,17 @@ function renderPagination() {
     pagination.innerHTML = html;
 }
 
-function goPage(page) {
-    currentPage = page;
-    renderTable();
-}
+function goPage(page) { currentPage = page; renderTable(); }
 
 function showGame(index) {
     currentGame = index;
     currentPage = 1;
-
-    document.querySelectorAll('.tab').forEach((tab, i) => {
-        tab.classList.toggle('active', i === index - 1);
-    });
+    document.querySelectorAll('.tab').forEach((tab, i) => tab.classList.toggle('active', i === index - 1));
     renderTable();
 }
 
-// 초기 로딩
 renderTable();
 
-// 별 배경
 for (let i = 0; i < 150; i++) {
     const s = document.createElement('div'); 
     s.className = 'star';

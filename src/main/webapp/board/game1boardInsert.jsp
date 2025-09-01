@@ -187,6 +187,7 @@
 
 	<input type="hidden" name="title" id="postnameInput">
   	<input type="hidden" name="coment" id="editorInput">
+  	<input type="hidden" name="gameid" value="${gameid }">
     
     
     <div class="btns">
@@ -205,6 +206,10 @@
         $("#postnameInput").val($("#postname").html()); 
         $("#editorInput").val($("#editor").html()); 
      });
+    
+    $("#cancel").on("click", function(){
+    	window.location.href = "/game1borad.Game1Controller"
+    });
 
     const editor = new toastui.Editor({
         el: document.querySelector('#editor'),

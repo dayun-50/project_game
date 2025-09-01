@@ -1,10 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
         body {
             background-color: #0c0c1a;
@@ -40,7 +42,7 @@
             margin-bottom: 20px;
         }
 
-        pre {
+        .pre {
             background: rgba(50, 50, 80, 0.8);
             border: 1px solid #5e72be;
             border-radius: 10px;
@@ -199,50 +201,66 @@
 </head>
 <body>
 <div class="container">
-        <h2>샘플 게시글 제목</h2>
+        <h2>${list[0].gameboardtitle }</h2>
         <div class="meta-info">
-            <span>작성자: <strong>홍길동</strong></span> &nbsp;|&nbsp;
-            <span>작성일: 2025-08-29</span> &nbsp;|&nbsp;
-            <span>조회수: 123</span>
+            <span>작성자: <strong>${list[0].gamewrtier }</strong></span> &nbsp;|&nbsp;
+            <span>작성일: ${list[0].game_board_date }</span> &nbsp;|&nbsp;
+            <span>조회수: ${viewCount }</span>
         </div>
 
-        <pre>
-샘플 게시글 내용입니다.
-여러 줄의 내용도 표시됩니다.
-        </pre>
+        <div class="pre" id="textbox">
+			${list[0].gamecoment }
+        </div>
 
-        <button class="btn-back">목록으로</button>
-        <button class="btn-edit">수정하기</button>
-        <button class="btn-delete">삭제하기</button>
+        <button class="btn-back" id="backList">목록으로</button>
+      	<c:choose>
+   			 <c:when test="${result == 1}">
+   			 	<input type="hidden" id="seq" name="seq" value="${list[0].game_seq }">
+        		<button class="btn-edit" id="updtn">수정하기</button>
+       			 <button class="btn-delete" id="dlebtn">삭제하기</button>
+       			 
+       			<button class="btn-edit" id="complebtn">수정완료</button>
+       			 <button class="btn-delete" id="backbtn">수정취소</button>
+   			 </c:when>
+		</c:choose>
+        
+    
+       
+        
 
         <div class="comment-section">
-            <h4>댓글 <small>(2)</small></h4>
-
+            <h4>댓글 <small>(${comentCount })</small></h4>
+		
             <div class="comment-list">
+            <c:forEach var="Cdto" items="${comentList}">
                 <div class="comment-item">
                     <div class="comment-meta">
-                        <div>홍길동 | 2025-08-29</div>
-                        <div class="comment-actions">
-                            <button>수정</button>
-                            <button>삭제</button>
-                        </div>
+                        <div>${Cdto.game_coment_writer } | ${Cdto.game_coment_date }</div>
+                       
+                       <c:choose>
+   			 				<c:when test="${nickname eq Cdto.game_coment_writer}">
+   			 				<div class="comment-actions">
+                            <button class="comentupbtn">수정</button>
+                            <button class="comentdlebtn">삭제</button>
+                            
+                            <button class="comentcomplbtn">완료</button>
+                            <button class="comentbackbtn">취소</button>
+                           <input type="hidden" class="comentseq" value="${Cdto.game_comet_seq }">
+                        	</div>
+   			 				
+   			 				</c:when>
+   			 			</c:choose>
+                       
+                        
                     </div>
-                    <div class="comment-contents">샘플 댓글 내용입니다.</div>
+                    <div class="comment-contents">${Cdto.game_coment }</div>
                 </div>
-                <div class="comment-item">
-                    <div class="comment-meta">
-                        <div>김철수 | 2025-08-28</div>
-                        <div class="comment-actions">
-                            <button>수정</button>
-                            <button>삭제</button>
-                        </div>
-                    </div>
-                    <div class="comment-contents">두 번째 샘플 댓글입니다.</div>
-                </div>
+           </c:forEach>
             </div>
 
-            <form class="comment-form">
-                <textarea placeholder="댓글을 입력하세요..." required></textarea>
+            <form class="comment-form" action="/comentInsert.GameComentController" method="post">
+				<input type="hidden" name="seq" value="${list[0].game_seq }">
+                <textarea placeholder="댓글을 입력하세요..." name="coment" required></textarea>
                 <button type="submit">댓글 등록</button>
             </form>
         </div>
@@ -277,6 +295,132 @@
 
         createStars(500);
         setInterval(createShootingStar, 2000);
+        
+        $("#backList").on("click", function (){ //목록으로
+        	window.location.href = "/game1borad.Game1Controller"
+        });
+        
+        
+        $("#dlebtn").on("click", function (){ //글삭제
+        	 let result = confirm("정말로 삭제하시겠습니까?");
+      	   
+      	   if(result){
+      		   alert("게시물 삭제가 완료되셨습니다.");
+      		   $.ajax({
+         				url: "/delete.Game1Controller",
+         				data: {
+         				seq:$("#seq").val()
+         				},
+         				type: "post",
+         				dataType: "json",
+         				success: function(resp){
+         				if(resp == 1){
+         					window.location.href = "/game1borad.Game1Controller";
+         				}	
+         			}
+         		})  
+      	   }
+        });
+        
+        $(".comentdlebtn").on("click", function(){ //댓글삭제
+        	 let result = confirm("댓글을 삭제하시겠습니까?");
+        	   
+        	   if(result){
+        		   alert("댓글 삭제가 완료되셨습니다.");
+        		   $.ajax({
+           				url: "/delete.GameComentController",
+           				data: {
+           				seq:$(this).siblings(".comentseq").val()
+           				},
+           				type: "post",
+           				dataType: "json",
+           				success: function(resp){
+           				if(resp == 1){
+           					window.location.href = "/game1boradDetil.Game1Controller?seq=${list[0].game_seq }";
+           				}	
+           			}
+           		})  
+        	   }
+        });
+        
+        $("#complebtn, #backbtn").hide(); //글 수정완료/수정취소 버튼
+        
+        $("#updtn").on("click", function(){ //글 수정버튼 클릭시
+        	$("#complebtn, #backbtn").show();
+        	$("#updtn, #dlebtn").hide();
+        	
+        	$("#textbox").attr("contenteditable", true); 
+        	
+        });
+         
+        $("#backbtn").on("click", function(){ //글 수정취소 버튼
+        	$("#complebtn, #backbtn").hide();
+        	$("#updtn, #dlebtn").show();
+        	
+        	$("#textbox").attr("contenteditable", false);
+        	window.location.href = "/game1boradDetil.Game1Controller?seq=${list[0].game_seq }"
+        });
+        
+        $("#complebtn").on("click", function(){ //글 수정완료 버튼
+        	$("#complebtn, #backbtn").show();
+        	$("#updtn, #dlebtn").hide();
+        	$("#textbox").attr("contenteditable", false);
+        	
+        	$.ajax({
+   				url: "/updat.Game1Controller",
+   				data: {
+   				text:$("#textbox").text(),
+   				seq:$("#seq").val()
+   				},
+   				type: "post",
+   				dataType: "json",
+   				success: function(resp){
+   				if(resp == 1){
+   					window.location.href = "/game1boradDetil.Game1Controller?seq=${list[0].game_seq }";
+   				}	
+   			}
+   		})  
+        });
+        
+        $(".comentcomplbtn, .comentbackbtn").hide(); //댓글 수정완료/취소버튼
+        
+        $(".comentupbtn").on("click", function(){ //댓글수정
+        	 // 해당 댓글 버튼이 속한 comment-item 안에서만 적용
+            let commentDiv = $(this).closest(".comment-item").find(".comment-contents");
+            
+            // 버튼 토글
+            $(this).siblings(".comentcomplbtn, .comentbackbtn").show();
+            $(this).siblings(".comentdlebtn").hide();
+            $(this).hide();
+            
+            // 클릭한 댓글만 편집 가능
+            commentDiv.attr("contenteditable", true).focus();
+        	
+        });
+        
+        $(".comentbackbtn").on("click", function(){ //댓글 수정 취소버튼
+        	window.location.href = "/game1boradDetil.Game1Controller?seq=${list[0].game_seq }"
+        });
+        
+        $(".comentcomplbtn").on("click", function(){ //댓글 수정 완료버튼
+        	let commentItem = $(this).closest(".comment-item");
+        	$.ajax({
+   				url: "/updatComent.GameComentController",
+   				data: {
+   				text:commentItem.find(".comment-contents").text(),
+   				seq:commentItem.find(".comentseq").val()
+   				},
+   				type: "post",
+   				dataType: "json",
+   				success: function(resp){
+   				if(resp == 1){
+   					window.location.href = "/game1boradDetil.Game1Controller?seq=${list[0].game_seq }";
+   				}	
+   			}
+   		})  
+        });
+        
+        
     </script>
 </body>
 </html>
