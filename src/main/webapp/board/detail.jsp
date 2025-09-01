@@ -28,6 +28,13 @@ pre { background: rgba(50, 50, 80, 0.8); border: 1px solid #5e72be; border-radiu
 .comment-form textarea { width: 100%; height: 80px; border-radius: 8px; border: 1px solid #5e72be; padding: 10px; background: rgba(30, 30, 60, 0.8); color: #fff; font-family: 'Arial', sans-serif; }
 .comment-form button { margin-top: 10px; padding: 10px 20px; border-radius: 10px; border: none; font-weight: bold; background: linear-gradient(135deg, #9b59b6, #e91e63); color: #fff; cursor: pointer; box-shadow: 0 0 15px #e91e63, inset 0 0 5px #9b59b6; }
 .comment-form button:hover { transform: scale(1.05); box-shadow: 0 0 25px #e91e63, 0 0 50px #9b59b6; }
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 10px 0;
+}
+
 /* 별 효과 */
 .star, .shooting-star { position: fixed; z-index: 0; border-radius: 50%; }
 .star { width: 2px; height: 2px; background: white; animation: twinkle linear infinite; }
@@ -39,7 +46,9 @@ pre { background: rgba(50, 50, 80, 0.8); border: 1px solid #5e72be; border-radiu
 <body>
 <div class="container">
     <h2 id="postTitle">${dto.fb_Title}</h2>
+    <div class="post-content">
     <pre id="postContent">${dto.fb_write}</pre>
+    </div>
     <div class="meta-info">
         작성자: <strong>${dto.fb_user_name}</strong> &nbsp;|&nbsp;
         작성일: <fmt:formatDate value="${dto.fb_date}" pattern="yyyy-MM-dd HH:mm" /> &nbsp;|&nbsp;
