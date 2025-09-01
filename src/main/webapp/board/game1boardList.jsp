@@ -1,10 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
         body {
             background-color: #0c0c1a;
@@ -190,11 +192,50 @@
             background: white;
             animation: shootingStar linear forwards;
         }
+        .title-container {
+    display: flex;               /* 가로로 나란히 */
+    align-items: center;         /* 수직 중앙 정렬 */
+    gap: 15px;                   /* 이미지와 제목 사이 간격 */
+    justify-content: center;
+    margin-left: 20px;           /* 화면 왼쪽에서 살짝 띄움 */
+    margin-bottom: 20px;         /* 아래 여백 */
+}
+
+.title-image {
+    width: 100px;                /* 이미지 크기 */
+    height: 100px;
+    object-fit: contain;
+}
+
+.title-container h1 {
+    margin: 0;
+    color: #ff9800;
+    font-size: 2em;
+    border-bottom: 1px solid #3c3c5c;
+    padding-bottom: 10px;
+    text-align: left;            /* 텍스트 왼쪽 정렬 */
+}
+
+#title{
+	width: 45%;
+}
+
+td{
+	text-align: center;
+}
+
+th{
+	text-align: center;
+}
+
     </style>
 </head>
 <body>
-  <div class="board-container">
-        <h1>게임 게시판</h1>
+<div class="board-container">
+        <div class="title-container">
+    <img src="GameLogo.png" alt="게임 로고" class="title-image">
+    <h1>게임 게시판</h1>
+</div>
         <div class="tabs">
             <div class="tab active">Game 1</div>
             <div class="tab">Game 2</div>
@@ -213,76 +254,15 @@
                 </tr>
             </thead>
             <tbody>
+            <c:forEach var="dto" items="${list}">
                 <tr>
-                    <td>1</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>${dto.game_seq }</td>
+                    <td id="title">${dto.gameboardtitle }</td>
+                    <td>${dto.gamewrtier }</td>
+                    <td>${dto.game_board_date }</td>
+                    <td>${dto.view_count}</td>
                 </tr>
-                <tr>
-                    <td>2</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>8</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>9</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>10</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+             </c:forEach>
             </tbody>
         </table>
 
@@ -333,7 +313,7 @@
                 const target = document.getElementById(targetId);
                 if (target) {
                     const rect = target.getBoundingClientRect();
-                    item.style.left = (rect.left + rect.width / 2) + 'px';
+                    item.sctyle.left = (rect.left + rect.width / 2) + 'px';
                     item.style.top = (rect.top) + 'px';
                 }
             });

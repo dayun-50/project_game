@@ -101,6 +101,92 @@ html, body {
 .tutorial-item { position:absolute; color:white; font-size:2vw; cursor:default; display:flex; flex-direction:column-reverse; align-items:center; transform: translate(-50%, -100%); }
 .tutorial-text { margin-top:0.5vw; font-size:1.5vw; background:rgba(0,0,0,0.6); padding:0.3vw 0.6vw; border-radius:0.5vw; text-align:center; }
 
+.menu-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 1.5%;
+    width: 80%;
+    height: 70%;
+    margin: auto;
+    padding: 1%;
+    justify-items: center;
+    align-items: center;
+}
+
+.menu-btn {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.8vw; /* 그대로 둠 */
+    color: #fff;
+    background: linear-gradient(135deg, #ff3c99, #ff00ff);
+    border: 2px solid #fff;
+    border-radius: 1.2vw; /* 모서리 둥글기 살짝 줄임 */
+    box-shadow: 0 6px 15px rgba(255,0,255,0.5), 
+                0 0 8px rgba(255,255,255,0.3) inset,
+                0 0 12px rgba(255,255,255,0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    /* 버튼 크기 조정 */
+    width: 70%;   /* 기존 100% → 살짝 줄임 */
+    height: 80%;  /* 기존 100% → 살짝 줄임 */
+    padding: 0.5vw; /* 패딩도 줄여서 박스만 작게 */
+}
+/* 버튼 반짝임 애니메이션 */
+.menu-btn::before {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    transform: rotate(45deg);
+    transition: all 0.6s ease;
+}
+
+.menu-btn:hover::before {
+    transform: rotate(45deg) translate(40%, 40%);
+}
+
+/* 호버 효과 – 빛나고 살짝 커짐 */
+.menu-btn:hover {
+    transform: scale(1.08) translateY(-4px);
+    box-shadow: 0 12px 25px rgba(255,0,255,0.7),
+                0 0 20px rgba(255,255,255,0.5) inset,
+                0 0 25px rgba(255,255,255,0.3);
+}
+
+/* 클릭 시 눌린 느낌 */
+.menu-btn:active {
+    transform: scale(0.95) translateY(2px);
+    box-shadow: 0 4px 10px rgba(255,0,255,0.5),
+                0 0 10px rgba(255,255,255,0.3) inset;
+}
+#menu-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6); /* 반투명 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#menu-overlay.hide {
+    opacity: 1;
+    pointer-events: auto; /* 클릭 불가 */
+}
 </style>
 </head>
 <body>
@@ -115,8 +201,19 @@ html, body {
         </div>
     </div>
     <div class="screen" id="screen"> 
-    	<div id="mypage"><button id="mypage-btn">마이페이지</button></div>
-    </div>
+    <!-- 메뉴 오버레이 -->
+    <div id="menu-overlay">
+        	<div class="menu-buttons">
+            	<button class="menu-btn">자유게시판</button>
+            	<button class="menu-btn">게임랭크</button>
+            	<button class="menu-btn">게임게시판</button>
+            	<button class="menu-btn">마이페이지</button>
+            	<button class="menu-btn">문의하기</button>
+            	<button class="menu-btn">로그아웃</button>
+       		</div>
+    	</div>
+	</div>
+
     <div class="joycon-right">
         <div class="buttons">
             <button id="btn-x" class="btn-round">Game1</button>
@@ -137,7 +234,7 @@ html, body {
 </div>
 
 <script>
-$("#mypage").hide();
+//별 생성 함수
 function createStars(count, topRange=[0,100], leftRange=[0,100], sizeRange=[1,3]){
     for(let i=0;i<count;i++){
         const s=document.createElement('div');
@@ -165,11 +262,9 @@ function createShootingStar() {
 // 별 생성
 createStars(800);
 createStars(400,[20,50],[20,80],[1,2]);
-
-// 일정 시간마다 별똥별 생성
 setInterval(createShootingStar, 2000);
 
-// 튜토리얼 위치
+// 튜토리얼 위치 업데이트
 function updateTutorialPositions(){
     document.querySelectorAll('.tutorial-item').forEach(item=>{
         const targetId=item.getAttribute('data-target');
@@ -185,16 +280,14 @@ updateTutorialPositions();
 window.addEventListener('resize', updateTutorialPositions);
 
 // 튜토리얼 닫기
-document.getElementById('tutorial-close').addEventListener('click',()=>{ document.getElementById('tutorial-overlay').style.display='none'; });
-
-$("#stick-right").on("click", function(){ //메뉴버튼
-	$("#mypage").show();
+document.getElementById('tutorial-close').addEventListener('click', ()=>{
+    document.getElementById('tutorial-overlay').style.display='none';
 });
 
-$("#mypage-btn").on("click", function(){ //마이페이지 이동버튼
-	window.location.href = "/mypage.MembersController?id=${id}"
+// 메뉴 토글
+$("#stick-right").on("click", function(){
+    $("#menu-overlay").toggleClass("hide"); // 클릭 시 오버레이 나타나거나 사라짐
 });
-
 
 </script>
 </body>

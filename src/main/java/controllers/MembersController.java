@@ -8,8 +8,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import dao.AdminDAO;
 import dao.MembersDAO;
 import dto.MembersDTO;
 
@@ -18,7 +18,8 @@ public class MembersController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String cmd = request.getRequestURI();
 		MembersDAO dao = MembersDAO.getInstance();
-		AdminDAO Adao = AdminDAO.getInstance();
+		HttpSession session = request.getSession();
+		
 		try {
 			if(cmd.equals("/signuppage.MembersController")) { //회원가입 페이지 이동
 				response.sendRedirect("/members/singup.jsp");
@@ -66,9 +67,14 @@ public class MembersController extends HttpServlet {
 				String id = request.getParameter("id");
 				String password = request.getParameter("pw");
 				String pw = dao.encrypt(password);
-
+				
 				int result = dao.login(id, pw);
-				response.getWriter().write(String.valueOf(result)); // 로그인성공 1/ 실패 0
+				if(result == 1) {
+					response.getWriter().write(String.valueOf(result)); // 로그인성공 1/ 실패 0
+					session.setAttribute("loginId", id); //세션에 id값 저장
+				}else {
+					response.getWriter().write(String.valueOf(result));
+				}
 
 			}else if(cmd.equals("/idSerch.MembersController")) { //id 찾기 
 				String name = request.getParameter("name");
@@ -79,7 +85,6 @@ public class MembersController extends HttpServlet {
 				if(idList != null) {//id존재 경우
 					ArrayList<String> result = new ArrayList<>();
 					for(String id : idList) {
-						System.out.println(id);
 						int blackCheck = dao.blackCheck(id);
 						if(blackCheck > 0) { //블랙리스트 id인 경우 사용 불가 계정 표기
 							result.add(id+"  ( 사용 불가 계정 )");
@@ -90,6 +95,7 @@ public class MembersController extends HttpServlet {
 					request.setAttribute("name", name);
 					request.setAttribute("id", result);
 					request.getRequestDispatcher("/members/idSerchResult.jsp").forward(request, response);
+					
 				}else { // 검색한 정보에 해당되는 id가 없을경우
 					request.setAttribute("name", "null");
 					request.getRequestDispatcher("/members/idSerchResult.jsp").forward(request, response);
@@ -115,12 +121,9 @@ public class MembersController extends HttpServlet {
 				request.getRequestDispatcher("/members/pwUpdateComplete.jsp").forward(request, response);
 
 			}else if(cmd.equals("/mypage.MembersController")) { // 마이페이지 출력
-				String id = request.getParameter("id");
-
-				if(Adao.idAdminSerch(id) > 0) { //관리자 계정일 경우
-					
-				}else { //관리자 계정이 아닐경우
+				String id = (String) session.getAttribute("loginId");
 					MembersDTO list = dao.selectAll(id);
+					
 					request.setAttribute("nickname", list.getUser_nickname());
 					request.setAttribute("date", list.getUser_date());
 					request.setAttribute("id", id);
@@ -128,20 +131,22 @@ public class MembersController extends HttpServlet {
 					request.setAttribute("phone", list.getUser_phone());
 					request.setAttribute("email", list.getUser_email());
 					request.getRequestDispatcher("/members/mypage.jsp").forward(request, response);
-				}
+				
 			}else if(cmd.equals("/update.MembersController")){ // 마이페이지 정보수정
-				String id = request.getParameter("id");
+				String id = (String) session.getAttribute("loginId");
 				String name = request.getParameter("name");
 				String phone = request.getParameter("phone");
 				String email = request.getParameter("email");
 				
 				int result = dao.mypageUpdate(id, name, phone, email);
 				response.getWriter().write(String.valueOf(result));
+				
 			}else if(cmd.equals("/secession.MembersController")) { //마이페이지 회원탈퇴
-				String id = request.getParameter("id");
+				String id = (String) session.getAttribute("loginId");
 				
 				int result = dao.membersSecession(id);
 				response.getWriter().write(String.valueOf(result));
+				
 			}
 		}catch(Exception e ) {
 			e.printStackTrace();
