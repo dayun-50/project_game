@@ -187,7 +187,7 @@
             <tr>
                 <th>Num</th>
                 <th>nickname</th>
-                <th>comment</th>
+                <th>Comment</th>
             </tr>
         </table>
     </div>
