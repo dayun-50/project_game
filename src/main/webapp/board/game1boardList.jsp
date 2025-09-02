@@ -233,10 +233,12 @@ color: inherit;
     <h1>게임 게시판</h1>
 </div>
         <div class="tabs">
-            <div class="tab active"><a href="/game1borad.Game1Controlle">Game 1</a></div>
-            <div class="tab"><a href="">Game 2</a> </div>
-            <div class="tab"><a href="">Game 3</a></div>
-            <div class="tab"><a href="">Game 4</a></div>
+
+            <div class="tab active"><a href="/game1borad.Game1Controller?gameid=1">Game 1</a></div>
+            <div class="tab"><a href="/game1borad.Game1Controller?gameid=2">Game 2</a> </div>
+            <div class="tab"><a href="/game1borad.Game1Controller?gameid=3">Game 3</a></div>
+            <div class="tab"><a href="/game1borad.Game1Controller?gameid=4">Game 4</a></div>
+
         </div>
 
         <table>
@@ -251,20 +253,22 @@ color: inherit;
             </thead>
             <tbody>
             <c:forEach var="dto" items="${list}">
-                <tr>
-                    <td>${dto.game_seq }</td>
+                  <tr>   
+                  	<td>${dto.game_seq }</td>
                     <td class="title">
                     	<a href="/game1boradDetil.Game1Controller?seq=${dto.game_seq }">${dto.gameboardtitle }</a>
                     </td>
                     <td>${dto.gamewrtier }</td>
                     <td>${dto.game_board_date }</td>
                     <td>${dto.view_count}</td>
+                    
                 </tr>
              </c:forEach>
             </tbody>
         </table>
 
        <div  class="pagination" id="pageNavi"></div>
+
 
         <div class="write-btn" id="btn">글작성</div>
         <div class="write-btn" id="backbtn">뒤로가기</div>
@@ -308,7 +312,7 @@ color: inherit;
                 const target = document.getElementById(targetId);
                 if (target) {
                     const rect = target.getBoundingClientRect();
-                    item.sctyle.left = (rect.left + rect.width / 2) + 'px';
+                    item.style.left = (rect.left + rect.width / 2) + 'px';
                     item.style.top = (rect.top) + 'px';
                 }
             });
@@ -316,16 +320,25 @@ color: inherit;
         updateTutorialPositions();
         window.addEventListener('resize', updateTutorialPositions);
         
-        $("#btn").on("click", function(){ //글작성버튼
-        	window.location.href = "/boardInsert.Game1Controller";
-        });
+        function getGameId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('gameid') || '1'; // 없으면 1로 기본값
+        }
         
         
+        let gameid = getGameId();
         let recordTotalCount = parseInt("${recordTotalCount}");
 		let recordCountPerPage = parseInt("${recordCountPerPage}");
 		let naviCountPerPage = parseInt("${naviCountPerPage}");
 		let currentPage = parseInt("${currentPage}");
 
+		$("#btn").on("click", function(){ //글작성버튼
+
+        	window.location.href = "/boardInsert.Game1Controller?gameid="+gameid;
+
+        });
+		
+		
 		let pageTotalCount = Math.ceil(recordTotalCount / recordCountPerPage);
 		if(currentPage < 1) {
 			currentPage=1;
@@ -348,16 +361,16 @@ color: inherit;
 		if(endNavi == pageTotalCount) {needNext = false;}
 
 		if (needPrev) {
-			html += "<a href='/game1borad.Game1Controller?cpage=" + (startNavi - 1) + "'>< </a>";
-	      }
+		    html += "<a href='/game1borad.Game1Controller?gameid=" + gameid + "&cpage=" + (startNavi - 1) + "'>< </a>";
+		}
 
-	      for (let i = startNavi; i <= endNavi; i++) {
-	    	  html += "<a href='/game1borad.Game1Controller?cpage=" + i + "'>" + i + "</a> ";
-	      }
+		for (let i = startNavi; i <= endNavi; i++) {
+		    html += "<a href='/game1borad.Game1Controller?gameid=" + gameid + "&cpage=" + i + "'>" + i + "</a> ";
+		}
 
-	      if (needNext) {
-	    	  html += "<a href='/game1borad.Game1Controller?cpage=" + (endNavi + 1) + "'>> </a>";
-	      }
+		if (needNext) {
+		    html += "<a href='/game1borad.Game1Controller?gameid=" + gameid + "&cpage=" + (endNavi + 1) + "'>> </a>";
+		}
 	    
 		document.getElementById("pageNavi").innerHTML = html;
 		

@@ -35,33 +35,46 @@ public class Game1BoardController extends HttpServlet {
 		try {
 			if(cmd.equals("/game1BoradInsert.Game1Controller")) { //게임 1 게시판 글작성완료버튼
 				String id = (String) session.getAttribute("loginId");
+				int gameid = Integer.parseInt(request.getParameter("gameid"));
 				String title = request.getParameter("title");
 				String wrtier = mdao.nicknameSerch(id);
 				String coment = request.getParameter("coment");
 				String reComent = Jsoup.clean(coment, Safelist.basicWithImages());
 				
-				gbdao.boardInsert(new GameBoardDTO(0,1,title,reComent,wrtier,"",0));
+				gbdao.boardInsert(new GameBoardDTO(0,gameid,title,reComent,wrtier,"",0));
 				response.sendRedirect("/game1borad.Game1Controller");
 				
 			}else if(cmd.equals("/game1borad.Game1Controller")){ //게임 1 게시판 목록 출력
 				String cpageStr = request.getParameter("cpage");
-				String gameid = null;
-				if (cpageStr == null || cpageStr.isEmpty()) {
-					response.sendRedirect(request.getRequestURI() + "?cpage=1");
-					return;
+				String gameid = request.getParameter("gameid");
+
+				// gameid 기본값 1
+				if(gameid == null || gameid.isEmpty()) {
+				    gameid = "1";
 				}
+
+				// cpage 기본값 1
 				int cpage = 1;
-				cpage = Integer.parseInt(cpageStr);
-				
-				ArrayList<GameBoardDTO> list =
-						gbdao.selectFromTo(cpage*GameBoardConfig.RECORD_COUNT_PER_PAGE-(GameBoardConfig.RECORD_COUNT_PER_PAGE-1), cpage*GameBoardConfig.RECORD_COUNT_PER_PAGE);
-				
-				request.setAttribute("recordTotalCount", gbdao.getRecordTotalCount());
-				request.setAttribute("recordCountPerPage",GameBoardConfig.RECORD_COUNT_PER_PAGE);
-				request.setAttribute("naviCountPerPage", GameBoardConfig.NABI_COUNT_PER_PAGE);
-				request.setAttribute("currentPage", cpage);
-				request.setAttribute("list", list);
-				request.getRequestDispatcher("/board/game1boardList.jsp").forward(request, response);
+				if(cpageStr != null && !cpageStr.isEmpty()) {
+				    try {
+				        cpage = Integer.parseInt(cpageStr);
+				    } catch(NumberFormatException e) {
+				        cpage = 1; // 변환 실패 시 기본값
+				    }
+				}
+
+				    ArrayList<GameBoardDTO> list = gbdao.selectFromTo(
+				            cpage * GameBoardConfig.RECORD_COUNT_PER_PAGE - (GameBoardConfig.RECORD_COUNT_PER_PAGE - 1),
+				            cpage * GameBoardConfig.RECORD_COUNT_PER_PAGE,
+				            gameid
+				    );
+
+				    request.setAttribute("recordTotalCount", gbdao.getRecordTotalCount());
+				    request.setAttribute("recordCountPerPage", GameBoardConfig.RECORD_COUNT_PER_PAGE);
+				    request.setAttribute("naviCountPerPage", GameBoardConfig.NABI_COUNT_PER_PAGE);
+				    request.setAttribute("currentPage", cpage);
+				    request.setAttribute("list", list);
+				    request.getRequestDispatcher("/board/game1boardList.jsp").forward(request, response);
 				
 			}else if(cmd.equals("/game1boradDetil.Game1Controller")) { //글 내용 출력
 				String id = (String) session.getAttribute("loginId");
@@ -88,7 +101,9 @@ public class Game1BoardController extends HttpServlet {
 				request.getRequestDispatcher("/board/game1board.jsp").forward(request, response);
 				
 			}else if(cmd.equals("/boardInsert.Game1Controller")) { //글 작성 페이지 이동
-				response.sendRedirect("board/game1boardInsert.jsp");
+				String gameid = request.getParameter("gameid");
+				request.setAttribute("gameid", gameid);
+				request.getRequestDispatcher("board/game1boardInsert.jsp").forward(request, response);
 				
 			}else if(cmd.equals("/delete.Game1Controller")) { //글 삭제
 				String seq = request.getParameter("seq");

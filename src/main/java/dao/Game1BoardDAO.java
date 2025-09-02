@@ -105,17 +105,20 @@ public class Game1BoardDAO {
 	}
 	
 	//네비사용 게임게시판 목록출력
-	public ArrayList<GameBoardDTO> selectFromTo(int from, int to) throws Exception{
-		String sql="SELECT  * FROM (select game_board.*,  ROW_NUMBER() OVER (ORDER BY game_seq DESC) rn  FROM game_board) sub WHERE rn BETWEEN ? AND ?";
+
+	public ArrayList<GameBoardDTO> selectFromTo(int from, int to, String gameid) throws Exception{
+		String sql="SELECT  * FROM (select game_board.*,  ROW_NUMBER() OVER (ORDER BY game_seq DESC) rn  FROM game_board where gameid = ?) sub WHERE rn BETWEEN ? AND ?";
 		try(Connection con = this.getConnection();
 				PreparedStatement stat = con.prepareStatement(sql);){
-			stat.setInt(1, from);
-			stat.setInt(2, to);
+			stat.setString(1, gameid);
+			stat.setInt(2, from);
+			stat.setInt(3, to);
 			
 			try(ResultSet rs = stat.executeQuery();){
 				ArrayList<GameBoardDTO> list = new ArrayList<>();
 				while(rs.next()) {
 					int seq = rs.getInt("game_seq");
+					int gameId = rs.getInt("gameid");
 					String title = rs.getString("gameboardtitle");
 					String coment = rs.getString("gamecoment");
 					String wrtier = rs.getString("gamewrtier");
@@ -123,7 +126,7 @@ public class Game1BoardDAO {
 					String regdate = new SimpleDateFormat("yyyy.MM.dd HH:mm").format(date);
 					int count = rs.getInt("view_count");
 					
-					list.add(new GameBoardDTO(seq, 1, title, coment, wrtier, regdate, count));	
+					list.add(new GameBoardDTO(seq, gameId, title, coment, wrtier, regdate, count));	
 				}
 				return list;
 			}
