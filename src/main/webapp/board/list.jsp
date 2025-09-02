@@ -62,7 +62,7 @@
 		.button-group {
     display: flex;
     justify-content: center; /* 버튼들 가운데 정렬 */
-    gap: 50px; /* 버튼 사이 간격 */
+    gap: 40px; /* 버튼 사이 간격 */
     margin-top: 30px; /* 위아래 여백 */
 }
 
