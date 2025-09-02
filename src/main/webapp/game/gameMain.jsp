@@ -97,7 +97,7 @@ html, body {
 
 /* 튜토리얼 오버레이 */
 #tutorial-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index:20; }
-#tutorial-close { position:absolute; top:10px; right:10px; font-size:2vw; background:transparent; border:none; color:white; cursor:pointer; }
+#tutorial-close { position:absolute; top:-15px; right:10px; font-size:6vw; background:transparent; border:none; color:white; cursor:pointer; }
 .tutorial-item { position:absolute; color:white; font-size:2vw; cursor:default; display:flex; flex-direction:column-reverse; align-items:center; transform: translate(-50%, -100%); }
 .tutorial-text { margin-top:0.5vw; font-size:1.5vw; background:rgba(0,0,0,0.6); padding:0.3vw 0.6vw; border-radius:0.5vw; text-align:center; }
 
@@ -227,9 +227,9 @@ html, body {
 
 <div id="tutorial-overlay">
     <button id="tutorial-close">×</button>
-    <div class="tutorial-item" data-target="stick-left">↓<div class="tutorial-text">여기에 닉네임 나온다 했었나</div></div>
-    <div class="tutorial-item" data-target="stick-right">↓<div class="tutorial-text">아직 기능 미정</div></div>
-    <div class="tutorial-item" data-target="dpad-up">↓<div class="tutorial-text">아직 기능 미정</div></div>
+    <div class="tutorial-item" data-target="stick-left">↓<div class="tutorial-text">♥여러분의 닉네임♥</div></div>
+    <div class="tutorial-item" data-target="stick-right">↓<div class="tutorial-text">메뉴버튼</div></div>
+    <div class="tutorial-item" data-target="dpad-up">↓<div class="tutorial-text">디자인!</div></div>
     <div class="tutorial-item" data-target="btn-x">↓<div class="tutorial-text">클릭하면 각 게임이 화면에 표시됩니다.</div></div>
 </div>
 
