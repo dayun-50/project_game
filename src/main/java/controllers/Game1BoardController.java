@@ -45,6 +45,7 @@ public class Game1BoardController extends HttpServlet {
 				
 			}else if(cmd.equals("/game1borad.Game1Controller")){ //게임 1 게시판 목록 출력
 				String cpageStr = request.getParameter("cpage");
+				String gameid = null;
 				if (cpageStr == null || cpageStr.isEmpty()) {
 					response.sendRedirect(request.getRequestURI() + "?cpage=1");
 					return;
