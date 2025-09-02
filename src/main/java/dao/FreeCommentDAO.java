@@ -1,6 +1,8 @@
 package dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,7 @@ public class FreeCommentDAO {
         return instance;
     }
 
+   
     private Connection getConnection() throws Exception {
         Context ctx = new InitialContext();
         DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/oracle");
@@ -85,5 +88,15 @@ public class FreeCommentDAO {
         }
     }
     
+    public boolean update(int fc_id, String write) throws Exception {
+        String sql = "UPDATE freeComment SET fc_write=? WHERE fc_id=?";
+        try(Connection con = this.getConnection();
+            PreparedStatement stat = con.prepareStatement(sql)) {
+            stat.setString(1, write);
+            stat.setInt(2, fc_id);
+            return stat.executeUpdate() > 0;
+        }
+    }
+
     
 }

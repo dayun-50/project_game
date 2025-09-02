@@ -48,15 +48,26 @@ public class FreeCommentController extends HttpServlet {
                 response.sendRedirect("/detail.free?id=" + fb_id);
 
             // 2. 댓글 수정
-            } else if (cmd.equals("/update.fComment")) {
-                int fc_id = Integer.parseInt(request.getParameter("fc_id"));
-                int fb_id = Integer.parseInt(request.getParameter("fb_id"));
+            }  else if(cmd.equals("/update.fComment")) {
+                String fcIdParam = request.getParameter("fc_id");
+                String fbIdParam = request.getParameter("fb_id");
                 String write = request.getParameter("write");
 
-                FreeCommentDTO dto = new FreeCommentDTO(fc_id, fb_id, null, write, null);
-                dao.update(dto);
+                if (fcIdParam != null && !fcIdParam.trim().isEmpty() &&
+                    fbIdParam != null && !fbIdParam.trim().isEmpty()) {
 
-                response.sendRedirect("/detail.free?id=" + fb_id);
+                    int fc_id = Integer.parseInt(fcIdParam);
+                    int fb_id = Integer.parseInt(fbIdParam);
+
+                    dao.update(fc_id, write);
+                    response.sendRedirect("/detail.free?id=" + fb_id);
+
+                } else {
+                    System.out.println("fc_id 또는 fb_id가 비어있습니다.");
+                    response.sendRedirect("/error.jsp");
+                }
+
+
 
             // 3. 댓글 삭제
             } else if (cmd.equals("/delete.fComment")) {

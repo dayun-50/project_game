@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -19,15 +20,20 @@ pre { background: rgba(50, 50, 80, 0.8); border: 1px solid #5e72be; border-radiu
 .btn-back, .btn-edit, .btn-delete { margin-top: 20px; padding: 10px 25px; border-radius: 10px; font-weight: bold; cursor: pointer; border: none; color: #fff; background: linear-gradient(135deg, #9b59b6, #e91e63); box-shadow: 0 0 15px #e91e63, inset 0 0 5px #9b59b6; transition: transform 0.2s, box-shadow 0.2s; margin-right: 10px; }
 .btn-back:hover, .btn-edit:hover, .btn-delete:hover { transform: scale(1.05); box-shadow: 0 0 25px #e91e63, 0 0 50px #9b59b6; }
 .comment-section { margin-top: 30px; border-top: 1px solid #3c3c5c; padding-top: 20px; }
-.comment-list { max-height: 300px; overflow-y: auto; margin-bottom: 20px; }
+.comment-list { height: 100%;  margin-bottom: 20px; }
 .comment-item { border-bottom: 1px solid #3c1f5c; padding: 10px 0; }
 .comment-meta { font-size: 0.9em; color: #b276d1; display: flex; justify-content: space-between; align-items: center; }
-.comment-contents { color: #e0e8ff; }
+.comment-contents {width: 80%; height: 30px; color: #e0e8ff; }
 .comment-actions button { background: none; border: none; color: #87CEEB; cursor: pointer; font-weight: 600; padding: 0; margin: 0 5px; }
 .comment-actions button:hover { text-decoration: underline; }
 .comment-form textarea { width: 100%; height: 80px; border-radius: 8px; border: 1px solid #5e72be; padding: 10px; background: rgba(30, 30, 60, 0.8); color: #fff; font-family: 'Arial', sans-serif; }
 .comment-form button { margin-top: 10px; padding: 10px 20px; border-radius: 10px; border: none; font-weight: bold; background: linear-gradient(135deg, #9b59b6, #e91e63); color: #fff; cursor: pointer; box-shadow: 0 0 15px #e91e63, inset 0 0 5px #9b59b6; }
 .comment-form button:hover { transform: scale(1.05); box-shadow: 0 0 25px #e91e63, 0 0 50px #9b59b6; }
+.savebtn { text-align: right; background: none; border: none; color: #87CEEB; cursor: pointer; font-weight: 600; padding: 0; margin: 0 5px; }
+.savebtn:hover { text-decoration: underline; }
+.cancelbtn { text-align: right; background: none; border: none; color: #87CEEB; cursor: pointer; font-weight: 600; padding: 0; margin: 0 5px; }
+.cancelbtn:hover { text-decoration: underline; }
+
 .post-content img {
     max-width: 100%;
     height: auto;
@@ -71,23 +77,27 @@ pre { background: rgba(50, 50, 80, 0.8); border: 1px solid #5e72be; border-radiu
         <h4>댓글 <small>(${fn:length(comments)})</small></h4>
         <div class="comment-list">
             <c:forEach var="c" items="${comments}">
-                <div class="comment-item">
-                    <div class="comment-meta">
-                        <div>${c.fc_user_name} | <fmt:formatDate value="${c.fc_date}" pattern="yyyy-MM-dd HH:mm" /></div>
-                        <div class="comment-actions">
-                            <c:if test="${dto.fb_user_name eq c.fc_user_name}">
-                                <button type="button">수정</button>
-                                <form action="delete.fComment" method="post" style="display:inline;">
-                                    <input type="hidden" name="fc_id" value="${c.fc_id}" />
-                                    <input type="hidden" name="fb_id" value="${dto.fb_id}" />
-                                    <button type="submit">삭제</button>
-                                </form>
-                            </c:if>
-                        </div>
-                    </div>
-                    <div class="comment-contents">${c.fc_write}</div>
-                </div>
-            </c:forEach>
+    <div class="comment-item">
+        <input type="hidden" name="fc_id" value="${c.fc_id}" />
+        <input type="hidden" name="fb_id" value="${dto.fb_id}" />
+        <div class="comment-meta">
+            ${c.fc_user_name} | <fmt:formatDate value="${c.fc_date}" pattern="yyyy-MM-dd HH:mm" />
+            <div class="comment-actions">
+                <c:if test="${dto.fb_user_name eq c.fc_user_name}">
+                    <button type="button" class="updatebtn">수정</button>
+                    <form action="delete.fComment" method="post" style="display:inline;">
+                        <input type="hidden" name="fc_id" value="${c.fc_id}" />
+                        <input type="hidden" name="fb_id" value="${dto.fb_id}" />
+                        <button type="submit">삭제</button>
+                    </form>
+                </c:if>
+            </div>
+        </div>
+        <div class="comment-contents" contenteditable="false">${c.fc_write}</div>
+    </div>
+</c:forEach>
+
+
         </div>
 
         <form class="comment-form" action="insert.fComment" method="post">
@@ -98,7 +108,9 @@ pre { background: rgba(50, 50, 80, 0.8); border: 1px solid #5e72be; border-radiu
     </div>
 </div>
 
+
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 // Toast Editor + 수정/삭제 기능
 let editing = false;
@@ -111,6 +123,7 @@ const editor = new toastui.Editor({
     placeholder: '내용을 입력하세요'
 });
 
+// 수정 해도 사진 그대로 남아있게
 document.getElementById('editPostBtn').addEventListener('click', () => {
     const form = document.getElementById('editPostForm');
     const postTitle = document.getElementById('postTitle');
@@ -123,12 +136,53 @@ document.getElementById('editPostBtn').addEventListener('click', () => {
         postTitle.style.display = 'none';
         postContent.style.display = 'none';
         deleteBtn.textContent = '취소';
-        editor.setMarkdown(postContent.innerText);
+        // HTML 그대로 넣기
+        editor.setHTML(postContent.innerHTML);
     } else {
         document.getElementById('editorContent').value = editor.getHTML();
         form.submit();
     }
 });
+//여기까지
+
+//댓글 수정 부분
+$(document).on("click", ".updatebtn", function () {
+  const c = $(this).closest(".comment-item");
+  const contentDiv = c.find(".comment-contents"); //댓글내용
+
+  // 수정 모드로 전환
+  contentDiv.attr("contenteditable", "true").focus();
+  c.find(".comment-actions").hide();
+
+  // 완료/취소 버튼 추가
+  const saveBtn = $("<button class='savebtn'>완료</button>");
+  const cancelBtn = $("<button class='cancelbtn'>취소</button>");
+  contentDiv.after(saveBtn, cancelBtn);
+	
+  // 원래 내용 백업
+  c.data("orig", contentDiv.html());
+});
+
+$(document).on("click", ".savebtn", function () {
+  const c = $(this).closest(".comment-item");
+  const contentDiv = c.find(".comment-contents");
+
+  contentDiv.removeAttr("contenteditable");
+  c.find(".comment-actions").show();
+  $(this).next(".cancelbtn").remove();
+  $(this).remove();
+});
+
+$(document).on("click", ".cancelbtn", function () {
+  const c = $(this).closest(".comment-item");
+  const contentDiv = c.find(".comment-contents");
+
+  contentDiv.html(c.data("orig")).removeAttr("contenteditable");
+  c.find(".comment-actions").show();
+  $(this).prev(".savebtn").remove();
+  $(this).remove();
+});
+
 
 document.getElementById('deletePostBtn').addEventListener('click', () => {
     const form = document.getElementById('editPostForm');

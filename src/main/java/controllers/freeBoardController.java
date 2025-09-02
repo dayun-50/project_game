@@ -3,9 +3,13 @@ package controllers;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import dao.FreeCommentDAO;
 import dao.MembersDAO;
@@ -32,7 +36,7 @@ public class freeBoardController extends HttpServlet {
       HttpSession session = request.getSession(); 
       
       try {
-         // 1. 게시글 등록
+         // 1. 게시글 등록 및 이미지 base64 이미지 변환 저장
          if(cmd.equals("/postdone.free")) {
             String id = (String) session.getAttribute("loginId");
             String fb_user_name = mdao.nicknameSerch(id);
@@ -87,7 +91,7 @@ public class freeBoardController extends HttpServlet {
             request.setAttribute("comments", comments);
             request.getRequestDispatcher("/board/detail.jsp").forward(request, response);
             
-         // 5. 게시글 수정페이지
+         // 5. 게시글 수정페이지 base64 이미지 포함 HTML그대로 가져오기
          } else if(cmd.equals("/edit.free")) {
             int fb_id = Integer.parseInt(request.getParameter("id"));
             freeBoardDTO dto = dao.selectById(fb_id);
