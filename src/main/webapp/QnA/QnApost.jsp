@@ -19,6 +19,7 @@
 #editor { width: 100%; height: 60vh; margin: auto; }
 #postname { height: 50px; width: 100%; display: flex; justify-content: start; align-items: center; background-color: #dad9d9; border-radius: 5px; font-size: 20px; margin: auto; color: #000000; padding: 0 10px; }
 #postname:empty::before { content: "제목을 입력하세요"; color: #9b9b9b; pointer-events: none; }
+#password { width: 150px; padding: 5px 10px; margin-bottom: 10px; border-radius:5px; border:1px solid #ccc; font-size:16px; }
 body { background-color: #0c0c1a; color: #fff; font-family: 'Arial', sans-serif; display: flex; justify-content: center; padding-top: 50px; }
 .star, .shooting-star { position: fixed; z-index: 0; border-radius: 50%; }
 .star { animation: twinkle linear infinite; background: white; }
@@ -43,6 +44,9 @@ form { width:100px; height:30px; font-weight:bold; }
 
     <!-- QnAController.postdone.qna 연동 -->
     <form action="/postdone.qna" method="post" id="btnform">
+        <!-- 4자리 비밀번호 입력 -->
+        <input type="password" id="password" name="password" placeholder="4자리 비밀번호" maxlength="4" pattern="\d{4}" required>
+        
         <div id="postname" contenteditable="true"></div>
         <div id="editor"></div>
         <input type="hidden" name="title" id="postTitleInput">
@@ -77,7 +81,7 @@ const editor = new toastui.Editor({
     }
 });
 
-// 제목과 내용 히든 필드에 복사
+// 제목과 내용, 비밀번호 히든 필드에 복사
 document.getElementById('btnform').addEventListener('submit', function(e){
     document.getElementById('postTitleInput').value = document.getElementById('postname').innerText;
     document.getElementById('postContentInput').value = editor.getHTML();

@@ -3,14 +3,9 @@ package controllers;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import javax.servlet.http.*;
 import dao.MembersDAO;
 import dao.QnADAO;
 import dto.QnADTO;
@@ -19,10 +14,10 @@ import dto.QnADTO;
 public class QnAController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doAction(request,response);
+        doAction(request, response);
     }
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doAction(request,response);
+        doAction(request, response);
     }
 
     protected void doAction(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -34,13 +29,14 @@ public class QnAController extends HttpServlet {
 
         try {
             if(cmd.equals("/postdone.qna")) {
-            	 String id = (String) session.getAttribute("loginId");
-                 String inqu_user_name = mdao.nicknameSerch(id);
+                String id = (String) session.getAttribute("loginId");
+                String inqu_user_name = mdao.nicknameSerch(id);
                 String inqu_Title = request.getParameter("title");
                 String inqu_write = request.getParameter("write");
+                int inqu_pw = Integer.parseInt(request.getParameter("password"));
                 Timestamp inqu_date = new Timestamp(System.currentTimeMillis());
 
-                QnADTO dto = new QnADTO(0, inqu_Title, inqu_write, inqu_user_name, inqu_date);
+                QnADTO dto = new QnADTO(0, inqu_pw, inqu_Title, inqu_write, inqu_user_name, inqu_date);
                 dao.insert(dto);
                 response.sendRedirect("/list.qna");
 
@@ -72,25 +68,51 @@ public class QnAController extends HttpServlet {
                 request.setAttribute("endPage", endPage);
                 request.getRequestDispatcher("/QnA/QnAlist.jsp").forward(request,response);
 
+            } else if(cmd.equals("/checkPassword.qna")) {
+                int inqu_id = Integer.parseInt(request.getParameter("id"));
+                int inputPw = Integer.parseInt(request.getParameter("password"));
+                QnADTO dto = dao.selectById(inqu_id);
+
+                if(dto != null && dto.getInqu_pw() == inputPw) {
+                    // 글별 인증 세션 저장
+                    session.setAttribute("auth_" + inqu_id, true);
+                    response.sendRedirect("/detail.qna?id=" + inqu_id);
+                } else {
+                    response.getWriter().println("<script>alert('비밀번호가 틀렸습니다'); history.back();</script>");
+                }
+
             } else if(cmd.equals("/detail.qna")) {
-            	String id = (String) session.getAttribute("loginId");
-                String inqu_user_name = mdao.nicknameSerch(id);
-                QnADTO dto = dao.selectById(inqu_user_name);
+                int inqu_id = Integer.parseInt(request.getParameter("id"));
+                Boolean auth = (Boolean) session.getAttribute("auth_" + inqu_id);
+                if(auth == null || !auth) {
+                    response.sendRedirect("/checkPasswordForm.qna?id=" + inqu_id);
+                    return;
+                }
+                QnADTO dto = dao.selectById(inqu_id);
                 request.setAttribute("dto", dto);
                 request.getRequestDispatcher("/QnA/QnAdetail.jsp").forward(request,response);
 
             } else if(cmd.equals("/update.qna")) {
-                int inqu_pw = Integer.parseInt(request.getParameter("id"));
+                int inqu_id = Integer.parseInt(request.getParameter("id"));
                 String title = request.getParameter("title");
                 String write = request.getParameter("write");
-                QnADTO dto = new QnADTO(inqu_pw, title, write, null, null);
-                dao.update(dto);
-                response.sendRedirect("/detail.qna?id=" + inqu_pw);
+
+                QnADTO dto = new QnADTO();
+                dto.setInqu_id(inqu_id);
+                dto.setInqu_Title(title);
+                dto.setInqu_write(write);
+
+                dao.update(dto); // 비밀번호 없이 수정
+                response.sendRedirect("/detail.qna?id=" + inqu_id);
 
             } else if(cmd.equals("/delete.qna")) {
-                int inqu_pw = Integer.parseInt(request.getParameter("id"));
-                dao.delete(inqu_pw);
+                int inqu_id = Integer.parseInt(request.getParameter("id"));
+                dao.delete(inqu_id); // 비밀번호 없이 삭제
                 response.sendRedirect("/list.qna");
+
+            } else if(cmd.equals("/checkPasswordForm.qna")) {
+                request.setAttribute("id", request.getParameter("id"));
+                request.getRequestDispatcher("/QnA/checkPassword.jsp").forward(request,response);
             }
         } catch(Exception e) {
             e.printStackTrace();

@@ -28,55 +28,25 @@ public class InquiriesCommentDAO {
         return ds.getConnection();
     }
 
-    // Create
-    public boolean insert(InquiriesCommentDTO dto) throws Exception {
-        String sql = "INSERT INTO inquries_comment(inqc_seq, inqc_write) " +
-                     "VALUES(inquries_comment_seq.NEXTVAL, ?)";
+    // 댓글 조회 (게시글별)
+    public List<InquiriesCommentDTO> selectByFbId(int fb_id) throws Exception {
+        String sql = "SELECT * FROM inquries_comment WHERE fb_id=? ORDER BY inqc_seq ASC";
         try (Connection con = this.getConnection();
              PreparedStatement stat = con.prepareStatement(sql)) {
-            stat.setString(1, dto.getInqc_write());
-            return stat.executeUpdate() > 0;
-        }
-    }
-
-    // Read all comments
-    public List<InquiriesCommentDTO> selectAll() throws Exception {
-        String sql = "SELECT * FROM inquries_comment ORDER BY inqc_seq ASC";
-        try (Connection con = this.getConnection();
-             PreparedStatement stat = con.prepareStatement(sql);
-             ResultSet rs = stat.executeQuery()) {
-
-            List<InquiriesCommentDTO> list = new ArrayList<>();
-            while (rs.next()) {
-                InquiriesCommentDTO dto = new InquiriesCommentDTO(
+            stat.setInt(1, fb_id);
+            try (ResultSet rs = stat.executeQuery()) {
+                List<InquiriesCommentDTO> list = new ArrayList<>();
+                while (rs.next()) {
+                    InquiriesCommentDTO dto = new InquiriesCommentDTO(
                         rs.getInt("inqc_seq"),
+                        rs.getInt("fb_id"),
                         rs.getString("inqc_write"),
                         rs.getTimestamp("inqc_date")
-                );
-                list.add(dto);
+                    );
+                    list.add(dto);
+                }
+                return list;
             }
-            return list;
-        }
-    }
-
-    // Update
-    public boolean update(int inqc_seq, String write) throws Exception {
-        String sql = "UPDATE inquries_comment SET inqc_write=? WHERE inqc_seq=?";
-        try (Connection con = this.getConnection();
-             PreparedStatement stat = con.prepareStatement(sql)) {
-            stat.setString(1, write);
-            stat.setInt(2, inqc_seq);
-            return stat.executeUpdate() > 0;
-        }
-    }
-
-    // Delete
-    public boolean delete(int inqc_seq) throws Exception {
-        String sql = "DELETE FROM inquries_comment WHERE inqc_seq=?";
-        try (Connection con = this.getConnection();
-             PreparedStatement stat = con.prepareStatement(sql)) {
-            stat.setInt(1, inqc_seq);
-            return stat.executeUpdate() > 0;
         }
     }
 }

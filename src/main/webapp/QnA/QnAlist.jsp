@@ -54,7 +54,7 @@
                         <c:forEach var="dto" items="${list}">
                             <tr>
                                 <td>${num}</td>
-                                <td><a href="detail.qna?id=${dto.inqu_pw}" class="post-title">${dto.inqu_Title}</a></td>
+                                <td><a href="detail.qna?id=${dto.inqu_id}" class="post-title">${dto.inqu_Title}</a></td>
                                 <td>${dto.inqu_user_name}</td>
                                 <td><fmt:formatDate value="${dto.inqu_date}" pattern="yyyy-MM-dd" /></td>
                               	<td> </td>
