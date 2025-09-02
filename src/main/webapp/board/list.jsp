@@ -197,7 +197,8 @@
 
 <form class="button-group" action="/post.free" method="get">
     <button type="submit" class="write-btn">글작성</button>
-    <button type="button" class="gamepage" onclick="location.href='/gamepage'">게임화면으로 가기</button>
+    <button type="button" class="gamepage" onclick="location.href='game/gameMain.jsp'">게임화면으로 가기</button>
+
 </form>
 
     </div>
