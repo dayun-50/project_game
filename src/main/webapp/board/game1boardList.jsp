@@ -174,17 +174,7 @@
             }
         }
 
-        @keyframes shootingStar {
-            0% {
-                transform: translateY(-5vh) translateX(0) rotate(0deg);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateY(120vh) translateX(50px) rotate(45deg);
-                opacity: 0;
-            }
-        }
+        
 
         .shooting-star {
             width: 2px;
@@ -216,8 +206,8 @@
     text-align: left;            /* 텍스트 왼쪽 정렬 */
 }
 
-#title{
-	width: 45%;
+.title{
+	width: 40%;
 }
 
 td{
@@ -228,6 +218,12 @@ th{
 	text-align: center;
 }
 
+a {
+text-decoration: none;
+color: inherit; 
+}
+
+
     </style>
 </head>
 <body>
@@ -237,10 +233,12 @@ th{
     <h1>게임 게시판</h1>
 </div>
         <div class="tabs">
-            <div class="tab active">Game 1</div>
-            <div class="tab">Game 2</div>
-            <div class="tab">Game 3</div>
-            <div class="tab">Game 4</div>
+
+            <div class="tab active"><a href="/game1borad.Game1Controller?gameid=1">Game 1</a></div>
+            <div class="tab"><a href="/game1borad.Game1Controller?gameid=2">Game 2</a> </div>
+            <div class="tab"><a href="/game1borad.Game1Controller?gameid=3">Game 3</a></div>
+            <div class="tab"><a href="/game1borad.Game1Controller?gameid=4">Game 4</a></div>
+
         </div>
 
         <table>
@@ -255,23 +253,25 @@ th{
             </thead>
             <tbody>
             <c:forEach var="dto" items="${list}">
-                <tr>
-                    <td>${dto.game_seq }</td>
-                    <td id="title">${dto.gameboardtitle }</td>
+                  <tr>   
+                  	<td>${dto.game_seq }</td>
+                    <td class="title">
+                    	<a href="/game1boradDetil.Game1Controller?seq=${dto.game_seq }">${dto.gameboardtitle }</a>
+                    </td>
                     <td>${dto.gamewrtier }</td>
                     <td>${dto.game_board_date }</td>
                     <td>${dto.view_count}</td>
+                    
                 </tr>
              </c:forEach>
             </tbody>
         </table>
 
-        <div class="pagination">
-            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-            <span>6</span><span>7</span><span>8</span><span>9</span><span>&gt;</span>
-        </div>
+       <div  class="pagination" id="pageNavi"></div>
 
-        <div class="write-btn">글작성</div>
+
+        <div class="write-btn" id="btn">글작성</div>
+        <div class="write-btn" id="backbtn">뒤로가기</div>
     </div>
 
     <script>
@@ -303,8 +303,7 @@ th{
         createStars(800);
         createStars(400, [20, 50], [20, 80], [1, 2]);
 
-        // 일정 시간마다 별똥별 생성
-        setInterval(createShootingStar, 2000);
+
 
         // 튜토리얼 위치
         function updateTutorialPositions() {
@@ -313,13 +312,71 @@ th{
                 const target = document.getElementById(targetId);
                 if (target) {
                     const rect = target.getBoundingClientRect();
-                    item.sctyle.left = (rect.left + rect.width / 2) + 'px';
+                    item.style.left = (rect.left + rect.width / 2) + 'px';
                     item.style.top = (rect.top) + 'px';
                 }
             });
         }
         updateTutorialPositions();
         window.addEventListener('resize', updateTutorialPositions);
+        
+        function getGameId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('gameid') || '1'; // 없으면 1로 기본값
+        }
+        
+        
+        let gameid = getGameId();
+        let recordTotalCount = parseInt("${recordTotalCount}");
+		let recordCountPerPage = parseInt("${recordCountPerPage}");
+		let naviCountPerPage = parseInt("${naviCountPerPage}");
+		let currentPage = parseInt("${currentPage}");
+
+		$("#btn").on("click", function(){ //글작성버튼
+
+        	window.location.href = "/boardInsert.Game1Controller?gameid="+gameid;
+
+        });
+		
+		
+		let pageTotalCount = Math.ceil(recordTotalCount / recordCountPerPage);
+		if(currentPage < 1) {
+			currentPage=1;
+		}else if(currentPage > pageTotalCount) {
+			currentPage = pageTotalCount;
+		}
+		
+		let startNavi = Math.floor((currentPage - 1) / naviCountPerPage)
+				* naviCountPerPage + 1;
+		
+		let endNavi = startNavi + (naviCountPerPage - 1);
+		if (endNavi > pageTotalCount)
+			endNavi = pageTotalCount;
+
+		let html = "";
+		let needPrev = true;
+		let needNext = true;
+		
+		if(startNavi == 1) {needPrev = false;}
+		if(endNavi == pageTotalCount) {needNext = false;}
+
+		if (needPrev) {
+		    html += "<a href='/game1borad.Game1Controller?gameid=" + gameid + "&cpage=" + (startNavi - 1) + "'>< </a>";
+		}
+
+		for (let i = startNavi; i <= endNavi; i++) {
+		    html += "<a href='/game1borad.Game1Controller?gameid=" + gameid + "&cpage=" + i + "'>" + i + "</a> ";
+		}
+
+		if (needNext) {
+		    html += "<a href='/game1borad.Game1Controller?gameid=" + gameid + "&cpage=" + (endNavi + 1) + "'>> </a>";
+		}
+	    
+		document.getElementById("pageNavi").innerHTML = html;
+		
+		$("#backbtn").on("click", function(){ // 뒤로가기버튼
+			window.location.href = "/gamapage.GameController"	
+		});
     </script>
 </body>
 </html>

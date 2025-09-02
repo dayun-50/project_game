@@ -29,6 +29,8 @@ public class GameController extends HttpServlet {
 					request.setAttribute("nickname", nickname);
 					request.getRequestDispatcher("/game/gameMain.jsp").forward(request, response);
 				} 
+			}else if(cmd.equals("/gameboard.GameController")) { //게임게시판 이동메뉴
+				response.sendRedirect("/game1borad.Game1Controller");
 			}
 		}catch (Exception e) {
 			e.printStackTrace();

@@ -206,8 +206,8 @@ html, body {
         	<div class="menu-buttons">
             	<button class="menu-btn" id="freebtn">자유게시판</button>
             	<button class="menu-btn">게임랭크</button>
-            	<button class="menu-btn">게임게시판</button>
-            	<button class="menu-btn">마이페이지</button>
+            	<button class="menu-btn" id="gmaeboard">게임게시판</button>
+            	<button class="menu-btn" id="mypage">마이페이지</button>
             	<button class="menu-btn">문의하기</button>
             	<button class="menu-btn">로그아웃</button>
        		</div>
@@ -294,6 +294,13 @@ $("#freebtn").on("click", function() {
     window.location.href = "/list.free";
 });
 
+$("#mypage").on("click", function(){ //마이페이지 이동
+	window.location.href = "/mypage.MembersController"
+});
+
+$("#gmaeboard").on("click", function(){ //게임게시판 이동
+	window.location.href = "/gameboard.GameController"
+});
 </script>
 </body>
 </html>
