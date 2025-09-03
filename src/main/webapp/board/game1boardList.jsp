@@ -289,7 +289,7 @@ color: inherit;
                   <tr>   
                   	<td>${dto.game_seq }</td>
                     <td class="title">
-                    	<a href="/game1boradDetil.Game1Controller?seq=${dto.game_seq }">${dto.gameboardtitle }</a>
+                    	<a href="/game1boardDetail.Game1Controller?seq=${dto.game_seq}">${dto.gameboardtitle }</a>
                     </td>
                     <td>${dto.gamewrtier }</td>
                     <td>${dto.game_board_date }</td>

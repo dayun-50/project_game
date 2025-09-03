@@ -309,7 +309,7 @@ $("#mypage").on("click", function(){
 
 
 $("#gmaeboard").on("click", function(){ //게임게시판 이동
-	window.location.href = "/gameboard.GameController"
+	window.location.href = "/game1borad.Game1Controller";
 });
 
 //로그아웃 버튼 클릭
