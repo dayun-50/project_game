@@ -34,7 +34,7 @@ public class GameComentController extends HttpServlet {
 				String parentSeq = request.getParameter("seq");
 				
 				gcdao.comentInsert(new Game1CommentDTO(0,Integer.parseInt(parentSeq),0,nickname,coment,""));
-				response.sendRedirect("/game1boradDetil.Game1Controller?seq="+parentSeq);
+				response.sendRedirect("/game1boardDetail.Game1Controller?seq=" + parentSeq);
 			
 			}else if(cmd.equals("/delete.GameComentController")) { // 댓글삭제
 				String seq = request.getParameter("seq");

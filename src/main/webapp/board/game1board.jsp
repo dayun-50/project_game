@@ -72,30 +72,30 @@ pre { background: rgba(50, 50, 80, 0.8); border: 1px solid #5e72be; border-radiu
         <h4>댓글 <small>(${comentCount})</small></h4>
         <div class="comment-list">
             <c:forEach var="c" items="${comentList}">
-                <div class="comment-item">
-                    <div class="comment-meta">
-                        ${c.gamewrtier} | ${c.game_board_date}
-                        <div class="comment-actions">
-                            <c:if test="${sessionScope.nickname eq c.gamewrtier}">
-                                <button type="button" class="updatebtn">수정</button>
-                                <form action="deleteComment.Game1Controller" method="post" style="display:inline;">
-                                    <input type="hidden" name="seq" value="${c.game_seq}" />
-                                    <button type="submit">삭제</button>
-                                </form>
-                            </c:if>
-                        </div>
-                    </div>
-                    <div class="comment-contents" contenteditable="false">${c.gamecoment}</div>
-                </div>
-            </c:forEach>
+    <div class="comment-item">
+        <div class="comment-meta">
+            ${c.game_coment_writer} | ${c.game_coment_date}
+            <div class="comment-actions">
+                <c:if test="${sessionScope.nickname eq c.game_coment_writer}">
+                    <button type="button" class="updatebtn">수정</button>
+                    <form action="delete.GameComentController" method="post" style="display:inline;">
+                        <input type="hidden" name="seq" value="${c.game_comet_seq}" />
+                        <button type="submit">삭제</button>
+                    </form>
+                </c:if>
+            </div>
+        </div>
+        <div class="comment-contents" contenteditable="false">${c.game_coment}</div>
+    </div>
+</c:forEach>
         </div>
 
         <!-- 댓글 등록 폼 -->
-        <form class="comment-form" action="insertComment.Game1Controller" method="post">
-            <input type="hidden" name="seq" value="${dto.game_seq}" />
-            <textarea name="coment" placeholder="댓글을 입력하세요..." required></textarea>
-            <button type="submit">댓글 등록</button>
-        </form>
+     <form class="comment-form" action="comentInsert.GameComentController" method="post">
+    <input type="hidden" name="seq" value="${dto.game_seq}" />
+    <textarea name="coment" placeholder="댓글을 입력하세요..." required></textarea>
+    <button type="submit">댓글 등록</button>
+</form>
     </div>
 </div>
 
