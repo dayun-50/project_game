@@ -11,16 +11,28 @@ import org.jsoup.safety.Safelist;
 
 import commons.GameBoardConfig;
 import dao.Game1BoardDAO;
+import dao.Game1CommentDAO;
 import dao.MembersDAO;
 import dto.GameBoardDTO;
+import dto.Game1CommentDTO;
 
 @WebServlet("*.Game1Controller")
 public class Game1BoardController extends HttpServlet {
     private Game1BoardDAO gbdao = Game1BoardDAO.getInstance();
     private MembersDAO mdao = MembersDAO.getInstance();
+    private Game1CommentDAO gcdao = Game1CommentDAO.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doAction(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doAction(request, response);
+    }
+
+    protected void doAction(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
         HttpSession session = request.getSession();
@@ -28,15 +40,15 @@ public class Game1BoardController extends HttpServlet {
         try {
             String cmd = request.getRequestURI();
 
-            if(cmd.equals("/boardInsert.Game1Controller")) {
+            if (cmd.equals("/boardInsert.Game1Controller")) {
                 request.getRequestDispatcher("/board/game1boardInsert.jsp").forward(request, response);
 
-            } else if(cmd.equals("/game1borad.Game1Controller")) {
+            } else if (cmd.equals("/game1borad.Game1Controller")) {
                 int cpage = 1;
                 String cpageStr = request.getParameter("cpage");
                 int gameid = 1;
-                if(request.getParameter("gameid") != null) gameid = Integer.parseInt(request.getParameter("gameid"));
-                if(cpageStr != null) cpage = Integer.parseInt(cpageStr);
+                if (request.getParameter("gameid") != null) gameid = Integer.parseInt(request.getParameter("gameid"));
+                if (cpageStr != null) cpage = Integer.parseInt(cpageStr);
 
                 int from = cpage * GameBoardConfig.RECORD_COUNT_PER_PAGE - (GameBoardConfig.RECORD_COUNT_PER_PAGE - 1);
                 int to = cpage * GameBoardConfig.RECORD_COUNT_PER_PAGE;
@@ -50,44 +62,47 @@ public class Game1BoardController extends HttpServlet {
                 request.setAttribute("currentPage", cpage);
                 request.getRequestDispatcher("/board/game1boardList.jsp").forward(request, response);
 
-            } else if(cmd.equals("/game1boardDetail.Game1Controller")) {
+            } else if (cmd.equals("/game1boardDetail.Game1Controller")) {
                 int seq = Integer.parseInt(request.getParameter("seq"));
                 GameBoardDTO dto = gbdao.selectById(seq);
                 gbdao.incrementView(seq);
 
+                // 댓글 불러오기
+                ArrayList<Game1CommentDTO> comentList = gcdao.selectAll(seq);
+                int comentCount = gcdao.countComent(seq);
+
                 request.setAttribute("dto", dto);
+                request.setAttribute("comentList", comentList);
+                request.setAttribute("comentCount", comentCount);
+
                 request.getRequestDispatcher("/board/game1board.jsp").forward(request, response);
 
-            } else if(cmd.equals("/edit.Game1Controller")) {
+            } else if (cmd.equals("/edit.Game1Controller")) {
                 int seq = Integer.parseInt(request.getParameter("seq"));
                 GameBoardDTO dto = gbdao.selectById(seq);
                 request.setAttribute("dto", dto);
                 request.getRequestDispatcher("/board/game1boardEdit.jsp").forward(request, response);
 
-            } else if(cmd.equals("/delete.Game1Controller")) {
+            } else if (cmd.equals("/delete.Game1Controller")) {
                 int seq = Integer.parseInt(request.getParameter("seq"));
                 gbdao.deleteGameBoard(seq);
                 response.sendRedirect("/game1borad.Game1Controller");
-            }
 
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
-
-        try {
-            String cmd = request.getRequestURI();
-            HttpSession session = request.getSession();
-
-            if(cmd.equals("/game1BoradInsert.Game1Controller")) {
+            } else if (cmd.equals("/game1BoradInsert.Game1Controller")) {
                 String title = request.getParameter("title");
-                String coment = Jsoup.clean(request.getParameter("coment"), Safelist.basicWithImages());
-                String loginId = (String)session.getAttribute("loginId");
+
+                // ✅ 이미지/스타일/figure 허용한 sanitize
+                String coment = Jsoup.clean(
+                    request.getParameter("coment"),
+                    Safelist.relaxed()
+                        .addAttributes(":all", "class", "style")
+                        .addAttributes("img", "src", "alt", "title", "width", "height")
+                        .addTags("figure", "figcaption")
+                        .addProtocols("img", "src", "data", "http", "https")
+                        .preserveRelativeLinks(true)
+                );
+
+                String loginId = (String) session.getAttribute("loginId");
                 String writer = mdao.nicknameSerch(loginId);
                 int gameid = Integer.parseInt(request.getParameter("gameid"));
 
@@ -100,10 +115,20 @@ public class Game1BoardController extends HttpServlet {
                 gbdao.boardInsert(dto);
                 response.sendRedirect("/game1borad.Game1Controller");
 
-            } else if(cmd.equals("/updatePost.Game1Controller")) {
+            } else if (cmd.equals("/updatePost.Game1Controller")) {
                 int seq = Integer.parseInt(request.getParameter("seq"));
                 String title = request.getParameter("title");
-                String coment = Jsoup.clean(request.getParameter("coment"), Safelist.basicWithImages());
+
+                // ✅ 이미지/스타일/figure 허용한 sanitize
+                String coment = Jsoup.clean(
+                    request.getParameter("coment"),
+                    Safelist.relaxed()
+                        .addAttributes(":all", "class", "style")
+                        .addAttributes("img", "src", "alt", "title", "width", "height")
+                        .addTags("figure", "figcaption")
+                        .addProtocols("img", "src", "data", "http", "https")
+                        .preserveRelativeLinks(true)
+                );
 
                 GameBoardDTO dto = new GameBoardDTO();
                 dto.setGame_seq(seq);
@@ -114,8 +139,9 @@ public class Game1BoardController extends HttpServlet {
                 response.sendRedirect("/game1boardDetail.Game1Controller?seq=" + seq);
             }
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            // 필요시 에러 페이지로 forward 또는 공통 에러 처리
         }
     }
 }
