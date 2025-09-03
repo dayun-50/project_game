@@ -115,6 +115,10 @@ public class freeBoardController extends HttpServlet {
             int fb_id = Integer.parseInt(request.getParameter("id"));
             dao.delete(fb_id);
             response.sendRedirect("/list.free");
+            
+         // 8. 게임화면 이동
+         }else if(cmd.equals("/gamepage.free")) {
+        	    request.getRequestDispatcher("/game/gameMain.jsp").forward(request, response);
          }
          
       } catch(Exception e) {
