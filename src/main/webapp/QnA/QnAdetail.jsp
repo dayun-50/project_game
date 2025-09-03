@@ -2,24 +2,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<%
-    dto.QnADTO dto = (dto.QnADTO) request.getAttribute("dto");
-    Integer inquId = null;
-    if(dto != null){
-        inquId = dto.getInqu_id();
-    }
-
-    Boolean auth = false;
-    if(inquId != null){
-        auth = (Boolean) session.getAttribute("auth_" + inquId);
-        if(auth == null) auth = false;
-    }
-    if(!auth){
-        response.sendRedirect("checkPasswordForm.qna?id=" + inquId);
-        return;
-    }
-%>
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>

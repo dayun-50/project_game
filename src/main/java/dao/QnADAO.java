@@ -1,9 +1,16 @@
 package dao;
 
-import java.sql.*;
-import java.util.*;
-import javax.naming.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
+
+import dto.InquiriesCommentDTO;
 import dto.QnADTO;
 
 public class QnADAO {
@@ -12,24 +19,23 @@ public class QnADAO {
     public static QnADAO getInstance() { return instance; }
     private QnADAO() {}
 
-    // DB 연결
     private Connection getConnection() throws Exception {
         Context ctx = new InitialContext();
         DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/oracle");
         return ds.getConnection();
     }
 
-    // 글 작성
+    // 글 작성 (시퀀스 사용)
     public void insert(QnADTO dto) throws Exception {
         String sql = "INSERT INTO inquries (inqu_seq, inqu_id, inqu_pw, inqu_write, inqu_title, inqu_user_name, inqu_date) "
-                   + "VALUES (inquries_seq.NEXTVAL, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, dto.getInqu_id());
-            ps.setInt(2, dto.getInqu_pw());
-            ps.setString(3, dto.getInqu_write());
-            ps.setString(4, dto.getInqu_Title());
-            ps.setString(5, dto.getInqu_user_name());
-            ps.setTimestamp(6, dto.getInqu_date());
+                   + "VALUES (inquries_seq.NEXTVAL, inqu_id_seq.NEXTVAL, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, dto.getInqu_pw());          // 비밀번호 String 처리
+            ps.setString(2, dto.getInqu_write());
+            ps.setString(3, dto.getInqu_Title());
+            ps.setString(4, dto.getInqu_user_name());
+            ps.setTimestamp(5, dto.getInqu_date());
             ps.executeUpdate();
         }
     }
@@ -44,54 +50,60 @@ public class QnADAO {
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, start);
             ps.setInt(2, end);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-                QnADTO dto = new QnADTO();
-                dto.setInqu_id(rs.getInt("inqu_id"));
-                dto.setInqu_pw(rs.getInt("inqu_pw"));
-                dto.setInqu_Title(rs.getString("inqu_title"));
-                dto.setInqu_write(rs.getString("inqu_write"));
-                dto.setInqu_user_name(rs.getString("inqu_user_name"));
-                dto.setInqu_date(rs.getTimestamp("inqu_date"));
-                list.add(dto);
+            try (ResultSet rs = ps.executeQuery()) {
+                while(rs.next()) {
+                    QnADTO dto = new QnADTO();
+                    dto.setInqu_id(rs.getInt("inqu_id"));
+                    dto.setInqu_pw(rs.getString("inqu_pw"));
+                    dto.setInqu_Title(rs.getString("inqu_title"));
+                    dto.setInqu_write(rs.getString("inqu_write"));
+                    dto.setInqu_user_name(rs.getString("inqu_user_name"));
+                    dto.setInqu_date(rs.getTimestamp("inqu_date"));
+                    list.add(dto);
+                }
             }
         }
         return list;
     }
 
-    // 전체 글 수
     public int getTotalCount() throws Exception {
         String sql = "SELECT COUNT(*) FROM inquries";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             if(rs.next()) return rs.getInt(1);
         }
         return 0;
     }
 
-    // 글 상세 조회
+    // 글 ID로 DTO 조회 (상세페이지 및 비밀번호 체크용)
     public QnADTO selectById(int inqu_id) throws Exception {
         String sql = "SELECT * FROM inquries WHERE inqu_id=?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, inqu_id);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                QnADTO dto = new QnADTO();
-                dto.setInqu_id(rs.getInt("inqu_id"));
-                dto.setInqu_pw(rs.getInt("inqu_pw"));
-                dto.setInqu_Title(rs.getString("inqu_title"));
-                dto.setInqu_write(rs.getString("inqu_write"));
-                dto.setInqu_user_name(rs.getString("inqu_user_name"));
-                dto.setInqu_date(rs.getTimestamp("inqu_date"));
-                return dto;
+            try (ResultSet rs = ps.executeQuery()) {
+                if(rs.next()) {
+                    QnADTO dto = new QnADTO();
+                   
+                    dto.setInqu_id(rs.getInt("inqu_id"));
+                    dto.setInqu_pw(rs.getString("inqu_pw")); // String
+                    dto.setInqu_Title(rs.getString("inqu_title"));
+                    dto.setInqu_write(rs.getString("inqu_write"));
+                    dto.setInqu_user_name(rs.getString("inqu_user_name"));
+                    dto.setInqu_date(rs.getTimestamp("inqu_date"));
+                    return dto;
+                }
             }
         }
         return null;
     }
 
-    // 글 수정 (비밀번호 조건 제거)
+    // 글 수정
     public void update(QnADTO dto) throws Exception {
         String sql = "UPDATE inquries SET inqu_write=?, inqu_title=? WHERE inqu_id=?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, dto.getInqu_write());
             ps.setString(2, dto.getInqu_Title());
             ps.setInt(3, dto.getInqu_id());
@@ -99,12 +111,49 @@ public class QnADAO {
         }
     }
 
-    // 글 삭제 (비밀번호 조건 제거)
+    // 글 삭제
     public void delete(int inqu_id) throws Exception {
         String sql = "DELETE FROM inquries WHERE inqu_id=?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, inqu_id);
             ps.executeUpdate();
         }
+    }
+
+    // 비밀번호 일치 여부 확인
+    public boolean checkPassword(int inqu_id, String inputPw) throws Exception {
+        String sql = "SELECT inqu_pw FROM inquries WHERE inqu_id=?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, inqu_id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if(rs.next()) {
+                    String dbPw = rs.getString("inqu_pw");
+                    return dbPw.equals(inputPw);
+                }
+            }
+        }
+        return false;
+    }
+
+    // 관리자 댓글 조회 (선택)
+    public List<InquiriesCommentDTO> selectComments(int inqu_id) throws Exception {
+        List<InquiriesCommentDTO> comments = new ArrayList<>();
+        String sql = "SELECT * FROM inquries_comment WHERE inqu_id=? ORDER BY inqc_date ASC";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, inqu_id);
+            try (ResultSet rs = ps.executeQuery()) {
+                while(rs.next()) {
+                	InquiriesCommentDTO comment = new InquiriesCommentDTO();
+                    comment.setInqu_id(rs.getInt("inqu_id"));
+                    comment.setInqc_write(rs.getString("inqc_write"));
+                    comment.setInqc_date(rs.getTimestamp("inqc_date"));
+                    comments.add(comment);
+                }
+            }
+        }
+        return comments;
     }
 }
