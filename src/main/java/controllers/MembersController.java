@@ -70,8 +70,15 @@ public class MembersController extends HttpServlet {
 				
 				int result = dao.login(id, pw);
 				if(result == 1) {
-					response.getWriter().write(String.valueOf(result)); // 로그인성공 1/ 실패 0
-					session.setAttribute("loginId", id); //세션에 id값 저장
+					
+					 // 1️⃣ 로그인 성공 → 세션 먼저 설정
+				    session.setAttribute("loginId", id); // ID 세션 저장
+				    String nickname = dao.nicknameSerch(id); // 닉네임 조회
+				    session.setAttribute("nickname", nickname); // 닉네임 세션 저장
+
+				    // 2️⃣ 클라이언트에게 성공 결과 전달
+				    response.getWriter().write(String.valueOf(result)); // 1
+					
 				}else {
 					response.getWriter().write(String.valueOf(result));
 				}
