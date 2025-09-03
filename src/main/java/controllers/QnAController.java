@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dao.InquiriesCommentDAO;
 import dao.MembersDAO;
 import dao.QnADAO;
 import dto.InquiriesCommentDTO;
@@ -58,6 +59,17 @@ public class QnAController extends HttpServlet {
                 int end = page * pageSize;
 
                 List<QnADTO> list = dao.selectPage(start, end);
+                
+                InquiriesCommentDAO cdao = InquiriesCommentDAO.getInstance();
+                for(QnADTO dto : list) {
+                    int commentCount = cdao.countCommentsByPostId(dto.getInqu_id());
+                    if(commentCount > 0) {
+                        dto.setAnswerStatus("답변완료");
+                    } else {
+                        dto.setAnswerStatus("검토중");
+                    }
+                }
+                
                 int totalCount = dao.getTotalCount();
                 int totalPage = (int) Math.ceil(totalCount / (double) pageSize);
 

@@ -11,7 +11,18 @@ public class QnADTO {
     private String inqu_user_name;
     private Timestamp inqu_date;
 
-    public QnADTO() {}
+    
+    private String answerStatus; //답변상태
+    
+    public String getAnswerStatus() {
+		return answerStatus;
+	}
+
+	public void setAnswerStatus(String answerStatus) {
+		this.answerStatus = answerStatus;
+	}
+
+	public QnADTO() {}
 
     public QnADTO(int inqu_id, String inqu_pw, String inqu_Title, String inqu_write, String inqu_user_name, Timestamp inqu_date) {
         this.inqu_id = inqu_id;

@@ -8,6 +8,8 @@ public class InquiriesCommentDTO {
     private String inqc_write;  // 댓글 내용
     private Timestamp inqc_date;
 
+    
+    
     public InquiriesCommentDTO() {}
 
     

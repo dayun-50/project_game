@@ -44,7 +44,7 @@
                     <th>제목</th>
                     <th>작성자</th>
                     <th>작성일</th>
-                    <th>조회수</th>
+                    <th>상태</th>
                 </tr>
             </thead>
             <tbody>
@@ -57,7 +57,7 @@
                                 <td><a href="detail.qna?id=${dto.inqu_id}" class="post-title">${dto.inqu_Title}</a></td>
                                 <td>${dto.inqu_user_name}</td>
                                 <td><fmt:formatDate value="${dto.inqu_date}" pattern="yyyy-MM-dd" /></td>
-                              	<td> </td>
+                              	<td>${dto.answerStatus}</td>
                             </tr>
                             <c:set var="num" value="${num - 1}" />
                         </c:forEach>

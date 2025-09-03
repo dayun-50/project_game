@@ -27,6 +27,21 @@ public class InquiriesCommentDAO {
         DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/oracle");
         return ds.getConnection();
     }
+    //댓글 개수확인
+    public int countCommentsByPostId(int inqu_id) throws Exception {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM inquries_comment WHERE inqu_id = ?";
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, inqu_id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                count = rs.getInt(1);
+            }
+        }
+        return count;
+    }
+    
 
     // 댓글 조회 (게시글별)
     public List<InquiriesCommentDTO> selectByFbId(int fb_id) throws Exception {
