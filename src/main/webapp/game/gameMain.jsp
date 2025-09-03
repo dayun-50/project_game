@@ -209,7 +209,7 @@ html, body {
             	<button class="menu-btn" id="gmaeboard">게임게시판</button>
             	<button class="menu-btn" id="mypage">마이페이지</button>
 
-            	<button class="menu-btn">문의하기</button>
+            	<button class="menu-btn" id="QnAbtn">문의하기</button>
             	<button class="menu-btn" id="logout-btn">로그아웃</button>
 
        		</div>

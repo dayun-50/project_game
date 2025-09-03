@@ -29,6 +29,34 @@ public class Game1BoardDAO {
 		return ds.getConnection();
 	}
 	
+	public GameBoardDTO selectById(int game_seq) {
+	    GameBoardDTO dto = null;
+	    String sql = "SELECT * FROM game_board WHERE game_seq = ?";
+	    
+	    try (Connection conn = getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        
+	        pstmt.setInt(1, game_seq);
+	        ResultSet rs = pstmt.executeQuery();
+	        
+	        if (rs.next()) {
+	            dto = new GameBoardDTO(
+	                rs.getInt("game_seq"),
+	                rs.getInt("gameid"),
+	                rs.getString("gameboardtitle"),
+	                rs.getString("gamecoment"),
+	                rs.getString("gamewrtier"),
+	                rs.getString("game_board_date"),
+	                rs.getInt("view_count")
+	            );
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return dto;
+	}
+	
+	
 	//게임 1 게시글 insert
 	public int boardInsert(GameBoardDTO dto) throws Exception {
 		String sql = "insert into game_board values(game_board_seq.NEXTVAL,?,?,?,?,?,?)";
