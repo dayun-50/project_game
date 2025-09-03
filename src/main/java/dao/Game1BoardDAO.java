@@ -105,7 +105,6 @@ public class Game1BoardDAO {
 	}
 	
 	//네비사용 게임게시판 목록출력
-
 	public ArrayList<GameBoardDTO> selectFromTo(int from, int to, String gameid) throws Exception{
 		String sql="SELECT  * FROM (select game_board.*,  ROW_NUMBER() OVER (ORDER BY game_seq DESC) rn  FROM game_board where gameid = ?) sub WHERE rn BETWEEN ? AND ?";
 		try(Connection con = this.getConnection();
