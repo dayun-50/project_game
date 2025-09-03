@@ -72,30 +72,28 @@ pre { background: rgba(50, 50, 80, 0.8); border: 1px solid #5e72be; border-radiu
         <h4>댓글 <small>(${comentCount})</small></h4>
         <div class="comment-list">
             <c:forEach var="c" items="${comentList}">
-    <div class="comment-item">
-        <div class="comment-meta">
-            ${c.game_coment_writer} | ${c.game_coment_date}
-            <div class="comment-actions">
-                <c:if test="${sessionScope.nickname eq c.game_coment_writer}">
-                    <button type="button" class="updatebtn">수정</button>
-                    <form action="delete.GameComentController" method="post" style="display:inline;">
-                        <input type="hidden" name="seq" value="${c.game_comet_seq}" />
-                        <button type="submit">삭제</button>
-                    </form>
-                </c:if>
-            </div>
-        </div>
-        <div class="comment-contents" contenteditable="false">${c.game_coment}</div>
-    </div>
-</c:forEach>
+                <div class="comment-item">
+                    <div class="comment-meta">
+                        ${c.game_coment_writer} | ${c.game_coment_date}
+                        <div class="comment-actions">
+                            <c:if test="${sessionScope.nickname eq c.game_coment_writer}">
+                                <button type="button" class="updatebtn">수정</button>
+                                <!-- AJAX용 삭제 버튼 -->
+                                <button type="button" class="deletebtn" onclick="location.href='delete.GameComentController?seq=${c.game_comet_seq}&parentSeq=${dto.game_seq}'"> 삭제</button>
+                            </c:if>
+                        </div>
+                    </div>
+                    <div class="comment-contents" contenteditable="false">${c.game_coment}</div>
+                </div>
+            </c:forEach>
         </div>
 
         <!-- 댓글 등록 폼 -->
-     <form class="comment-form" action="comentInsert.GameComentController" method="post">
-    <input type="hidden" name="seq" value="${dto.game_seq}" />
-    <textarea name="coment" placeholder="댓글을 입력하세요..." required></textarea>
-    <button type="submit">댓글 등록</button>
-</form>
+        <form class="comment-form" action="comentInsert.GameComentController" method="post">
+            <input type="hidden" name="seq" value="${dto.game_seq}" />
+            <textarea name="coment" placeholder="댓글을 입력하세요..." required></textarea>
+            <button type="submit">댓글 등록</button>
+        </form>
     </div>
 </div>
 
@@ -181,6 +179,30 @@ $(document).on("click", ".cancelbtn", function () {
     c.find(".comment-actions").show();
     $(this).prev(".savebtn").remove();
     $(this).remove();
+});
+
+// 댓글 삭제 AJAX
+$(document).on("click", ".deletebtn", function () {
+    if(!confirm("정말 삭제하시겠습니까?")) return;
+
+    const seq = $(this).data("seq");
+    const commentItem = $(this).closest(".comment-item");
+
+    $.ajax({
+        url: "delete.GameComentController",
+        type: "POST",
+        data: { seq: seq },
+        success: function (result) {
+            if(result.trim() === "1"){
+                commentItem.remove();
+            } else {
+                alert("댓글 삭제에 실패했습니다.");
+            }
+        },
+        error: function () {
+            alert("서버 오류 발생");
+        }
+    });
 });
 </script>
 </body>
