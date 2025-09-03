@@ -222,7 +222,40 @@ a {
 text-decoration: none;
 color: inherit; 
 }
+/* 버튼 그룹: 가로 배치, 버튼 바로 옆으로 */
+.button-group {
+    display: flex;
+    justify-content: center; /* 그룹 자체를 가운데 정렬 */
+    gap: 2px; /* 버튼 사이 거의 붙이기 */
+    margin-top: 20px;
+}
 
+.button-group {
+    display: flex;
+    justify-content: center; /* 그룹 자체를 가운데 정렬 */
+    gap: 40px; /* 버튼 사이 간격 */
+    margin-top: 20px;
+    
+}
+
+.write-btn {
+    width: 120px; /* 버튼 폭 통일 */
+    padding: 10px 0;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, #9b59b6, #e91e63);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 15px #e91e63, inset 0 0 5px #9b59b6;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin: 0; /* 이전 auto 마진 제거 */
+}
+
+.write-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #e91e63, 0 0 50px #9b59b6;
+}
 
     </style>
 </head>
@@ -256,7 +289,7 @@ color: inherit;
                   <tr>   
                   	<td>${dto.game_seq }</td>
                     <td class="title">
-                    	<a href="/game1boradDetil.Game1Controller?seq=${dto.game_seq }">${dto.gameboardtitle }</a>
+                    	<a href="/game1boardDetail.Game1Controller?seq=${dto.game_seq}">${dto.gameboardtitle }</a>
                     </td>
                     <td>${dto.gamewrtier }</td>
                     <td>${dto.game_board_date }</td>
@@ -270,8 +303,10 @@ color: inherit;
        <div  class="pagination" id="pageNavi"></div>
 
 
-        <div class="write-btn" id="btn">글작성</div>
-        <div class="write-btn" id="backbtn">뒤로가기</div>
+       <div class="button-group">
+    <div class="write-btn" id="btn">글작성</div>
+    <div class="write-btn" id="backbtn">뒤로가기</div>
+</div>
     </div>
 
     <script>
