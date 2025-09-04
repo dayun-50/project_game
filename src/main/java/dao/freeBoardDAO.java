@@ -62,6 +62,7 @@ public class freeBoardDAO {
             }
         }
     }
+    
 
     // Update
     public boolean update(freeBoardDTO dto) throws Exception {
