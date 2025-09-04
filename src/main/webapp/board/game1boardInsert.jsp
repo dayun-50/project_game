@@ -68,6 +68,16 @@
     // 제출 전 값 주입 + 더블서밋 방지 + 에디터 초기화 지연 대비
     let submitting = false;
     document.getElementById('btnform').addEventListener('submit', async function (e) {
+    	let postname = document.getElementById('postnameInput').value;
+        let content = document.getElementById('editorContent').value;
+    	
+    	if(postname === "" || content === ""){
+    		e.preventDefault(); 
+    		alert("제목과 내용을 모두 입력해주세요!");
+    		return;
+    	}
+    	
+    	
       if (submitting) { e.preventDefault(); return; }
       let title = document.getElementById('postname').innerText.trim();
       let html  = editor.getHTML().trim();
@@ -96,6 +106,9 @@
       const gid = document.querySelector('input[name="gameid"]')?.value || 1;
       location.href = `<c:url value='/game1borad.Game1Controller'/>?gameid=${gid}&ts=${Date.now()}`;
     });
+    
+   
+    
   </script>
 </body>
 </html>

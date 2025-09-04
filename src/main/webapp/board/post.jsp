@@ -167,6 +167,15 @@ const editor = new toastui.Editor({
 
 // 제목과 내용 히든 필드에 복사
 document.getElementById('btnform').addEventListener('submit', function(e){
+	let postname = document.getElementById('postnameInput').value;
+    let content = document.getElementById('editorContent').value;
+	
+	if(postname === "" || content === ""){
+		e.preventDefault(); 
+		alert("제목과 내용을 모두 입력해주세요!");
+		return;
+	}
+	
     document.getElementById('postnameInput').value = document.getElementById('postname').innerText;
     document.getElementById('editorContent').value = editor.getHTML();
 });
