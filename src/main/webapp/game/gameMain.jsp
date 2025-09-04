@@ -10,6 +10,13 @@
 <!-- 구글 폰트 불러오기: Press Start 2P, 레트로 게임 느낌 -->
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+<script>
+    const contextPath = "${pageContext.request.contextPath}";
+</script>
+<script src="${pageContext.request.contextPath}/sjgame/gamestart.js"></script>
+<script src="${pageContext.request.contextPath}/sjgame/gameplay.js"></script>
+<script src="${pageContext.request.contextPath}/sjgame/gameover.js"></script>
 <style>
 html, body {
     margin:0; padding:0; width:100%; height:100%;
@@ -74,7 +81,18 @@ html, body {
 }
 
 /* 화면 */
-.screen { flex-grow:1; background: linear-gradient(to bottom, #fffae5,#e0f7ff); margin:3% 1.5%; border-radius:2vw; position: relative; overflow: hidden; display:flex; justify-content:center; align-items:flex-end; box-shadow: inset 0 0 20px #fff5, 0 0 20px #000; font-size:20px; }
+.screen { 
+flex-grow:1; 
+background: linear-gradient(to bottom, #fffae5,#e0f7ff); 
+margin:3% 1.5%; 
+border-radius:1vw; 
+position: relative; 
+overflow: hidden; 
+display:flex; 
+justify-content:center; 
+align-items:flex-end; 
+box-shadow: inset 0 0 20px #fff5, 0 0 20px #000; 
+font-size:20px; }
 
 /* 버튼 */
 .btn-round { background-color:#fff; border:3px solid #555; border-radius:50%; color:#222; cursor:pointer; box-shadow:2px 2px 0 #333; transition: transform 0.05s, box-shadow 0.05s; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.2vw; padding:0.5vw; z-index:1; }
@@ -182,6 +200,7 @@ html, body {
     z-index: 10;
     opacity: 0;
     transition: opacity 0.3s ease;
+    pointer-events: none; /* 안보일 때 클릭 불가 */
 }
 
 #menu-overlay.hide {
@@ -319,6 +338,31 @@ $("#gmaeboard").on("click", function(){ //게임게시판 이동
 //로그아웃 버튼 클릭
 $("#logout-btn").on("click", function() {
     window.location.href = "/logout"; // 서블릿 주소
+});
+
+$("#btn-b").on("click", function() {
+    // 기존 게임 객체가 있으면 삭제
+    if(window.game) {
+        window.game.destroy(true); // 이전 Phaser 캔버스 제거
+    }
+
+    // Phaser 게임 생성
+    let config = {
+        type: Phaser.AUTO,
+        parent: "screen",  // #screen div 안에 캔버스 붙이기
+        width: 1280,
+        height: 720,
+        physics: {
+            default: "arcade",
+            arcade: {}
+        },
+        scene: [gamestart, gameplay, gameover],
+        scale: {
+            mode: Phaser.Scale.RESIZE,  // RESIZE 모드 사용
+            autoCenter: Phaser.Scale.CENTER_BOTH
+        }
+    };
+    window.game = new Phaser.Game(config);
 });
 </script>
 </body>

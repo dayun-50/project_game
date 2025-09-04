@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seung Jin Game</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.90.0/phaser.min.js"></script>
+    <script src="gamestart.js"></script>
+    <script src="gameplay.js"></script>
+    <script src="gameover.js"></script>
+    <style>
+        #gamebox {
+    width: 100vw;   /* 브라우저 창 전체 너비 */
+    height: 100vh;  /* 브라우저 창 전체 높이 */
+    border: 1px solid black;
+}
+    </style>
+</head>
+<body>
+    <div id="gamebox"></div>
+    <script>
+    let config = {
+    	    type: Phaser.AUTO,
+    	    parent: "gamebox",   // #gamebox div 안에 게임 붙이기
+    	    width: 1280,
+    	    height: 720,
+    	    physics: {
+    	        default: "arcade",
+    	        arcade:{
+    	            //debug:true
+    	        }
+    	    },
+    	    scene: [gamestart, gameplay, gameover],
+    	    scale: {
+    	        mode: Phaser.Scale.FIT,
+    	        autoCenter: Phaser.Scale.CENTER_BOTH
+    	    }
+    	};
+
+    	// 글로벌 변수에 저장
+    	if(window.game) {
+    	    window.game.destroy(true);  // 기존 게임이 있으면 삭제
+    	}
+    	window.game = new Phaser.Game(config);
+
+    </script>
+</body>
+</html>
