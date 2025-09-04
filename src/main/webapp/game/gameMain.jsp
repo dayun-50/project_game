@@ -102,6 +102,7 @@ html, body {
 .tutorial-text { margin-top:0.5vw; font-size:1.5vw; background:rgba(0,0,0,0.6); padding:0.3vw 0.6vw; border-radius:0.5vw; text-align:center; }
 
 .menu-buttons {
+
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
@@ -201,6 +202,9 @@ html, body {
         </div>
     </div>
     <div class="screen" id="screen"> 
+     <!-- 게임 표시 영역 -->
+  <iframe id="game-frame" src="" style="width:100%; height:100%; border:none; display:none; position:absolute; inset:0; z-index:1;"></iframe>
+    
     <!-- 메뉴 오버레이 -->
     <div id="menu-overlay">
         	<div class="menu-buttons">
