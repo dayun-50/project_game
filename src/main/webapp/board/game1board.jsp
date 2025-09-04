@@ -7,6 +7,8 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<!-- jQuery -->
 <style>
         body {
             background-color: #0c0c1a;
@@ -17,6 +19,14 @@
             padding-top: 50px;
             overflow-x: hidden;
         }
+        
+         #editor {
+            width: 100%;
+            height: 60vh;
+            /* 브라우저 높이에 비례 */
+            margin: auto;
+        }
+        
 
         .container {
             width: 50%;
@@ -211,19 +221,31 @@
         <div class="pre" id="textbox">
 			${list[0].gamecoment }
         </div>
+	<form action="/game1BoradInsert.Game1Controller" method="post" id="btnform">
+		
+		<div id="box">
+    	<div id="postname" contenteditable="true"></div>
+    	<div id="editor"></div>
 
-        <button class="btn-back" id="backList">목록으로</button>
+
+		<input type="hidden" name="title" id="postnameInput">
+  		<input type="hidden" name="coment" id="editorInput">
+  		<input type="hidden" name="gameid" value="${gameid }">
+    
+		</div>
+		
+        <button class="btn-back" id="backList" type="button">목록으로</button>
       	<c:choose>
    			 <c:when test="${result == 1}">
    			 	<input type="hidden" id="seq" name="seq" value="${list[0].game_seq }">
-        		<button class="btn-edit" id="updtn">수정하기</button>
-       			 <button class="btn-delete" id="dlebtn">삭제하기</button>
+        		<button class="btn-edit" id="updtn" type="button">수정하기</button>
+       			 <button class="btn-delete" id="dlebtn" type="button">삭제하기</button>
        			 
        			<button class="btn-edit" id="complebtn">수정완료</button>
-       			 <button class="btn-delete" id="backbtn">수정취소</button>
+       			 <button class="btn-delete" id="backbtn" type="button">수정취소</button>
    			 </c:when>
 		</c:choose>
-        
+      </form>  
     
        
         
@@ -296,6 +318,27 @@
         createStars(500);
         setInterval(createShootingStar, 2000);
         
+        const editor = new toastui.Editor({
+            el: document.querySelector('#editor'),
+            height: '500px',
+            initialEditType: 'wysiwyg',
+            previewStyle: 'vertical',
+            language: 'ko-KR',
+            placeholder: '내용을 입력하세요',
+            hooks: {
+                addImageBlobHook: function(blob, callback) {
+                    const reader = new FileReader();
+                    reader.onloadend = function() {
+                        const base64data = reader.result;
+                        callback(base64data, '이미지'); // Base64 이미지 삽입
+                    }
+                    reader.readAsDataURL(blob);
+                    return false; // 서버 업로드 방지, 로컬 Base64 삽입
+                }
+            }
+        });
+        
+        
         $("#backList").on("click", function (){ //목록으로
         	window.location.href = "/game1borad.Game1Controller"
         });
@@ -343,13 +386,14 @@
         	   }
         });
         
-        $("#complebtn, #backbtn").hide(); //글 수정완료/수정취소 버튼
+        $("#complebtn, #backbtn, #box").hide(); //글 수정완료/수정취소 버튼
         
         $("#updtn").on("click", function(){ //글 수정버튼 클릭시
-        	$("#complebtn, #backbtn").show();
+        	$("#complebtn, #backbtn, #box").show();
         	$("#updtn, #dlebtn").hide();
         	
-        	$("#textbox").attr("contenteditable", true); 
+        	$("#textbox").hide(); 
+        	
         	
         });
          

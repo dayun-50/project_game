@@ -39,9 +39,8 @@ public class Game1BoardController extends HttpServlet {
 				String title = request.getParameter("title");
 				String wrtier = mdao.nicknameSerch(id);
 				String coment = request.getParameter("coment");
-				String reComent = Jsoup.clean(coment, Safelist.basicWithImages());
 				
-				gbdao.boardInsert(new GameBoardDTO(0,gameid,title,reComent,wrtier,"",0));
+				gbdao.boardInsert(new GameBoardDTO(0,gameid,title,coment,wrtier,"",0));
 				response.sendRedirect("/game1borad.Game1Controller");
 				
 			}else if(cmd.equals("/game1borad.Game1Controller")){ //게임 1 게시판 목록 출력

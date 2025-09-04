@@ -6,12 +6,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <title>Document</title>
- <!-- TOAST UI Editor CDN -->
-    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-    <!-- 한국어 패치 -->
-    <script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.min.js"></script>
+<!-- ToastUI Editor 라이브러리 -->
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- TOAST UI Editor CSS -->
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 
@@ -202,10 +201,10 @@
 
 
     <script>
-    $("#btnform").on("submit", function() { //div 내용 뽑아오기
-        $("#postnameInput").val($("#postname").html()); 
-        $("#editorInput").val($("#editor").html()); 
-     });
+    document.querySelector('#postdone').addEventListener('click', function() {
+        document.querySelector('#postnameInput').value = document.querySelector('#postname').innerText;
+        document.querySelector('#editorInput').value = editor.getHTML();
+    });
     
     $("#cancel").on("click", function(){
     	window.location.href = "/game1borad.Game1Controller"
@@ -216,46 +215,22 @@
         height: '500px',
         initialEditType: 'wysiwyg',
         previewStyle: 'vertical',
-        language: 'ko-KR', // 한국어 적용
+        language: 'ko-KR',
         placeholder: '내용을 입력하세요',
-             // 이미지가 Base64 형식으로 입력되는 것 가로채주는 옵션
-          hooks: {
-             addImageBlobHook: (blob, callback) => {
-                // blob : Java Script 파일 객체
-                //console.log(blob);
-                
-                const formData = new FormData();
-                 formData.append('image', blob);
-                 
-                 let url = '/images/';
-                  $.ajax({
-                       type: 'POST',
-                       enctype: 'multipart/form-data',
-                       url: '/writeTest.do',
-                       data: formData,
-                       dataType: 'json',
-                       processData: false,
-                       contentType: false,
-                       cache: false,
-                       timeout: 600000,
-                       success: function(data) {
-                          //console.log('ajax 이미지 업로드 성공');
-                          url += data.filename;
-                          
-                          // callback : 에디터(마크다운 편집기)에 표시할 텍스트, 뷰어에는 imageUrl 주소에 저장된 사진으로 나옴
-                       // 형식 : ![대체 텍스트](주소)
-                          callback(url, '사진 대체 텍스트 입력');
-                       },
-                       error: function(e) {
-                          //console.log('ajax 이미지 업로드 실패');
-                          //console.log(e.abort([statusText]));
-                          
-                          callback('image_load_fail', '사진 대체 텍스트 입력');
-                       }
-                    });
-             }
-          }
-      });
+        hooks: {
+            addImageBlobHook: function(blob, callback) {
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    const base64data = reader.result;
+                    callback(base64data, '이미지'); // Base64 이미지 삽입
+                }
+                reader.readAsDataURL(blob);
+                return false; // 서버 업로드 방지, 로컬 Base64 삽입
+            }
+        }
+    });
+    
+    
         function createStars(count, topRange = [0, 100], leftRange = [0, 100], sizeRange = [1, 3]) {
             for (let i = 0; i < count; i++) {
                 const s = document.createElement('div');
