@@ -14,19 +14,51 @@
 
   <style>
     body { background:#0c0c1a; color:#fff; font-family:Arial,sans-serif; display:flex; justify-content:center; padding:40px 0; }
-    .con { width:90%; max-width:1000px; background:rgba(20,20,40,.85); padding:24px; border-radius:12px; }
+    .con {  border: 1px solid black;
+        width: 90%;
+        max-width: 1000px;
+        margin: auto; }
     #postname { height:48px; background:#dad9d9; color:#000; border-radius:8px; padding:0 12px; display:flex; align-items:center; }
     #postname:empty::before{ content:"제목을 입력하세요"; color:#888; }
     #editor{ background:#fff; color:#000; margin-top:12px; border-radius:8px; }
     .btns{ display:flex; gap:10px; justify-content:flex-end; margin-top:14px; }
     button{ height:44px; padding:0 16px; border:none; border-radius:8px; font-weight:700; color:#fff;
             background:linear-gradient(135deg,#9b59b6,#e91e63); cursor:pointer; }
+      #logo { width:100px; height:100px; }
+      #line { border:1px solid #dad9d9; margin-bottom:20px; }
+     h1 {
+        width:100%;
+        height:100%;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+            .star,
+    .shooting-star {
+        position: fixed;
+        z-index: 0;
+        border-radius: 50%;
+    }
+
+    .star {
+        animation: twinkle linear infinite;
+        background: white;
+    }
+
+    @keyframes twinkle {
+        0%,100% { opacity:0.1; }
+        25% { opacity:0.6; }
+        50% { opacity:1; }
+        75% { opacity:0.4; }
+    }
+            
   </style>
 </head>
 <body>
   <div class="con">
+   <h1><img src="/board/로고.png" id="logo"> 혜빈이와 아이들 </h1>
     <h2>게시판 글쓰기</h2>
-
+ 	<div id="line"></div>
     <!-- ✅ 액션 경로: /game1BoradInsert.Game1Controller (오타 포함) -->
     <form action="<c:url value='/game1BoradInsert.Game1Controller'/>" method="post" id="btnform">
       <div id="postname" contenteditable="true"></div>
@@ -93,6 +125,25 @@
       const gid = document.querySelector('input[name="gameid"]')?.value || 1;
       location.href = `<c:url value='/game1borad.Game1Controller'/>?gameid=${gid}&ts=${Date.now()}`;
     });
+    
+ // 별 생성 기능 유지
+    function createStars(count, topRange = [0,100], leftRange=[0,100], sizeRange=[1,3]) {
+        for (let i=0; i<count; i++){
+            const s = document.createElement('div');
+            s.className='star';
+            const size = Math.random()*(sizeRange[1]-sizeRange[0])+sizeRange[0];
+            s.style.width = size+'px';
+            s.style.height = size+'px';
+            s.style.top = (Math.random()*(topRange[1]-topRange[0])+topRange[0])+'vh';
+            s.style.left = (Math.random()*(leftRange[1]-leftRange[0])+leftRange[0])+'vw';
+            s.style.background=`rgba(255,255,255,${Math.random()})`;
+            s.style.animationDuration=(1+Math.random()*3)+'s';
+            document.body.appendChild(s);
+        }
+    }
+
+    createStars(800);
+    createStars(400, [20,50], [20,80], [1,2]);
   </script>
 </body>
 </html>
