@@ -334,6 +334,7 @@ html, body {
 	gap: 20px;
 	width: 100%;
 	align-items: flex-start;
+	
 }
 
 .game-card.reverse {
@@ -633,11 +634,17 @@ for(let i = 0; i < 20; i++){  // 원하는 개수
 					<div class="game-image"></div>
 				</div>
 				<div class="game-info">
+
+
 					<h3 class="brother">Kaple Story</h3>
 					<p class="kaple">궁지에 몰린 검은 마법사는 결국 금단의 지식에 손을댔고.... 그렇게 키메라를 만들어 내게 되는데...
 					메이플 월드의 평화를 위해 키메라를 무찔러라!!!</p>
+
 				</div>
 			</div>
+			
+			
+			
 
 			<div class="play-btn-container">
 				<button id="play-btn">즐기러 가기</button>
@@ -656,6 +663,11 @@ $("#signup-btn").on("click", function(){ //회원가입 페이지이동
 $("#login-btn").on("click", function(){ //로그인 페이지이동
 	window.location.href = "/loginpgae.MembersController";
 });
+
+
+
+
+
 
 $("#play-btn").on("click", function(){ // 즐기러가기 버튼
 	 $('html, body').animate({ scrollTop: 0 }, 300); // 300ms 동안 부드럽게 스크롤
