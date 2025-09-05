@@ -167,17 +167,18 @@ const editor = new toastui.Editor({
 
 // 제목과 내용 히든 필드에 복사
 document.getElementById('btnform').addEventListener('submit', function(e){
-	let postname = document.getElementById('postnameInput').value;
-    let content = document.getElementById('editorContent').value;
+	let title = document.getElementById('postname').innerText.trim();
+	let content = editor.getHTML().trim();
+	const isEmptyContent = !content || /^<p>(\s|&nbsp;|<br>)*<\/p>$/.test(content);
 	
-	if(postname === "" || content === ""){
-		e.preventDefault(); 
+	if(title === "" || isEmptyContent){
 		alert("제목과 내용을 모두 입력해주세요!");
+		e.preventDefault(); 
 		return;
 	}
 	
-    document.getElementById('postnameInput').value = document.getElementById('postname').innerText;
-    document.getElementById('editorContent').value = editor.getHTML();
+	document.getElementById('postnameInput').value = title;
+    document.getElementById('editorContent').value = content;
 });
 
 // 취소 버튼

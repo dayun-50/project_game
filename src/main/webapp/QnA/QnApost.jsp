@@ -86,8 +86,9 @@ document.getElementById('btnform').addEventListener('submit', function(e){
 	let title = document.getElementById('postname').innerText.trim();
 	let content = editor.getHTML().trim();
 	let password = document.getElementById('password').value.trim();
-    
-    if(title === "" || content === "" || password === ""){
+	const isEmptyContent = !content || /^<p>(\s|&nbsp;|<br>)*<\/p>$/.test(content);
+	
+    if(title === "" || isEmptyContent || password === ""){
         alert("제목과 내용을 모두 입력해주세요!");
         e.preventDefault(); 
         return;
