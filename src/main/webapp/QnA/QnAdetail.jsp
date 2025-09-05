@@ -22,11 +22,20 @@ pre { background: rgba(50, 50, 80, 0.8); border: 1px solid #5e72be; border-radiu
 .comment-meta { font-size: 0.9em; color: #b276d1; margin-bottom: 5px; }
 .comment-contents { color: #e0e8ff; }
 .post-content img { max-width: 100%; height: auto; display: block; margin: 10px 0; }
-.star, .shooting-star { position: fixed; z-index: 0; border-radius: 50%; }
-.star { width: 2px; height: 2px; background: white; animation: twinkle linear infinite; }
-@keyframes twinkle { 0%,100%{opacity:0.1;}25%{opacity:0.6;}50%{opacity:1;}75%{opacity:0.4;} }
-.shooting-star { width: 2px; height: 10px; background: white; animation: shootingStar linear forwards; }
-@keyframes shootingStar { 0%{transform:translateY(-5vh) translateX(0) rotate(0deg);opacity:1;}100%{transform:translateY(120vh) translateX(50px) rotate(45deg);opacity:0;} }
+.star {
+        position: fixed;
+        width: 2px;
+        height: 2px;
+        background: white;
+        border-radius: 50%;
+        animation: twinkle 3s infinite ease-in-out;
+        z-index: 0;
+    }
+
+    @keyframes twinkle {
+        0%, 100% { opacity: 0.2; }
+        50% { opacity: 1; }
+    }
 </style>
 </head>
 <body>
@@ -128,31 +137,15 @@ document.getElementById('deletePostBtn')?.addEventListener('click', function() {
     }
 });
 
-// 별 효과 생성
-function createStars(count){
-    for(let i=0;i<count;i++){
-        const s=document.createElement('div'); // 별 div 생성
-        s.className='star';
-        const size=Math.random()*2+1; // 크기 랜덤
-        s.style.width=size+'px';
-        s.style.height=size+'px';
-        s.style.top=Math.random()*100+'vh';
-        s.style.left=Math.random()*100+'vw';
-        s.style.background=`rgba(255,255,255,${Math.random()})`; // 투명도 랜덤
-        s.style.animationDuration=(1+Math.random()*3)+'s'; // 애니메이션 속도 랜덤
-        document.body.appendChild(s);
-    }
+//별 배경
+for (let i = 0; i < 150; i++) {
+    const s = document.createElement('div'); 
+    s.className = 'star';
+    s.style.top = Math.random() * 100 + 'vh';
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.animationDuration = (2 + Math.random() * 3) + 's';
+    document.body.appendChild(s);
 }
-function createShootingStar(){
-    const star=document.createElement('div');
-    star.className='shooting-star';
-    star.style.left=Math.random()*100+'vw';
-    star.style.animationDuration=(1+Math.random()*1)+'s';
-    document.body.appendChild(star);
-    star.addEventListener('animationend',()=>star.remove()); // 애니메이션 끝나면 제거
-}
-createStars(500); // 고정 별 생성
-setInterval(createShootingStar,2000); // 2초마다 유성 생성
 </script>
 </body>
 </html>

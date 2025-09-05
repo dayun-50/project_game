@@ -340,7 +340,6 @@ $("#logout-btn").on("click", function() {
     window.location.href = "/logout"; // 서블릿 주소
 });
 
-
 </script>
 </body>
 </html>

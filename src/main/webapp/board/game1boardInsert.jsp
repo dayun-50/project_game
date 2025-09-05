@@ -26,6 +26,7 @@
     .btns{ display:flex; gap:10px; justify-content:flex-end; margin-top:14px; }
     button{ height:44px; padding:0 16px; border:none; border-radius:8px; font-weight:700; color:#fff;
             background:linear-gradient(135deg,#9b59b6,#e91e63); cursor:pointer; }
+
              #logo { width:100px; height:100px; }
       #line { border:1px solid #dad9d9; margin-bottom:20px; }
      h1 {
@@ -52,6 +53,7 @@
         25% { opacity:0.6; }
         50% { opacity:1; }
         75% { opacity:0.4; }
+
     }
   </style>
 </head>
@@ -133,6 +135,7 @@
       location.href = `<c:url value='/game1borad.Game1Controller'/>?gameid=${gid}&ts=${Date.now()}`;
     });
     
+
  // 별 생성 기능 유지
     function createStars(count, topRange = [0,100], leftRange=[0,100], sizeRange=[1,3]) {
         for (let i=0; i<count; i++){
@@ -152,6 +155,7 @@
     createStars(800);
     createStars(400, [20,50], [20,80], [1,2]);
     
+
   </script>
 </body>
 </html>

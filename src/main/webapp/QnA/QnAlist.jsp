@@ -25,11 +25,21 @@
         .post-title { color: #ffffff; text-decoration: none; }
         .post-title:hover { color: #ff9800; }
         .pagination { text-align: center; margin-top: 20px; font-weight: bold; color: #b276d1; }
-        .star, .shooting-star { position: fixed; z-index: 0; border-radius: 50%; }
-        .star { animation: twinkle linear infinite; background: white; }
-        @keyframes twinkle { 0%,100%{opacity:0.1} 25%{opacity:0.6} 50%{opacity:1} 75%{opacity:0.4} }
-        .shooting-star { width:2px; height:10px; background:white; animation: shootingStar linear forwards; }
-        @keyframes shootingStar { 0% { transform: translateY(-5vh) translateX(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(120vh) translateX(50px) rotate(45deg); opacity: 0; } }
+        .star {
+        position: fixed;
+        width: 2px;
+        height: 2px;
+        background: white;
+        border-radius: 50%;
+        animation: twinkle 3s infinite ease-in-out;
+        z-index: 0;
+    }
+
+    @keyframes twinkle {
+        0%, 100% { opacity: 0.2; }
+        50% { opacity: 1; }
+    }
+       
     </style>
 </head>
 
@@ -98,33 +108,16 @@
     </div>
 
     <script>
-        function createStars(count, topRange=[0,100], leftRange=[0,100], sizeRange=[1,3]) {
-            for(let i=0;i<count;i++){
-                const s=document.createElement('div');
-                s.className='star';
-                const size=Math.random()*(sizeRange[1]-sizeRange[0])+sizeRange[0];
-                s.style.width=size+'px';
-                s.style.height=size+'px';
-                s.style.top=(Math.random()*(topRange[1]-topRange[0])+topRange[0])+'vh';
-                s.style.left=(Math.random()*(leftRange[1]-leftRange[0])+leftRange[0])+'vw';
-                s.style.background=`rgba(255,255,255,${Math.random()})`;
-                s.style.animationDuration=(1+Math.random()*3)+'s';
-                document.body.appendChild(s);
-            }
-        }
+ // 별 배경
+    for (let i = 0; i < 150; i++) {
+        const s = document.createElement('div'); 
+        s.className = 'star';
+        s.style.top = Math.random() * 100 + 'vh';
+        s.style.left = Math.random() * 100 + 'vw';
+        s.style.animationDuration = (2 + Math.random() * 3) + 's';
+        document.body.appendChild(s);
+    }
 
-        function createShootingStar(){
-            const star=document.createElement('div');
-            star.className='shooting-star';
-            star.style.left=Math.random()*100+'vw';
-            star.style.animationDuration=(1+Math.random()*1)+'s';
-            document.body.appendChild(star);
-            star.addEventListener('animationend',()=>star.remove());
-        }
-
-        createStars(800);
-        createStars(400,[20,50],[20,80],[1,2]);
-        setInterval(createShootingStar,2000);
     </script>
 </body>
 </html>
