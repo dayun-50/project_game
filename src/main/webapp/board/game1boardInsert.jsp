@@ -85,7 +85,7 @@
 
 
   <script>
-  
+
 //====== 이미지 압축/리사이즈 설정 ======
   const IMG_MAX_WIDTH = 1280;         // 긴 변 기준 최대 폭
   const JPEG_QUALITY = 0.82;          // 0~1 (품질-용량 트레이드오프)
@@ -173,10 +173,9 @@
     }
     return dataUrl;
   }
-  
-  
-  
-//====== Toast UI Editor 초기화 (Base64 압축 삽입) ======
+
+  //====== Toast UI Editor 초기화 (Base64 압축 삽입) ======
+
   const editor = new toastui.Editor({
     el: document.querySelector('#editor'),
     height: '500px',

@@ -233,26 +233,31 @@ async function compressToBase64(file) {
   return dataUrl;
 }
 
+
+
+
+//====== Toast UI Editor 초기화 (Base64 압축 삽입) ======
 const editor = new toastui.Editor({
-	  el: document.querySelector('#editor'),
-	  height: '500px',
-	  initialEditType: 'wysiwyg',
-	  previewStyle: 'vertical',
-	  language: 'ko-KR',
-	  placeholder: '내용을 입력하세요',
-	  hooks: {
-	    addImageBlobHook: async (blob, callback) => {
-	      try {
-	        const base64 = await compressToBase64(blob);
-	        callback(base64, '이미지'); // 압축/리사이즈된 Base64 삽입
-	      } catch (e) {
-	        console.error(e);
-	        alert('이미지 처리 중 오류가 발생했습니다.');
-	      }
-	      return false; // 서버 업로드 방지 (Base64만 사용)
-	    }
-	  }
-	});
+  el: document.querySelector('#editor'),
+  height: '500px',
+  initialEditType: 'wysiwyg',
+  previewStyle: 'vertical',
+  language: 'ko-KR',
+  placeholder: '내용을 입력하세요',
+  hooks: {
+    addImageBlobHook: async (blob, callback) => {
+      try {
+        const base64 = await compressToBase64(blob);
+        callback(base64, '이미지'); // 압축/리사이즈된 Base64 삽입
+      } catch (e) {
+        console.error(e);
+        alert('이미지 처리 중 오류가 발생했습니다.');
+      }
+      return false; // 서버 업로드 방지 (Base64만 사용)
+    }
+  }
+});
+
 
 // 제목과 내용 히든 필드에 복사
 document.getElementById('btnform').addEventListener('submit', function(e){
