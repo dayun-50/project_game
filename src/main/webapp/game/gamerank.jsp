@@ -33,6 +33,8 @@
         z-index: 0;
     }
 
+
+
     @keyframes twinkle {
         0%, 100% { opacity: 0.2; }
         50% { opacity: 1; }
@@ -147,6 +149,8 @@
         color: #4c9aff;
         transform: scale(1.2);
     }
+    
+    
  
 </style>
 </head>
@@ -274,6 +278,8 @@ for (let i = 0; i < 150; i++) {
     s.style.animationDuration = (2 + Math.random() * 3) + 's';
     document.body.appendChild(s);
 }
+
+
 </script>
 </body>
 </html>
