@@ -10,13 +10,13 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import dto.freeBoardDTO;
+import dto.FreeBoardDTO;
 
-public class freeBoardDAO {
-    private static freeBoardDAO instance;
+public class FreeBoardDAO {
+    private static FreeBoardDAO instance;
 
-    public synchronized static freeBoardDAO getInstance() {
-        if(instance == null) instance = new freeBoardDAO();
+    public synchronized static FreeBoardDAO getInstance() {
+        if(instance == null) instance = new FreeBoardDAO();
         return instance;
     }
 
@@ -27,7 +27,7 @@ public class freeBoardDAO {
     }
 
     // Create
-    public boolean insert(freeBoardDTO dto) throws Exception {
+    public boolean insert(FreeBoardDTO dto) throws Exception {
         String sql = "insert into freeBoard(fb_id, fb_user_name, fb_Title, fb_write, fb_date) "
                    + "values(freeBoard_seq.NEXTVAL, ?, ?, ?, ?)";
         try(Connection con = this.getConnection();
@@ -41,14 +41,14 @@ public class freeBoardDAO {
     }
 
     // Read - 단일 조회
-    public freeBoardDTO selectById(int fb_id) throws Exception {
+    public FreeBoardDTO selectById(int fb_id) throws Exception {
         String sql = "select * from freeBoard where fb_id=?";
         try(Connection con = this.getConnection();
             PreparedStatement stat = con.prepareStatement(sql)) {
             stat.setInt(1, fb_id);
             try(ResultSet rs = stat.executeQuery()) {
                 if(rs.next()) {
-                    freeBoardDTO dto = new freeBoardDTO(
+                    FreeBoardDTO dto = new FreeBoardDTO(
                         rs.getInt("fb_id"),
                         rs.getString("fb_user_name"),
                         rs.getString("fb_Title"),
@@ -65,7 +65,7 @@ public class freeBoardDAO {
     
 
     // Update
-    public boolean update(freeBoardDTO dto) throws Exception {
+    public boolean update(FreeBoardDTO dto) throws Exception {
         String sql = "update freeBoard set fb_Title=?, fb_write=? where fb_id=?";
         try(Connection con = this.getConnection();
             PreparedStatement stat = con.prepareStatement(sql)) {
@@ -97,7 +97,7 @@ public class freeBoardDAO {
     }
 
     // 페이지 단위 조회
-    public List<freeBoardDTO> selectPage(int start, int end) throws Exception {
+    public List<FreeBoardDTO> selectPage(int start, int end) throws Exception {
         String sql = "SELECT * FROM (" +
                      " SELECT ROWNUM rnum, a.* FROM (" +
                      "  SELECT * FROM freeBoard ORDER BY fb_id DESC" +
@@ -108,9 +108,9 @@ public class freeBoardDAO {
             stat.setInt(1, end);
             stat.setInt(2, start);
             try(ResultSet rs = stat.executeQuery()) {
-                List<freeBoardDTO> list = new ArrayList<>();
+                List<FreeBoardDTO> list = new ArrayList<>();
                 while(rs.next()) {
-                    freeBoardDTO dto = new freeBoardDTO(
+                    FreeBoardDTO dto = new FreeBoardDTO(
                         rs.getInt("fb_id"),
                         rs.getString("fb_user_name"),
                         rs.getString("fb_Title"),

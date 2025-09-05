@@ -2,7 +2,7 @@ package dto;
 
 import java.sql.Timestamp;
 
-public class freeBoardDTO {
+public class FreeBoardDTO {
 	;private int fb_id;
 	private String fb_user_name;
 	private String fb_Title;
@@ -10,7 +10,7 @@ public class freeBoardDTO {
 	private Timestamp fb_date;
 	private int view_count;
 	// 글쓰기용 생성자
-	public freeBoardDTO(String fb_user_name, String fb_Title, String fb_write, Timestamp fb_date) {
+	public FreeBoardDTO(String fb_user_name, String fb_Title, String fb_write, Timestamp fb_date) {
 		this.fb_user_name = fb_user_name;
 		this.fb_Title = fb_Title;
 		this.fb_write = fb_write;
@@ -18,14 +18,14 @@ public class freeBoardDTO {
 	}
 
 	// 수정용 생성자
-	public freeBoardDTO(int fb_id, String fb_Title, String fb_write) {
+	public FreeBoardDTO(int fb_id, String fb_Title, String fb_write) {
 		this.fb_id = fb_id;
 		this.fb_Title = fb_Title;
 		this.fb_write = fb_write;
 	}
 
 	// 전체 생성자
-	public freeBoardDTO(int fb_id, String fb_user_name, String fb_Title, String fb_write, Timestamp fb_date) {
+	public FreeBoardDTO(int fb_id, String fb_user_name, String fb_Title, String fb_write, Timestamp fb_date) {
 		this.fb_id = fb_id;
 		this.fb_user_name = fb_user_name;
 		this.fb_Title = fb_Title;

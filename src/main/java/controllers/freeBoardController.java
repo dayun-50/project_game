@@ -13,12 +13,12 @@ import javax.servlet.http.HttpSession;
 
 import dao.FreeCommentDAO;
 import dao.MembersDAO;
-import dao.freeBoardDAO;
+import dao.FreeBoardDAO;
 import dto.FreeCommentDTO;
-import dto.freeBoardDTO;
+import dto.FreeBoardDTO;
 
 @WebServlet("*.free")
-public class freeBoardController extends HttpServlet {
+public class FreeBoardController extends HttpServlet {
 
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       doAction(request, response);
@@ -31,7 +31,7 @@ public class freeBoardController extends HttpServlet {
    protected void doAction(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       request.setCharacterEncoding("UTF-8");
       String cmd = request.getRequestURI();
-      freeBoardDAO dao = freeBoardDAO.getInstance();
+      FreeBoardDAO dao = FreeBoardDAO.getInstance();
       MembersDAO mdao = MembersDAO.getInstance();
       HttpSession session = request.getSession(); 
       
@@ -44,7 +44,7 @@ public class freeBoardController extends HttpServlet {
             String fb_write = request.getParameter("write");
             Timestamp fb_date = new Timestamp(System.currentTimeMillis());
             
-            freeBoardDTO dto = new freeBoardDTO(fb_user_name, fb_Title, fb_write, fb_date);
+            FreeBoardDTO dto = new FreeBoardDTO(fb_user_name, fb_Title, fb_write, fb_date);
             dao.insert(dto);
             response.sendRedirect("/list.free");
             
@@ -62,7 +62,7 @@ public class freeBoardController extends HttpServlet {
             int start = (page - 1) * pageSize + 1;
             int end = page * pageSize;
 
-            List<freeBoardDTO> list = dao.selectPage(start, end);
+            List<FreeBoardDTO> list = dao.selectPage(start, end);
             int totalCount = dao.getTotalCount();
             int totalPage = (int)Math.ceil(totalCount / (double)pageSize);
 
@@ -83,7 +83,7 @@ public class freeBoardController extends HttpServlet {
             int fb_id = Integer.parseInt(request.getParameter("id"));
             dao.incrementViewCount(fb_id);
 
-            freeBoardDTO dto = dao.selectById(fb_id);
+            FreeBoardDTO dto = dao.selectById(fb_id);
             FreeCommentDAO cdao = FreeCommentDAO.getInstance();
             List<FreeCommentDTO> comments = cdao.selectByBoardId(fb_id);
 
@@ -94,7 +94,7 @@ public class freeBoardController extends HttpServlet {
          // 5. 게시글 수정페이지 base64 이미지 포함 HTML그대로 가져오기
          } else if(cmd.equals("/edit.free")) {
             int fb_id = Integer.parseInt(request.getParameter("id"));
-            freeBoardDTO dto = dao.selectById(fb_id);
+            FreeBoardDTO dto = dao.selectById(fb_id);
             FreeCommentDAO cdao = FreeCommentDAO.getInstance();
             List<FreeCommentDTO> comments = cdao.selectByBoardId(fb_id);
             request.setAttribute("dto", dto);
@@ -106,7 +106,7 @@ public class freeBoardController extends HttpServlet {
             int fb_id = Integer.parseInt(request.getParameter("id"));
             String title = request.getParameter("title");
             String write = request.getParameter("write");
-            freeBoardDTO dto = new freeBoardDTO(fb_id, title, write);
+            FreeBoardDTO dto = new FreeBoardDTO(fb_id, title, write);
             dao.update(dto);
             response.sendRedirect("/detail.free?id=" + fb_id);
             
