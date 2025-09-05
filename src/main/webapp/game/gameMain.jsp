@@ -181,6 +181,7 @@ html, body {
     z-index: 10;
     opacity: 0;
     transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
 #menu-overlay.hide {
