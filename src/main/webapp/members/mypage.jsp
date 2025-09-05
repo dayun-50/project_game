@@ -220,7 +220,21 @@
             color: #00ffff;
             border-bottom: 1px solid #00ffff;
         }
+		.check-btn {
+    background: linear-gradient(to right, #00ffff, #ff4fc6);
+    color: #fff;
+    border: none;
+    border-radius: 15px;
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: 0.3s;
+}
 
+.check-btn:hover {
+    filter: brightness(1.2);
+}
 
     </style>
 </head>
@@ -259,10 +273,18 @@
 
 
             <div class="form-group">
-                <label for="email">E-mail</label>
-                <div class="input update" id="email">${email }</div>
-                <div id="emailtext"></div>
-            </div>
+    <label for="email">E-mail</label>
+    <div class="input update" id="email" contenteditable="true">${email}</div>
+    <div id="emailtext" style="margin-top:5px; font-size:12px;"></div>
+</div>
+
+<div class="form-group">
+    <label for="emailAuthCode">인증번호</label>
+    <div class="input update" id="emailAuthCode" contenteditable="true"></div>
+    <div id="emailAuthText" style="margin-top:5px; font-size:12px;"></div>
+    <button type="button" class="check-btn" id="emailAuthBtn">발송</button>
+    <button type="button" class="check-btn" id="verifyAuthBtn">확인</button>
+</div>
 
             <div id="btnbox">
 
@@ -400,6 +422,53 @@
         $("#btn2").on("click", function(){ //수정 취소시 페이지 재로딩으로 다시 원본내용 나오도록함
         	window.location.href = "/mypage.MembersController?id=${id }";
         });
+		
+        let serverAuthCode = ""; // 서버에서 받은 인증번호를 임시 저장
+
+		// 1️⃣ 인증번호 발송
+		$("#emailAuthBtn").on("click", function() {
+		    const email = $("#email").text().trim();
+
+		    // 이메일 형식 체크
+		    if (!emailRegex.test(email)) {
+		        alert("올바른 이메일을 입력해주세요.");
+		        return;
+		    }
+
+		    // Ajax로 서버에 이메일 발송 요청
+		    $.ajax({
+		        url: "/sendEmailAuth.MembersController", // 실제 서버 경로
+		        type: "POST",
+		        data: { email: email, provider: "naver"},
+		        success: function(authCode) {
+		            // 서버에서 발송 후 인증번호를 반환하면 저장
+		            serverAuthCode = authCode;
+		            $("#emailAuthText").html("인증번호가 이메일로 발송되었습니다.").css("color", "green");
+		        },
+		        error: function() {
+		            $("#emailAuthText").html("메일 전송 실패").css("color", "red");
+		        }
+		    });
+		});
+
+		// 2️⃣ 인증번호 확인
+		$("#verifyAuthBtn").on("click", function() {
+		    const inputCode = $("#emailAuthCode").text().trim();
+
+		    if (!inputCode) {
+		        alert("인증번호를 입력해주세요.");
+		        return;
+		    }
+
+		    if (inputCode === serverAuthCode) {
+		        $("#emailAuthText").html("인증 완료").css("color", "green");
+		        emailValCheck = true; // 회원가입 버튼에서 유효성 검사에 사용
+		    } else {
+		        $("#emailAuthText").html("인증번호 불일치").css("color", "red");
+		        emailValCheck = false;
+		    }
+		});
+
 
     </script>
 </body>

@@ -11,6 +11,7 @@
 <!-- 구글 폰트 불러오기: Press Start 2P, 레트로 게임 느낌 -->
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
 
 <!--유승 게임-->
@@ -41,6 +42,7 @@
   <script src="/game2/Game2OverScene.js"></script>
   <script src="/game2/clearTint.js"></script>
   <script src="${pageContext.request.contextPath}/game2/GameStart2.jsp"></script>    
+
 
 <style>
 html, body {
@@ -106,8 +108,10 @@ html, body {
 }
 
 /* 화면 */
+
 .screen { flex-grow:1; background: linear-gradient(to bottom, #fffae5,#e0f7ff); margin:3% 1.5%; border-radius:2vw; position: relative; overflow: hidden; display:flex; justify-content:center; align-items:flex-end; box-shadow: inset 0 0 20px #fff5, 0 0 20px #000; font-size:20px; 
  align-items: center;}
+
 
 /* 버튼 */
 .btn-round { background-color:#fff; border:3px solid #555; border-radius:50%; color:#222; cursor:pointer; box-shadow:2px 2px 0 #333; transition: transform 0.05s, box-shadow 0.05s; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.2vw; padding:0.5vw; z-index:1; }
@@ -130,11 +134,12 @@ html, body {
 
 /* 튜토리얼 오버레이 */
 #tutorial-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index:20; }
-#tutorial-close { position:absolute; top:10px; right:10px; font-size:2vw; background:transparent; border:none; color:white; cursor:pointer; }
+#tutorial-close { position:absolute; top:-15px; right:10px; font-size:6vw; background:transparent; border:none; color:white; cursor:pointer; }
 .tutorial-item { position:absolute; color:white; font-size:2vw; cursor:default; display:flex; flex-direction:column-reverse; align-items:center; transform: translate(-50%, -100%); }
 .tutorial-text { margin-top:0.5vw; font-size:1.5vw; background:rgba(0,0,0,0.6); padding:0.3vw 0.6vw; border-radius:0.5vw; text-align:center; }
 
 .menu-buttons {
+
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
@@ -244,21 +249,26 @@ html, body {
         </div>
     </div>
     <div class="screen" id="screen"> 
+
    	 <div id="game-container">
         <!-- 여기에 게임 index.jsp가 로드됨(유승게임)-->
     	</div>
    
     
-    
+
     <!-- 메뉴 오버레이 -->
     <div id="menu-overlay">
         	<div class="menu-buttons">
+
             	<button class="menu-btn">자유게시판</button>
             	<button class="menu-btn" id="gamerang">게임랭크</button>
+
             	<button class="menu-btn" id="gmaeboard">게임게시판</button>
             	<button class="menu-btn" id="mypage">마이페이지</button>
-            	<button class="menu-btn">문의하기</button>
-            	<button class="menu-btn">로그아웃</button>
+
+            	<button class="menu-btn" id="QnAbtn">문의하기</button>
+            	<button class="menu-btn" id="logout-btn">로그아웃</button>
+
        		</div>
     	</div>
 	</div>
@@ -276,9 +286,9 @@ html, body {
 
 <div id="tutorial-overlay">
     <button id="tutorial-close">×</button>
-    <div class="tutorial-item" data-target="stick-left">↓<div class="tutorial-text">여기에 닉네임 나온다 했었나</div></div>
-    <div class="tutorial-item" data-target="stick-right">↓<div class="tutorial-text">아직 기능 미정</div></div>
-    <div class="tutorial-item" data-target="dpad-up">↓<div class="tutorial-text">아직 기능 미정</div></div>
+    <div class="tutorial-item" data-target="stick-left">↓<div class="tutorial-text">♥여러분의 닉네임♥</div></div>
+    <div class="tutorial-item" data-target="stick-right">↓<div class="tutorial-text">메뉴버튼</div></div>
+    <div class="tutorial-item" data-target="dpad-up">↓<div class="tutorial-text">디자인!</div></div>
     <div class="tutorial-item" data-target="btn-x">↓<div class="tutorial-text">클릭하면 각 게임이 화면에 표시됩니다.</div></div>
 </div>
 
@@ -344,14 +354,28 @@ document.getElementById('tutorial-close').addEventListener('click', ()=>{
 $("#stick-right").on("click", function(){
     $("#menu-overlay").toggleClass("hide"); // 클릭 시 오버레이 나타나거나 사라짐
 });
-
-$("#mypage").on("click", function(){ //마이페이지 이동
-	window.location.href = "/mypage.MembersController"
+//자유게시판 버튼
+$("#freebtn").on("click", function() {
+    // 컨트롤러 경로로 이동
+    window.location.href = "/list.free";
 });
+
+
+$("#QnAbtn").on("click", function(){
+	window.location.href = "/list.qna";
+})
+
+
+$("#mypage").on("click", function(){ 
+    window.location.href = "${pageContext.request.contextPath}/mypage.MembersController";
+
+});
+
 
 $("#gmaeboard").on("click", function(){ //게임게시판 이동
-	window.location.href = "/gameboard.GameController"
+	window.location.href = "/game1borad.Game1Controller";
 });
+
 
 //=== Game1 실행 ===
 $("#btn-x").on("click", function() {
@@ -399,6 +423,7 @@ $("#btn-a").on("click", function() {
 $("#gamerang").on("click", function(){
 	window.location.href = "/gamerang.GameController";
 });
+
 
 
 </script>

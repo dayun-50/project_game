@@ -34,14 +34,15 @@ public class GameComentController extends HttpServlet {
 				String parentSeq = request.getParameter("seq");
 				
 				gcdao.comentInsert(new Game1CommentDTO(0,Integer.parseInt(parentSeq),0,nickname,coment,""));
-				response.sendRedirect("/game1boradDetil.Game1Controller?seq="+parentSeq);
+				response.sendRedirect("/game1boardDetail.Game1Controller?seq=" + parentSeq);
 			
 			}else if(cmd.equals("/delete.GameComentController")) { // 댓글삭제
-				String seq = request.getParameter("seq");
-				
-				int result = gcdao.comentDelete(seq);
-				response.getWriter().write(String.valueOf(result));
-				
+			    String seq = request.getParameter("seq");
+			    String parentSeq = request.getParameter("parentSeq"); // 댓글의 게시글 번호
+			    gcdao.comentDelete(seq);
+			    
+			    // 삭제 후 해당 게시글 상세 페이지로 리다이렉트
+			    response.sendRedirect("/game1boardDetail.Game1Controller?seq=" + parentSeq);
 			}else if(cmd.equals("/updatComent.GameComentController")) { // 댓글수정
 				String seq = request.getParameter("seq");
 				String text = request.getParameter("text");
