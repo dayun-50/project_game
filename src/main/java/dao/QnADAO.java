@@ -156,4 +156,59 @@ public class QnADAO {
         }
         return comments;
     }
+    
+ // LIKE 파라미터 유틸
+    private static String likeParam(String q) {
+        if(q == null) q = "";
+        q = q.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
+        return "%" + q + "%";
+    }
+
+    // (A) 제목 검색: 페이지 단위 조회
+    public List<QnADTO> searchTitlePage(String keyword, int start, int end) throws Exception {
+        String sql =
+            "SELECT * FROM (" +
+            "  SELECT ROW_NUMBER() OVER (ORDER BY inqu_date DESC) rnum," +
+            "         inqu_id, inqu_pw, inqu_title, inqu_write, inqu_user_name, inqu_date " +
+            "  FROM inquries " +
+            "  WHERE LOWER(inqu_title) LIKE LOWER(?) ESCAPE '\\'" +
+            ") WHERE rnum BETWEEN ? AND ?";
+
+        try(Connection con = getConnection();
+            PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, likeParam(keyword));
+            ps.setInt(2, start);
+            ps.setInt(3, end);
+
+            try(ResultSet rs = ps.executeQuery()) {
+                List<QnADTO> list = new ArrayList<>();
+                while(rs.next()) {
+                    QnADTO dto = new QnADTO(
+                        rs.getInt("inqu_id"),
+                        rs.getString("inqu_pw"),
+                        rs.getString("inqu_title"),
+                        rs.getString("inqu_write"),
+                        rs.getString("inqu_user_name"),
+                        rs.getTimestamp("inqu_date")
+                    );
+                    list.add(dto);
+                }
+                return list;
+            }
+        }
+    }
+
+    // (B) 제목 검색: 전체 개수
+    public int getTitleSearchCount(String keyword) throws Exception {
+        String sql = "SELECT COUNT(*) FROM inquries " +
+                     "WHERE LOWER(inqu_title) LIKE LOWER(?) ESCAPE '\\'";
+        try(Connection con = getConnection();
+            PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, likeParam(keyword));
+            try(ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : 0;
+            }
+        }
+    }
+    
 }

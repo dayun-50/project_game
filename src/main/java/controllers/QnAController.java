@@ -50,6 +50,7 @@ public class QnAController extends HttpServlet {
 
             // 리스트
             } else if (cmd.equals("/list.qna")) {
+                String q = request.getParameter("q"); // 🔍 제목 검색어
                 int page = 1;
                 String pageParam = request.getParameter("page");
                 if (pageParam != null && !pageParam.isEmpty()) page = Integer.parseInt(pageParam);
@@ -58,34 +59,42 @@ public class QnAController extends HttpServlet {
                 int start = (page - 1) * pageSize + 1;
                 int end = page * pageSize;
 
-                List<QnADTO> list = dao.selectPage(start, end);
-                
-                InquiriesCommentDAO cdao = InquiriesCommentDAO.getInstance();
-                for(QnADTO dto : list) {
-                    int commentCount = cdao.countCommentsByPostId(dto.getInqu_id());
-                    if(commentCount > 0) {
-                        dto.setAnswerStatus("답변완료");
-                    } else {
-                        dto.setAnswerStatus("검토중");
-                    }
-                }
-                
-                int totalCount = dao.getTotalCount();
-                int totalPage = (int) Math.ceil(totalCount / (double) pageSize);
+                List<QnADTO> list;
+                int totalCount;
 
+                if (q != null && !q.trim().isEmpty()) {
+                    // ✅ 제목 검색
+                    list = dao.searchTitlePage(q.trim(), start, end);
+                    totalCount = dao.getTitleSearchCount(q.trim());
+                } else {
+                    // ✅ 전체 목록
+                    list = dao.selectPage(start, end);
+                    totalCount = dao.getTotalCount();
+                }
+
+                // 답변 상태 처리
+                InquiriesCommentDAO cdao = InquiriesCommentDAO.getInstance();
+                for (QnADTO dto : list) {
+                    int commentCount = cdao.countCommentsByPostId(dto.getInqu_id());
+                    dto.setAnswerStatus(commentCount > 0 ? "답변완료" : "검토중");
+                }
+
+                int totalPage = (int) Math.ceil(totalCount / (double) pageSize);
                 int blockSize = 10;
                 int currentBlock = (int) Math.ceil(page / (double) blockSize);
                 int startPage = (currentBlock - 1) * blockSize + 1;
                 int endPage = Math.min(startPage + blockSize - 1, totalPage);
 
+                // 🔁 JSP로 값 전달
                 request.setAttribute("list", list);
                 request.setAttribute("currentPage", page);
                 request.setAttribute("totalPage", totalPage);
                 request.setAttribute("startPage", startPage);
                 request.setAttribute("endPage", endPage);
-                request.getRequestDispatcher("/QnA/QnAlist.jsp").forward(request, response);
+                request.setAttribute("q", q); // ✅ 검색어 유지
 
-            // 상세 보기 진입 → 비밀번호 입력 페이지로 이동
+                request.getRequestDispatcher("/QnA/QnAlist.jsp").forward(request, response);
+            
             } else if (cmd.equals("/detail.qna")) {
                 int inqu_id = Integer.parseInt(request.getParameter("id"));
                 request.setAttribute("inqu_id", inqu_id);

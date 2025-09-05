@@ -152,41 +152,49 @@ public class Game1BoardDAO {
 	    }
 	}
 	// (A) 제목 검색: 범위(from~to) 조회
-    public ArrayList<GameBoardDTO> searchTitleFromTo(int from, int to, int gameid, String keyword) throws Exception {
-        String sql =
-            "SELECT * FROM (" +
-            "  SELECT ROW_NUMBER() OVER (ORDER BY game_seq DESC) rnum," +
-            "         game_seq, gameid, gameboardtitle, gamecoment, gamewrtier, game_board_date, view_count " +
-            "    FROM game_board " +                // ← 실제 테이블명에 맞게 수정
-            "   WHERE gameid = ? " +
-            "     AND LOWER(gameboardtitle) LIKE LOWER(?) ESCAPE '\\'" +
-            ") WHERE rnum BETWEEN ? AND ?";
+	public ArrayList<GameBoardDTO> searchTitleFromTo(int from, int to, int gameid, String keyword) throws Exception {
+	    String sql =
+	        "SELECT * FROM (" +
+	        "  SELECT ROW_NUMBER() OVER (ORDER BY game_seq DESC) rnum," +
+	        "         game_seq, gameid, gameboardtitle, gamecoment, gamewrtier, game_board_date, view_count " +
+	        "    FROM game_board " +
+	        "   WHERE gameid = ? " +
+	        "     AND LOWER(gameboardtitle) LIKE LOWER(?) ESCAPE '\\'" +
+	        ") t WHERE rnum BETWEEN ? AND ?";
 
-        try (Connection con = getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+	    try (Connection con = getConnection();
+	         PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, gameid);
-            ps.setString(2, likeParam(keyword));
-            ps.setInt(3, from);
-            ps.setInt(4, to);
+	        ps.setInt(1, gameid);
+	        ps.setString(2, likeParam(keyword));
+	        ps.setInt(3, from);
+	        ps.setInt(4, to);
 
-            ArrayList<GameBoardDTO> list = new ArrayList<>();
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    GameBoardDTO dto = new GameBoardDTO();
-                    dto.setGame_seq(rs.getInt("game_seq"));
-                    dto.setGameid(rs.getInt("gameid"));
-                    dto.setGameboardtitle(rs.getString("gameboardtitle"));
-                    dto.setGamecoment(rs.getString("gamecoment"));
-                    dto.setGamewrtier(rs.getString("gamewrtier"));
-                    dto.setGame_board_date(rs.getTimestamp("game_board_date")); // 타입 맞게
-                    dto.setView_count(rs.getInt("view_count"));
-                    list.add(dto);
-                }
-            }
-            return list;
-        }
-    }
+	        ArrayList<GameBoardDTO> list = new ArrayList<>();
+
+	        try (ResultSet rs = ps.executeQuery()) {
+	            // Timestamp -> String 포맷터 (필요 시 클래스 필드로 올려 재사용 가능)
+	            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+	            while (rs.next()) {
+	                GameBoardDTO dto = new GameBoardDTO();
+	                dto.setGame_seq(rs.getInt("game_seq"));
+	                dto.setGameid(rs.getInt("gameid"));
+	                dto.setGameboardtitle(rs.getString("gameboardtitle"));
+	                dto.setGamecoment(rs.getString("gamecoment"));
+	                dto.setGamewrtier(rs.getString("gamewrtier"));
+
+	                // ★ 여기서 타입 맞춰 넣기: Timestamp -> String
+	                java.sql.Timestamp ts = rs.getTimestamp("game_board_date");
+	                dto.setGame_board_date(ts != null ? sdf.format(ts) : "");
+
+	                dto.setView_count(rs.getInt("view_count"));
+	                list.add(dto);
+	            }
+	        }
+	        return list;
+	    }
+	}
 
 private static String likeParam(String q) {
 if (q == null) q = "";
