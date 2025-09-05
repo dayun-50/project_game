@@ -261,7 +261,7 @@ html, body {
     <div id="menu-overlay">
         	<div class="menu-buttons">
 
-            	<button class="menu-btn">자유게시판</button>
+            	<button class="menu-btn" id="freeboard">자유게시판</button>
             	<button class="menu-btn" id="gamerang">게임랭크</button>
 
             	<button class="menu-btn" id="gmaeboard">게임게시판</button>
@@ -356,7 +356,7 @@ $("#stick-right").on("click", function(){
     $("#menu-overlay").toggleClass("hide"); // 클릭 시 오버레이 나타나거나 사라짐
 });
 //자유게시판 버튼
-$("#freebtn").on("click", function() {
+$("#freeboard").on("click", function() {
     // 컨트롤러 경로로 이동
     window.location.href = "/list.free";
 });
@@ -421,12 +421,17 @@ $("#btn-a").on("click", function() {
 	  
 	});
 
-$("#gamerang").on("click", function(){
+$("#gamerang").on("click", function(){ 
 	window.location.href = "/gamerang.GameController";
 });
 
+$("#freeboard").on("click", function(){ //자유게시판 이동
+	window.location.href = "/list.free";
+});
 
-
+$("#logout-btn").on("click", function(){ //로그아웃
+	window.location.href = "/logout.GameController";
+});
 </script>
 
 </body>

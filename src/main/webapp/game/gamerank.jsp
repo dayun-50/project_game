@@ -7,6 +7,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Game Ranker</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
     body {
         margin: 0;
@@ -149,7 +150,25 @@
         color: #4c9aff;
         transform: scale(1.2);
     }
-    
+    #back {
+    display: block;          /* block 요소로 변경 */
+    margin: 20px auto;       /* 위아래 20px, 좌우 auto → 가운데 정렬 */
+    padding: 10px 20px;      /* 버튼 크기 여유 */
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(90deg, #4c9aff, #8e5fff);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#back:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+}
     
  
 </style>
@@ -197,6 +216,7 @@
 </div>
 
 <div class="pagination" id="pagination"></div>
+<button id="back">메인으로 가기</button>
 
 <script>
 const allRanks = [
@@ -278,6 +298,10 @@ for (let i = 0; i < 150; i++) {
     s.style.animationDuration = (2 + Math.random() * 3) + 's';
     document.body.appendChild(s);
 }
+
+$("#back").on("click",  function(){ // 메인화면 이동
+	window.location.href = "/gamapage.GameController";
+});
 
 
 </script>
