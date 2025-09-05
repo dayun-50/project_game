@@ -20,10 +20,10 @@ import dto.Game1CommentDTO;
 public class Game1BoardController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+
     private final Game1BoardDAO gbdao = Game1BoardDAO.getInstance();
     private final MembersDAO mdao = MembersDAO.getInstance();
     private final Game1CommentDAO gcdao = Game1CommentDAO.getInstance();
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doAction(request, response);

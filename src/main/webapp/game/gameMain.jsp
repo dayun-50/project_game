@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,6 +11,39 @@
 <!-- 구글 폰트 불러오기: Press Start 2P, 레트로 게임 느낌 -->
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
+
+<!--유승 게임-->
+<script src="/game4/TitleScene.js"></script>
+<script src="/game4/JobScene.js"></script>
+<script src="/game4/IntroScene.js"></script>
+<script src="/game4/StoryScene.js"></script>
+<script src="/game4/Game4Scene.js"></script>
+<script src="/game4/Game4OverScene.js"></script>
+<script src="/game4/Game4WinScene.js"></script>
+<script src="${pageContext.request.contextPath}/game4/GameStart.jsp"></script>
+
+<!--승진 게임  -->
+<script src="/game3/sjgame/gamestart3.js"></script>
+<script src="/game3/sjgame/game3play.js"></script>
+<script src="/game3/sjgame/game3over.js"></script>
+<script src="${pageContext.request.contextPath}/game3/sjgame/GameStart3.jsp"></script>
+
+<!--혜빈 게임-->
+ <script src="/game1/MainScene.js"></script>
+    <script src="/game1/Exam03.js"></script>
+    <script src="/game1/Exam04.js"></script>
+<script src="${pageContext.request.contextPath}/game1/GameStart1.jsp"></script>    
+
+<!--범찬-->
+<script src="/game2/TitleScene2.js"></script>
+  <script src="/game2/Game2Scene.js"></script>
+  <script src="/game2/Game2OverScene.js"></script>
+  <script src="/game2/clearTint.js"></script>
+  <script src="${pageContext.request.contextPath}/game2/GameStart2.jsp"></script>    
+
+
 <style>
 html, body {
     margin:0; padding:0; width:100%; height:100%;
@@ -74,7 +108,10 @@ html, body {
 }
 
 /* 화면 */
-.screen { flex-grow:1; background: linear-gradient(to bottom, #fffae5,#e0f7ff); margin:3% 1.5%; border-radius:2vw; position: relative; overflow: hidden; display:flex; justify-content:center; align-items:flex-end; box-shadow: inset 0 0 20px #fff5, 0 0 20px #000; font-size:20px; }
+
+.screen { flex-grow:1; background: linear-gradient(to bottom, #fffae5,#e0f7ff); margin:3% 1.5%; border-radius:2vw; position: relative; overflow: hidden; display:flex; justify-content:center; align-items:flex-end; box-shadow: inset 0 0 20px #fff5, 0 0 20px #000; font-size:20px; 
+ align-items: center;}
+
 
 /* 버튼 */
 .btn-round { background-color:#fff; border:3px solid #555; border-radius:50%; color:#222; cursor:pointer; box-shadow:2px 2px 0 #333; transition: transform 0.05s, box-shadow 0.05s; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.2vw; padding:0.5vw; z-index:1; }
@@ -102,6 +139,7 @@ html, body {
 .tutorial-text { margin-top:0.5vw; font-size:1.5vw; background:rgba(0,0,0,0.6); padding:0.3vw 0.6vw; border-radius:0.5vw; text-align:center; }
 
 .menu-buttons {
+
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
@@ -181,12 +219,22 @@ html, body {
     z-index: 10;
     opacity: 0;
     transition: opacity 0.3s ease;
-    pointer-events: none;
+
+    pointer-events: none; /* 안보일 때 클릭 불가 */
 }
 
 #menu-overlay.hide {
     opacity: 1;
     pointer-events: auto; /* 클릭 불가 */
+}
+#game-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;       /* 메뉴 오버레이(10)보다 위 */
+
 }
 </style>
 </head>
@@ -202,11 +250,20 @@ html, body {
         </div>
     </div>
     <div class="screen" id="screen"> 
+
+   	 <div id="game-container">
+        <!-- 여기에 게임 index.jsp가 로드됨(유승게임)-->
+    	</div>
+   
+    
+
     <!-- 메뉴 오버레이 -->
     <div id="menu-overlay">
         	<div class="menu-buttons">
-            	<button class="menu-btn" id="freebtn">자유게시판</button>
-            	<button class="menu-btn">게임랭크</button>
+
+            	<button class="menu-btn">자유게시판</button>
+            	<button class="menu-btn" id="gamerang">게임랭크</button>
+
             	<button class="menu-btn" id="gmaeboard">게임게시판</button>
             	<button class="menu-btn" id="mypage">마이페이지</button>
 
@@ -237,6 +294,13 @@ html, body {
 </div>
 
 <script>
+function destroyAllGames() {
+	  if (window.game1) { window.game1.destroy(true); window.game1 = null; }
+	  if (window.game2) { window.game2.destroy(true); window.game2 = null; }
+	  if (window.game3) { window.game3.destroy(true); window.game3 = null; }
+	  if (window.game4) { window.game4.destroy(true); window.game4 = null; }
+	}
+window.userName = "${nickname}";
 //별 생성 함수
 function createStars(count, topRange=[0,100], leftRange=[0,100], sizeRange=[1,3]){
     for(let i=0;i<count;i++){
@@ -313,10 +377,57 @@ $("#gmaeboard").on("click", function(){ //게임게시판 이동
 	window.location.href = "/game1borad.Game1Controller";
 });
 
-//로그아웃 버튼 클릭
-$("#logout-btn").on("click", function() {
-    window.location.href = "/logout"; // 서블릿 주소
+
+//=== Game1 실행 ===
+$("#btn-x").on("click", function() {
+  // 👉 Game1 실행 중이면 먼저 제거
+  destroyAllGames();
+
+  // 👉 Game1 다시 로드
+  $("#game-container").empty();
+  $("#game-container").load("/game1/GameContent1.jsp");
+
 });
+
+
+//game2
+$("#btn-y").on("click", function() {
+	 console.log("✅ btn-y 눌림 → Game2 실행 시작");
+	  // 👉 Game2 실행 중이면 먼저 제거
+	  destroyAllGames();
+
+	  // 👉 Game2 다시 로드
+	  $("#game-container").empty();
+	  $("#game-container").load("/game2/GameContent2.jsp");
+	  console.log("✅ Game2 JSP 로드 완료");
+	});
+
+
+//=== Game3 실행 ===
+$("#btn-b").on("click", function() {
+	 destroyAllGames(); // 기존 인스턴스 다 제거
+
+  // 👉 Game3 다시 로드
+  $("#game-container").empty();
+  $("#game-container").load("/game3/sjgame/GameContent3.jsp");
+
+});
+
+//==game 4
+$("#btn-a").on("click", function() {
+	 destroyAllGames();
+	  $("#game-container").empty();
+	  $("#game-container").load("/game4/gameContent.jsp");
+	  
+	});
+
+$("#gamerang").on("click", function(){
+	window.location.href = "/gamerang.GameController";
+});
+
+
+
 </script>
+
 </body>
 </html>

@@ -83,6 +83,17 @@ const editor = new toastui.Editor({
 
 // 제목과 내용, 비밀번호 히든 필드에 복사
 document.getElementById('btnform').addEventListener('submit', function(e){
+	let postname = document.getElementById('postnameInput').value;
+    let content = document.getElementById('editorContent').value;
+    let password = document.getElementById('password').value;
+    
+	if(postname === "" || content === "" || password === ""){
+		alert("제목과 내용을 모두 입력해주세요!");
+		e.preventDefault(); 
+		return;
+	}
+	
+	
     document.getElementById('postTitleInput').value = document.getElementById('postname').innerText;
     document.getElementById('postContentInput').value = editor.getHTML();
 });

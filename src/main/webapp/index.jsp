@@ -20,7 +20,7 @@ body {
 	font-family: 'Orbitron', sans-serif;
 	color: #fff;
 	overflow-x: hidden;
-	background: radial-gradient(circle at center, #0d1b3c, #0a0f1a);
+	background: radial-gradient(circle at center, #05070d, #000000);
 	position: relative;
 }
 
@@ -32,7 +32,7 @@ body {
 	background: white;
 	border-radius: 50%;
 	animation: twinkle 3s infinite ease-in-out;
-	z-index: 0;
+	z-index: 1;
 }
 
 @
@@ -130,7 +130,7 @@ html, body {
 .switch {
 	width: 900px;
 	height: 420px;
-	background: rgba(51, 51, 51, 0.9);
+	background:  #333;;
 	border-radius: 75px;
 	display: flex;
 	box-shadow: 0 0 20px #000 inset, 0 0 30px #555;
@@ -165,7 +165,7 @@ html, body {
 
 .screen {
 	flex-grow: 1;
-	background: linear-gradient(to bottom, #fffae5, #e0f7ff);
+	background:  linear-gradient(to bottom, #0d1b3c 0%, #0a0f1a 100%);
 	margin: 12px;
 	border-radius: 30px;
 	box-shadow: inset 0 0 20px #fff5, 0 0 20px #000;
@@ -174,6 +174,7 @@ html, body {
 	align-items: flex-end;
 	position: relative;
 	overflow: hidden;
+	z-index: 3; /* 기존보다 높게 */
 }
 
 /* 버튼/스틱 디자인 (고정) */
@@ -333,6 +334,7 @@ html, body {
 	gap: 20px;
 	width: 100%;
 	align-items: flex-start;
+	
 }
 
 .game-card.reverse {
@@ -359,12 +361,13 @@ html, body {
 }
 
 .game-info h3 {
-	font-size: 1.5rem;
+	font-size: 3rem;
 	margin-bottom: 10px;
+	
 }
 
 .game-info p {
-	font-size: 1rem;
+	font-size: 2rem;
 }
 
 .card-left button {
@@ -383,6 +386,13 @@ html, body {
 .card-left button:hover {
 	transform: scale(1.05);
 	box-shadow: 0 0 15px #ff00ff, 0 0 25px #00fff7;
+}
+
+.seungjin{
+	color: orange;
+}
+#seungjin{
+	color: purple;
 }
 
 /* 즐기러 가기 버튼 */
@@ -431,6 +441,77 @@ html, body {
     margin: 2px 0;                      /* 문단 간 간격 최소화 */
     font-size: 12px;
 }
+.game-card:nth-child(1) .game-image {
+    background-image: url('BOSS.png'); /* 실제 이미지 경로 */
+    background-size: cover;       /* 꽉 채우기 */
+    background-position: center;  /* 중앙 정렬 */
+    background-repeat: no-repeat; /* 반복 금지 */
+}
+.game-card:nth-child(2) .game-image {
+    background-image: url('bro.png'); /* 실제 이미지 경로 */
+    background-size: cover;       /* 꽉 채우기 */
+    background-position: center;  /* 중앙 정렬 */
+    background-repeat: no-repeat; /* 반복 금지 */
+}
+.game-card:nth-child(3) .game-image {
+    background-image: url('game3back.jpg'); /* 실제 이미지 경로 */
+    background-size: cover;       /* 꽉 채우기 */
+    background-position: center;  /* 중앙 정렬 */
+    background-repeat: no-repeat; /* 반복 금지 */
+}
+.game-card:nth-child(4) .game-image {
+    background-image: url('kaplestory.png'); /* 실제 이미지 경로 */
+    background-size: cover;       /* 꽉 채우기 */
+    background-position: center;  /* 중앙 정렬 */
+    background-repeat: no-repeat; /* 반복 금지 */
+}
+/* 스크린 레트로 느낌 */
+#screen {
+    font-family: 'Press Start 2P', monospace;
+    color: yellow;
+    text-shadow: 0 0 5px #0ff, 0 0 15px #0ff;
+    position: relative;
+    overflow: hidden;
+    background: #0a0f1a;
+    z-index:3;
+}
+
+#screen::before {
+    content: "INSERT COIN";
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+    animation: blinkText 3s infinite; /* 깜빡임 주기 */
+    font-size: 30px;
+}
+
+@keyframes blinkText {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0; }
+}
+.boss{ /*혜빈*/
+	color:skyblue;
+}
+.redboss{ /*혜빈*/
+	color:red;
+}
+.sj{ /*승진*/
+	color:red;
+}
+.bro{ /*범찬*/
+	color:green;
+}
+.bros{ /*범찬*/
+	color:rgb(215, 53, 129);
+}
+.brother{ /*유승*/
+	color:yellow;
+}
+.kaple{ /*유승*/
+	color:red;
+}
 </style>
 </head>
 <body>
@@ -439,8 +520,9 @@ html, body {
 	<div id="blocks"></div>
 
 	<script>
+	
 // 별 생성
-for(let i=0;i<100;i++){
+for(let i=0;i<200;i++){
   const s=document.createElement('div'); s.className='star';
   s.style.top=Math.random()*100+'vh';
   s.style.left=Math.random()*100+'vw';
@@ -453,6 +535,22 @@ for(let i=0;i<30;i++){
   b.style.bottom=Math.random()*100+'vh';
   b.style.left=Math.random()*100+'vw';
   document.body.appendChild(b);
+}
+const screen = document.getElementById('screen');
+
+//screen 안 별 생성
+for(let i = 0; i < 20; i++){  // 원하는 개수
+ const star = document.createElement('div');
+ star.className = 'pixel-star';
+ 
+ star.style.top = Math.random() * (screen.clientHeight - 10) + 'px';
+ star.style.left = Math.random() * (screen.clientWidth - 10) + 'px';
+ 
+ // 랜덤 깜빡임 속도
+ const blinkDuration = 1 + Math.random() * 2; // 1~3초
+ star.style.animation = `moveStar 2s linear infinite, blinkStar ${blinkDuration}s infinite alternate`;
+ 
+ screen.appendChild(star);
 }
 </script>
 
@@ -479,7 +577,8 @@ for(let i=0;i<30;i++){
 					<button class="btn-round" id="dpad-down">▼</button>
 				</div>
 			</div>
-			<div class="screen" id="screen">INSERT COIN</div>
+			<div class="screen" id="screen">
+    		</div>
 			<div class="joycon-right">
 				<div class="buttons">
 					<button id="btn-x" class="btn-round">혜빈</button>
@@ -503,8 +602,8 @@ for(let i=0;i<30;i++){
 					<div class="game-image"></div>
 				</div>
 				<div class="game-info">
-					<h3>Game 1</h3>
-					<p>혜빈 게임 입니다용</p>
+					<h3 class="boss">애완토끼의 간을 찾아서 (별주부전)</h3>
+					<p>애완토끼의 <span class="redboss">간</span>을 빼앗긴 혜빈찡....<br> <span class="redboss">용왕</span>을 만나러 가는데...</p>
 				</div>
 			</div>
 
@@ -513,18 +612,20 @@ for(let i=0;i<30;i++){
 					<div class="game-image"></div>
 				</div>
 				<div class="game-info">
-					<h3>Game 2</h3>
-					<p>범찬 게임 입니다용</p>
+					<h3 class="bro">귀멸의 칼날:무한성편</h3>
+					<p>짭지로는 <span class="bros">혈귀</span>의 본거지 무안성을 찾았다.<br><span class="bros">부하</span>들과 그들의 보스 <span class="bros">무잔</span>을 무찔러라!!!!</p>
 				</div>
 			</div>
 
 			<div class="game-card">
 				<div class="card-left">
-					<div class="game-image"></div>
+					<div class="game-image">
+    <img src="seungjin.png" alt="나뭇잎 마을 이타치" style="width:100%; height:100%; border-radius: 15px;">
+</div>
 				</div>
 				<div class="game-info">
-					<h3>Game 3</h3>
-					<p>승진 게임 입니다용</p>
+					<h3 class="seungjin" id="seungjin">☆탈주닌자 <span class="sj">이타치</span></span>☆</h3>
+					<p class="seungjin">나뭇잎 마을을 탈주한 이타치.. 그를 향해 날아오는 적들의 표창을 피하라!!</p>
 				</div>
 			</div>
 
@@ -533,10 +634,17 @@ for(let i=0;i<30;i++){
 					<div class="game-image"></div>
 				</div>
 				<div class="game-info">
-					<h3>Game 4</h3>
-					<p>유승 게임 입니다용</p>
+
+
+					<h3 class="brother">Kaple Story</h3>
+					<p class="kaple">궁지에 몰린 검은 마법사는 결국 금단의 지식에 손을댔고.... 그렇게 키메라를 만들어 내게 되는데...
+					메이플 월드의 평화를 위해 키메라를 무찔러라!!!</p>
+
 				</div>
 			</div>
+			
+			
+			
 
 			<div class="play-btn-container">
 				<button id="play-btn">즐기러 가기</button>
@@ -555,6 +663,11 @@ $("#signup-btn").on("click", function(){ //회원가입 페이지이동
 $("#login-btn").on("click", function(){ //로그인 페이지이동
 	window.location.href = "/loginpgae.MembersController";
 });
+
+
+
+
+
 
 $("#play-btn").on("click", function(){ // 즐기러가기 버튼
 	 $('html, body').animate({ scrollTop: 0 }, 300); // 300ms 동안 부드럽게 스크롤

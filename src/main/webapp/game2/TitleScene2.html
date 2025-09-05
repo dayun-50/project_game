@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Phaser Test</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="TitleScene2.js"></script>
+  <script src="GameScene.js"></script>
+  <script src="GameOverScene.js"></script>
+  <script src="clearTint.js"></script>
+ 
+  <style>
+   
+  </style>
+</head>
+<body>
+<script>
+// === 타이틀 화면 ===
+class TitleScene2 extends Phaser.Scene {
+  constructor(){ super('TitleScene2'); }
+
+  preload() {
+    // 배경 이미지 불러오기
+    this.load.image('titleBg', 'asset/인서트.png');
+  }
+
+  create() {
+    // === 배경 추가 ===
+    const cam = this.cameras.main;
+    const bg = this.add.image(cam.width / 2, cam.height / 2, 'titleBg')
+      .setOrigin(0.5, 0.5)
+      .setScrollFactor(0);
+
+    // 화면 전체가 보이도록(잘림 방지) contain 스케일
+    const scaleX = cam.width / bg.width;
+    const scaleY = cam.height / bg.height;
+    const scale = Math.min(scaleX, scaleY);   // <-- 핵심 변경
+    bg.setScale(scale);
+
+    // PRESS R TO START
+    const press = this.add.text(550, 720, 'PRESS  R  TO  START', {
+      fontFamily: 'monospace', fontSize: '28px', color: '#fff',
+      stroke: '#000', strokeThickness: 6
+    }).setOrigin(0.5);
+
+    this.tweens.add({
+      targets: press, alpha: { from: 1, to: 0.15 }, duration: 600, yoyo: true, repeat: -1
+    });
+
+    // R 키 입력 → 페이드 아웃 후 GameScene 이동
+    this.input.keyboard.on('keydown-R', () => {
+      cam.fadeOut(1000, 0, 0, 0);
+      cam.once('camerafadeoutcomplete', () => this.scene.start('GameScene'));
+    });
+  }
+}
+
+const config = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  backgroundColor: '#000000',
+  physics: {
+    default: 'arcade',
+    arcade: {
+      debug: true // true로 바꾸면 충돌 영역 보임
+    }
+  },
+  scene: [TitleScene2, Game2Scene, Game2OverScene, Clear2Tint]
+};
+
+new Phaser.Game(config);
+</script>
+</body>
+</html>

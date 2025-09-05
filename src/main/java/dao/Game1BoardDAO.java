@@ -7,8 +7,10 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import dto.GameBoardDTO;
+import dto.Rankdto;
 
 public class Game1BoardDAO {
+
     private static Game1BoardDAO instance;
     public synchronized static Game1BoardDAO getInstance() {
         if(instance == null) instance = new Game1BoardDAO();
@@ -126,4 +128,5 @@ public class Game1BoardDAO {
             ps.executeUpdate();
         }
     }
+
 }

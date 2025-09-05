@@ -1,9 +1,13 @@
+
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+
+
   <meta charset="UTF-8">
   <title>게임1 글쓰기</title>
 
@@ -11,6 +15,7 @@
   <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
   <script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.min.js"></script>
   <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+	
 
   <style>
     body { background:#0c0c1a; color:#fff; font-family:Arial,sans-serif; display:flex; justify-content:center; padding:40px 0; }
@@ -24,7 +29,9 @@
     .btns{ display:flex; gap:10px; justify-content:flex-end; margin-top:14px; }
     button{ height:44px; padding:0 16px; border:none; border-radius:8px; font-weight:700; color:#fff;
             background:linear-gradient(135deg,#9b59b6,#e91e63); cursor:pointer; }
-      #logo { width:100px; height:100px; }
+
+
+             #logo { width:100px; height:100px; }
       #line { border:1px solid #dad9d9; margin-bottom:20px; }
      h1 {
         width:100%;
@@ -50,15 +57,15 @@
         25% { opacity:0.6; }
         50% { opacity:1; }
         75% { opacity:0.4; }
+
     }
-            
   </style>
 </head>
 <body>
   <div class="con">
-   <h1><img src="/board/로고.png" id="logo"> 혜빈이와 아이들 </h1>
+    <h1><img src="/board/로고.png" id="logo"> 혜빈이와 아이들 </h1>
     <h2>게시판 글쓰기</h2>
- 	<div id="line"></div>
+    <div id="line"></div>
     <!-- ✅ 액션 경로: /game1BoradInsert.Game1Controller (오타 포함) -->
     <form action="<c:url value='/game1BoradInsert.Game1Controller'/>" method="post" id="btnform">
       <div id="postname" contenteditable="true"></div>
@@ -75,6 +82,7 @@
       </div>
     </form>
   </div>
+
 
   <script>
     // TOAST UI Editor
@@ -98,9 +106,12 @@
     // 제출 전 값 주입 + 더블서밋 방지 + 에디터 초기화 지연 대비
     let submitting = false;
     document.getElementById('btnform').addEventListener('submit', async function (e) {
+    
+    	
       if (submitting) { e.preventDefault(); return; }
       let title = document.getElementById('postname').innerText.trim();
       let html  = editor.getHTML().trim();
+
 
       // 초기화 지연 대비: 비면 한 틱 양보 후 재읽기
       if (!html || html === '<p><br></p>') {
@@ -108,14 +119,16 @@
         html = editor.getHTML().trim();
       }
 
-      if (!title && (!html || html === '<p><br></p>')) {
-        e.preventDefault();
+      document.getElementById('postnameInput').value = title;
+      document.getElementById('editorContent').value = html;
+      
+      if (!title || (!html || html === '<p><br></p>')) {
         alert('제목 또는 내용(텍스트/이미지)을 입력하세요.');
+        e.preventDefault();
         return;
       }
 
-      document.getElementById('postnameInput').value = title;
-      document.getElementById('editorContent').value = html;
+      
 
       submitting = true;
     });
@@ -126,6 +139,10 @@
       location.href = `<c:url value='/game1borad.Game1Controller'/>?gameid=${gid}&ts=${Date.now()}`;
     });
     
+<<<<<<< HEAD
+=======
+
+>>>>>>> 18780250b433cda6e9b79d76c13f7368e4fa0c52
  // 별 생성 기능 유지
     function createStars(count, topRange = [0,100], leftRange=[0,100], sizeRange=[1,3]) {
         for (let i=0; i<count; i++){
@@ -144,7 +161,13 @@
 
     createStars(800);
     createStars(400, [20,50], [20,80], [1,2]);
+<<<<<<< HEAD
+=======
+    
+
+>>>>>>> 18780250b433cda6e9b79d76c13f7368e4fa0c52
   </script>
 </body>
 </html>
+
 
