@@ -139,10 +139,7 @@
       location.href = `<c:url value='/game1borad.Game1Controller'/>?gameid=${gid}&ts=${Date.now()}`;
     });
     
-<<<<<<< HEAD
-=======
 
->>>>>>> 18780250b433cda6e9b79d76c13f7368e4fa0c52
  // 별 생성 기능 유지
     function createStars(count, topRange = [0,100], leftRange=[0,100], sizeRange=[1,3]) {
         for (let i=0; i<count; i++){
@@ -161,11 +158,7 @@
 
     createStars(800);
     createStars(400, [20,50], [20,80], [1,2]);
-<<<<<<< HEAD
-=======
-    
 
->>>>>>> 18780250b433cda6e9b79d76c13f7368e4fa0c52
   </script>
 </body>
 </html>
