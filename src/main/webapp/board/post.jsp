@@ -145,24 +145,116 @@
 </div>
 
 <script>
+//====== 이미지 압축/리사이즈 설정 ======
+const IMG_MAX_WIDTH = 1280;         // 긴 변 기준 최대 폭
+const JPEG_QUALITY = 0.82;          // 0~1 (품질-용량 트레이드오프)
+const MAX_BASE64_LEN = 8_000_000;   // dataURL 길이 상한(약 8MB, 필요시 조정)
+
+// WebP 지원여부
+function supportWebP(){
+  try {
+    const c = document.createElement('canvas');
+    return c.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+  } catch { return false; }
+}
+
+// 투명 채널 존재 여부 간이 검사
+function detectAlpha(imgOrCanvas, w, h) {
+  const c = document.createElement('canvas');
+  c.width = Math.min(64, w);
+  c.height = Math.min(64, h);
+  const ctx = c.getContext('2d');
+  const scale = Math.max(w / c.width, h / c.height);
+  // drawImage 인자는 원본이 <img>든 <canvas>든 동일하게 동작
+  ctx.drawImage(imgOrCanvas, 0, 0, w, h, 0, 0, c.width, c.height);
+  const data = ctx.getImageData(0, 0, c.width, c.height).data;
+  for (let i = 3; i < data.length; i += 4) {
+    if (data[i] < 255) return true;
+  }
+  return false;
+}
+
+// EXIF 회전 보정 시도
+async function loadBitmap(file) {
+  if ('createImageBitmap' in window) {
+    try {
+      return await createImageBitmap(file, { imageOrientation: 'from-image' });
+    } catch { /* fallback */ }
+  }
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.decoding = 'async';
+  img.referrerPolicy = 'no-referrer';
+  await new Promise((res, rej) => {
+    img.onload = () => res();
+    img.onerror = rej;
+    img.src = url;
+  });
+  img.close = () => URL.revokeObjectURL(url);
+  return img;
+}
+
+async function compressToBase64(file) {
+  const bmp = await loadBitmap(file);
+  const w = bmp.width, h = bmp.height;
+
+  // 리사이즈 비율 계산 (긴 변 기준)
+  const scale = Math.min(1, IMG_MAX_WIDTH / Math.max(w, h));
+  const outW = Math.round(w * scale);
+  const outH = Math.round(h * scale);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = outW; canvas.height = outH;
+  const ctx = canvas.getContext('2d');
+  if ('imageSmoothingQuality' in ctx) ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(bmp, 0, 0, outW, outH);
+  if (bmp.close) try { bmp.close(); } catch {}
+
+  const hasAlpha = detectAlpha(canvas, outW, outH);
+
+  // 포맷 선택: 알파 있으면 PNG, 없으면 WebP/ JPEG
+  let mime = 'image/jpeg';
+  if (hasAlpha) mime = 'image/png';
+  else if (supportWebP()) mime = 'image/webp';
+
+  const quality = (mime === 'image/png') ? undefined : JPEG_QUALITY;
+  let dataUrl = canvas.toDataURL(mime, quality);
+
+  // 안전장치: 너무 크면 한 번 더 줄이기
+  if (dataUrl.length > MAX_BASE64_LEN && mime !== 'image/png') {
+    const canvas2 = document.createElement('canvas');
+    canvas2.width = Math.round(outW * 0.8);
+    canvas2.height = Math.round(outH * 0.8);
+    const ctx2 = canvas2.getContext('2d');
+    if ('imageSmoothingQuality' in ctx2) ctx2.imageSmoothingQuality = 'high';
+    ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height);
+    dataUrl = canvas2.toDataURL(mime, Math.max(0.6, (JPEG_QUALITY - 0.1)));
+  }
+  return dataUrl;
+}
+
+
+
+//====== Toast UI Editor 초기화 (Base64 압축 삽입) ======
 const editor = new toastui.Editor({
-    el: document.querySelector('#editor'),
-    height: '500px',
-    initialEditType: 'wysiwyg',
-    previewStyle: 'vertical',
-    language: 'ko-KR',
-    placeholder: '내용을 입력하세요',
-    hooks: {
-        addImageBlobHook: function(blob, callback) {
-            const reader = new FileReader();
-            reader.onloadend = function() {
-                const base64data = reader.result;
-                callback(base64data, '이미지'); // Base64 이미지 삽입
-            }
-            reader.readAsDataURL(blob);
-            return false; // 서버 업로드 방지, 로컬 Base64 삽입
-        }
+  el: document.querySelector('#editor'),
+  height: '500px',
+  initialEditType: 'wysiwyg',
+  previewStyle: 'vertical',
+  language: 'ko-KR',
+  placeholder: '내용을 입력하세요',
+  hooks: {
+    addImageBlobHook: async (blob, callback) => {
+      try {
+        const base64 = await compressToBase64(blob);
+        callback(base64, '이미지'); // 압축/리사이즈된 Base64 삽입
+      } catch (e) {
+        console.error(e);
+        alert('이미지 처리 중 오류가 발생했습니다.');
+      }
+      return false; // 서버 업로드 방지 (Base64만 사용)
     }
+  }
 });
 
 // 제목과 내용 히든 필드에 복사
