@@ -130,14 +130,56 @@
             0% { transform: translateY(-5vh) translateX(0) rotate(0deg); opacity: 1; }
             100% { transform: translateY(120vh) translateX(50px) rotate(45deg); opacity: 0; }
         }
-       
+       #search{
+    width:100%;
+   height: 30px;
+   margin-top: 30px;
+   margin-bottom: 20px; 
+   color: #9b9b9b;
+   border-radius: 15px;
+   display: flex;
+   
+    }
+   #searchbox{
+   width:90%;
+   height: 100%;
+   padding-left: 10px; /* 글자(placeholder 포함) 왼쪽 여백 */
+	line-height: 30px;
+	outline: none;  
+	border-radius: 15px;    /* 클릭 시 파란 테두리 제거 */
+  
+   }
+		#searchbtn{
+		width:10%;
+    height: 35px;
+	padding: 10px 0;
+	text-align: center;
+	font-weight: bold;
+	  	color: #fff;
+	background: linear-gradient(135deg, #9b59b6, #e91e63);
+	border: none;
+	 	border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 15px #e91e63, inset 0 0 5px #9b59b6;
+		transition: transform 0.2s, box-shadow 0.2s;
+		}
+		
     </style>
 </head>
 
 <body>
     <div class="board-container">
         <h1>자유게시판</h1>
-
+<form action="/list.free" method="get">
+<div id="search">
+  <input type="text"
+         name="q"
+         id="searchbox"
+         placeholder="검색 할 제목을 입력해주세요"
+         onkeydown="if(event.key==='Enter'){ event.preventDefault(); this.form.submit(); }">
+  <button type="submit" id="searchbtn">검색</button>
+</div>
+</form>
         <table>
             <thead>
                 <tr>

@@ -55,7 +55,7 @@ public class Game1BoardController extends HttpServlet {
                 return;
             }
 
-            // ===== 목록 (GET)  ※ 철자 그대로 유지: /game1borad
+         // ===== 목록 (GET)
             else if (cmd.equals("/game1borad.Game1Controller") && "GET".equalsIgnoreCase(request.getMethod())) {
                 int cpage = 1;
                 String cpageStr = request.getParameter("cpage");
@@ -69,20 +69,37 @@ public class Game1BoardController extends HttpServlet {
                     try { gameid = Integer.parseInt(gameidStr); } catch (NumberFormatException ignore) {}
                 }
 
+                // 🔍 검색어
+                String q = request.getParameter("q");
+                boolean hasQuery = (q != null && !q.trim().isEmpty());
+                if (hasQuery) q = q.trim();
+
                 int from = cpage * GameBoardConfig.RECORD_COUNT_PER_PAGE - (GameBoardConfig.RECORD_COUNT_PER_PAGE - 1);
                 int to   = cpage * GameBoardConfig.RECORD_COUNT_PER_PAGE;
 
-                ArrayList<GameBoardDTO> list = gbdao.selectFromTo(from, to, gameid);
+                ArrayList<GameBoardDTO> list;
+                int totalCount;
+
+                if (hasQuery) {
+                    // 제목 검색 페이징
+                    list = gbdao.searchTitleFromTo(from, to, gameid, q);
+                    totalCount = gbdao.getTitleSearchCount(gameid, q);
+                } else {
+                    // 전체 목록 페이징
+                    list = gbdao.selectFromTo(from, to, gameid);
+                    totalCount = gbdao.getRecordTotalCount(gameid);
+                }
 
                 request.setAttribute("list", list);
-                request.setAttribute("recordTotalCount", gbdao.getRecordTotalCount(gameid));
+                request.setAttribute("recordTotalCount", totalCount);
                 request.setAttribute("recordCountPerPage", GameBoardConfig.RECORD_COUNT_PER_PAGE);
                 request.setAttribute("naviCountPerPage", GameBoardConfig.NABI_COUNT_PER_PAGE);
                 request.setAttribute("currentPage", cpage);
+                request.setAttribute("q", hasQuery ? q : ""); // JSP에서 유지/표시용
+
                 request.getRequestDispatcher("/board/game1boardList.jsp").forward(request, response);
                 return;
             }
-
             // ===== 상세 (GET)
             else if (cmd.equals("/game1boardDetail.Game1Controller") && "GET".equalsIgnoreCase(request.getMethod())) {
                 String seqStr = request.getParameter("seq");

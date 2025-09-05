@@ -52,32 +52,45 @@ public class freeBoardController extends HttpServlet {
          } else if(cmd.equals("/post.free")) {
             response.sendRedirect("/board/post.jsp");
             
-         // 3. 게시글 목록
+          ///list.free
          } else if(cmd.equals("/list.free")) {
-            int page = 1; 
-            String pageParam = request.getParameter("page");
-            if(pageParam != null && !pageParam.isEmpty()) page = Integer.parseInt(pageParam);
+          String q = request.getParameter("q");     // 🔍 제목 검색어
+          int page = 1;
+          String pageParam = request.getParameter("page");
+          if(pageParam != null && !pageParam.isEmpty()) page = Integer.parseInt(pageParam);
 
-            int pageSize = 10;
-            int start = (page - 1) * pageSize + 1;
-            int end = page * pageSize;
+          int pageSize = 10;
+          int start = (page - 1) * pageSize + 1;
+          int end = page * pageSize;
 
-            List<freeBoardDTO> list = dao.selectPage(start, end);
-            int totalCount = dao.getTotalCount();
-            int totalPage = (int)Math.ceil(totalCount / (double)pageSize);
+          List<freeBoardDTO> list;
+          int totalCount;
 
-            int blockSize = 10;
-            int currentBlock = (int)Math.ceil(page / (double)blockSize);
-            int startPage = (currentBlock - 1) * blockSize + 1;
-            int endPage = Math.min(startPage + blockSize - 1, totalPage);
+          if(q != null && !q.trim().isEmpty()) {
+              // ✅ 제목 검색 전용 페이징
+              list = dao.searchTitlePage(q.trim(), start, end);
+              totalCount = dao.getTitleSearchCount(q.trim());
+          } else {
+              // 전체 목록
+              list = dao.selectPage(start, end);
+              totalCount = dao.getTotalCount();
+          }
 
-            request.setAttribute("list", list);
-            request.setAttribute("currentPage", page);
-            request.setAttribute("totalPage", totalPage);
-            request.setAttribute("startPage", startPage);
-            request.setAttribute("endPage", endPage);
-            request.getRequestDispatcher("/board/list.jsp").forward(request, response);
-            
+          int totalPage = (int)Math.ceil(totalCount / (double)pageSize);
+          int blockSize = 10;
+          int currentBlock = (int)Math.ceil(page / (double)blockSize);
+          int startPage = (currentBlock - 1) * blockSize + 1;
+          int endPage = Math.min(startPage + blockSize - 1, totalPage);
+
+          // 🔁 JSP에서 검색어 유지/표시
+          request.setAttribute("list", list);
+          request.setAttribute("currentPage", page);
+          request.setAttribute("totalPage", totalPage);
+          request.setAttribute("startPage", startPage);
+          request.setAttribute("endPage", endPage);
+          request.setAttribute("q", q);
+
+          request.getRequestDispatcher("/board/list.jsp").forward(request, response);
          // 4. 게시글 상세보기
          } else if(cmd.equals("/detail.free")) {
             int fb_id = Integer.parseInt(request.getParameter("id"));

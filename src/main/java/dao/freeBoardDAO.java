@@ -14,7 +14,14 @@ import dto.freeBoardDTO;
 
 public class freeBoardDAO {
     private static freeBoardDAO instance;
-
+    //LIKE 파라미터 유틸 (%, _ 이스케이프)
+    private static String likeParam(String q) {
+     if(q == null) q = "";
+     q = q.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
+     return "%" + q + "%";
+    }
+    
+    
     public synchronized static freeBoardDAO getInstance() {
         if(instance == null) instance = new freeBoardDAO();
         return instance;
@@ -135,4 +142,54 @@ public class freeBoardDAO {
             return 0;
         }
     }
+  //(A) 제목 검색: 페이지 조회
+    public List<freeBoardDTO> searchTitlePage(String keyword, int start, int end) throws Exception {
+     String sql =
+         "SELECT * FROM (" +
+         "  SELECT ROW_NUMBER() OVER (ORDER BY fb_id DESC) rnum," +
+         "         fb_id, fb_user_name, fb_Title, fb_write, fb_date, view_count " +
+         "  FROM freeBoard " +
+         "  WHERE LOWER(fb_Title) LIKE LOWER(?) ESCAPE '\\'" +
+         ") WHERE rnum BETWEEN ? AND ?";
+
+     try(Connection con = this.getConnection();
+         PreparedStatement stat = con.prepareStatement(sql)) {
+
+         stat.setString(1, likeParam(keyword));
+         stat.setInt(2, start);
+         stat.setInt(3, end);
+
+         try(ResultSet rs = stat.executeQuery()) {
+             List<freeBoardDTO> list = new ArrayList<>();
+             while(rs.next()) {
+                 freeBoardDTO dto = new freeBoardDTO(
+                     rs.getInt("fb_id"),
+                     rs.getString("fb_user_name"),
+                     rs.getString("fb_Title"),
+                     rs.getString("fb_write"),
+                     rs.getTimestamp("fb_date")
+                 );
+                 dto.setView_count(rs.getInt("view_count"));
+                 list.add(dto);
+             }
+             return list;
+         }
+     }
+    }
+
+    //(B) 제목 검색: 전체 개수
+    public int getTitleSearchCount(String keyword) throws Exception {
+     String sql = "SELECT COUNT(*) FROM freeBoard " +
+                  "WHERE LOWER(fb_Title) LIKE LOWER(?) ESCAPE '\\'";
+     try(Connection con = this.getConnection();
+         PreparedStatement stat = con.prepareStatement(sql)) {
+         stat.setString(1, likeParam(keyword));
+         try(ResultSet rs = stat.executeQuery()) {
+             return rs.next() ? rs.getInt(1) : 0;
+         }
+     }
+    }
+
+   
+    
 }

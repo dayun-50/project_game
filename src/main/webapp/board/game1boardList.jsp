@@ -256,7 +256,40 @@ color: inherit;
     transform: scale(1.05);
     box-shadow: 0 0 25px #e91e63, 0 0 50px #9b59b6;
 }
-
+#search{
+    width:100%;
+   height: 30px;
+   margin-top: 30px;
+   margin-bottom: 20px; 
+   color: #9b9b9b;
+   border-radius: 15px;
+   display: flex;
+   
+    }
+   #searchbox{
+   width:90%;
+   height: 100%;
+   padding-left: 10px; /* 글자(placeholder 포함) 왼쪽 여백 */
+	line-height: 30px;
+	outline: none;  
+	border-radius: 15px;    /* 클릭 시 파란 테두리 제거 */
+  
+   }
+		#searchbtn{
+		width:10%;
+    height: 35px;
+	padding: 10px 0;
+	text-align: center;
+	font-weight: bold;
+	  	color: #fff;
+	background: linear-gradient(135deg, #9b59b6, #e91e63);
+	border: none;
+	 	border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 15px #e91e63, inset 0 0 5px #9b59b6;
+		transition: transform 0.2s, box-shadow 0.2s;
+		}
+		
     </style>
 </head>
 <body>
@@ -273,6 +306,19 @@ color: inherit;
             <div class="tab"><a href="/game1borad.Game1Controller?gameid=4">Game 4</a></div>
 
         </div>
+
+<form action="/game1borad.Game1Controller" method="get">
+  <div id="search">
+    <input type="text"
+           name="q"
+           id="searchbox"
+           placeholder="검색 할 제목을 입력해주세요"
+           value="${fn:escapeXml(param.q)}"
+           onkeydown="if(event.key==='Enter'){event.preventDefault(); this.form.submit();}">
+    <button type="submit" id="searchbtn">검색</button>
+  </div>
+</form>
+
 
         <table>
             <thead>
@@ -412,6 +458,13 @@ color: inherit;
 		$("#backbtn").on("click", function(){ // 뒤로가기버튼
 			window.location.href = "/gamapage.GameController"	
 		});
+		 document.querySelector('form[action="/game1borad.Game1Controller"]')
+		    .addEventListener('keydown', function(e){
+		      if(e.key === 'Enter'){
+		        e.preventDefault();
+		        this.submit();
+		      }
+		    });
     </script>
 </body>
 </html>

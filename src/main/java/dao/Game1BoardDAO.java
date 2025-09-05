@@ -1,13 +1,17 @@
 package dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+
 import dto.GameBoardDTO;
-import dto.Rankdto;
 
 public class Game1BoardDAO {
 
@@ -128,5 +132,30 @@ public class Game1BoardDAO {
             ps.executeUpdate();
         }
     }
+	// (B) 제목 검색: 전체 개수
+	public int getTitleSearchCount(int gameid, String keyword) throws Exception {
+	    String sql =
+	        "SELECT COUNT(*) " +
+	        "  FROM game_board " +
+	        " WHERE gameid = ? " +
+	        "   AND LOWER(gameboardtitle) LIKE LOWER(?) ESCAPE '\\'";
+
+	    try (Connection con = getConnection();
+	         PreparedStatement ps = con.prepareStatement(sql)) {
+
+	        ps.setInt(1, gameid);
+	        ps.setString(2, likeParam(keyword));
+
+	        try (ResultSet rs = ps.executeQuery()) {
+	            return rs.next() ? rs.getInt(1) : 0;
+	        }
+	    }
+	}
+
+private static String likeParam(String q) {
+if (q == null) q = "";
+q = q.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
+return "%" + q + "%";
+}
 
 }
