@@ -262,7 +262,7 @@ color: inherit;
 <body>
 <div class="board-container">
         <div class="title-container">
-    <img src="GameLogo.png" alt="게임 로고" class="title-image">
+    <img src="/board/로고.png" alt="게임 로고" class="title-image"> 
     <h1>게임 게시판</h1>
 </div>
         <div class="tabs">
@@ -305,7 +305,7 @@ color: inherit;
 
        <div class="button-group">
     <div class="write-btn" id="btn">글작성</div>
-    <div class="write-btn" id="backbtn">뒤로가기</div>
+    <div class="write-btn" id="backbtn">메인으로가기</div>
 </div>
     </div>
 
