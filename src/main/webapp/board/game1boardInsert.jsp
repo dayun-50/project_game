@@ -1,73 +1,151 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<title>Document</title>
- <!-- TOAST UI Editor CDN -->
-    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-    <!-- 한국어 패치 -->
-    <script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.min.js"></script>
-    <!-- TOAST UI Editor CSS -->
-    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        .con {
-            border: 1px solid black;
-            width: 90%;
-            /* 브라우저 너비의 90% */
-            max-width: 1000px;
-            /* 너무 커지지 않도록 최대 제한 */
-            margin: auto;
-        }
-
-        #editor {
-            width: 100%;
-            height: 60vh;
-            /* 브라우저 높이에 비례 */
-            margin: auto;
-        }
-
-        #postname {
-            height: 50px;
-            width: 100%;
-            display: flex;
-            justify-content: start;
-            align-items: center;
-            background-color: #dad9d9;
-            border-radius: 5px;
-            font-size: 20px;
-            margin: auto;
-            color: #000000;
-        }
-
-        /* 내용이 없을 때만 표시 */
-        #postname:empty::before {
-            content: "제목을 입력하세요";
-            color: #9b9b9b;
-            pointer-events: none;
-            /* 클릭해도 텍스트가 선택되지 않게 */
-        }
-
-        /*여기부터 전체테마 ccs*/
+<style>
         body {
-            /* <body> 전체 스타일 */
             background-color: #0c0c1a;
             color: #fff;
             font-family: 'Arial', sans-serif;
             display: flex;
             justify-content: center;
             padding-top: 50px;
+            overflow-x: hidden;
         }
 
+        .container {
+            width: 50%;
+            background: rgba(20, 20, 40, 0.95);
+            border-radius: 12px;
+            padding: 30px 40px;
+            box-shadow: 0 0 20px rgba(180, 180, 255, 0.5);
+            color: #fff;
+            position: relative;
+            z-index: 1;
+        }
+
+        h2 {
+            color: #ff9800;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #3c3c5c;
+            padding-bottom: 10px;
+        }
+
+        .meta-info {
+            color: #b276d1;
+            margin-bottom: 20px;
+        }
+
+        .pre {
+            background: rgba(50, 50, 80, 0.8);
+            border: 1px solid #5e72be;
+            border-radius: 10px;
+            padding: 20px;
+            color: #e0e8ff;
+            white-space: pre-wrap;
+        }
+
+        .btn-back,
+        .btn-edit,
+        .btn-delete {
+            margin-top: 20px;
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            color: #fff;
+            background: linear-gradient(135deg, #9b59b6, #e91e63);
+            box-shadow: 0 0 15px #e91e63, inset 0 0 5px #9b59b6;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+        }
+
+        .btn-back:hover,
+        .btn-edit:hover,
+        .btn-delete:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #e91e63, 0 0 50px #9b59b6;
+        }
+
+        .comment-section {
+            margin-top: 30px;
+            border-top: 1px solid #3c3c5c;
+            padding-top: 20px;
+        }
+
+        .comment-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .comment-item {
+            border-bottom: 1px solid #3c1f5c;
+            padding: 10px 0;
+        }
+
+        .comment-meta {
+            font-size: 0.9em;
+            color: #b276d1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .comment-contents {
+            color: #e0e8ff;
+        }
+
+        .comment-actions button {
+            background: none;
+            border: none;
+            color: #87CEEB;
+            cursor: pointer;
+            font-weight: 600;
+            padding: 0;
+            margin: 0 5px;
+        }
+
+        .comment-actions button:hover {
+            text-decoration: underline;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            height: 80px;
+            border-radius: 8px;
+            border: 1px solid #5e72be;
+            padding: 10px;
+            background: rgba(30, 30, 60, 0.8);
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .comment-form button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: bold;
+            background: linear-gradient(135deg, #9b59b6, #e91e63);
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 0 15px #e91e63, inset 0 0 5px #9b59b6;
+        }
+
+        .comment-form button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #e91e63, 0 0 50px #9b59b6;
+        }
+
+        /* 별 효과 */
         .star,
         .shooting-star {
             position: fixed;
@@ -76,186 +154,120 @@
         }
 
         .star {
-            animation: twinkle linear infinite;
+            width: 2px;
+            height: 2px;
             background: white;
+            animation: twinkle linear infinite;
         }
 
         @keyframes twinkle {
-
             0%,
             100% {
-                opacity: 0.1
+                opacity: 0.1;
             }
 
             25% {
-                opacity: 0.6
+                opacity: 0.6;
             }
 
             50% {
-                opacity: 1
+                opacity: 1;
             }
 
             75% {
-                opacity: 0.4
+                opacity: 0.4;
             }
         }
 
-        
-
-        /*여기까지 전체테마 ccs*/
-
-        #line {
-            border: 1px solid #dad9d9;
-            margin-bottom: 20px;
+        .shooting-star {
+            width: 2px;
+            height: 10px;
+            background: white;
+            animation: shootingStar linear forwards;
         }
 
-        h1 {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+        @keyframes shootingStar {
+            0% {
+                transform: translateY(-5vh) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
 
-        h2 {
-            width: 100%;
-            height: 100%;
-        }
-
-        #logo {
-            width: 100px;
-            height: 100px;
-        }
-
-        #postdone {
-            width: 100px;
-            height: 50px;
-            font-weight: bold;
-            color: #fff;
-            background: linear-gradient(135deg, #9b59b6, #e91e63);
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 0 15px #e91e63, inset 0 0 5px #9b59b6;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        #cancel {
-            width: 100px;
-            height: 50px;
-            font-weight: bold;
-            color: #fff;
-            background: linear-gradient(135deg, #9b59b6, #e91e63);
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 0 15px #e91e63, inset 0 0 5px #9b59b6;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btns {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 15px;
-            gap: 10px;
-            /* 버튼 간격 */
-        }
-
-        #btnform {
-            display: block;
-            width: 100%;
-        }
-
-        form {
-            width: 100px;
-            height: 30px;
-            font-weight: bold;
+            100% {
+                transform: translateY(120vh) translateX(50px) rotate(45deg);
+                opacity: 0;
+            }
         }
     </style>
 </head>
-
 <body>
-   <div class="con">
-  <h1><img src="/board/로고.png" id="logo"> 혜빈이와 아이들 </h1>
-  <h2>게시판 글쓰기</h2>
-  <div id="line"></div>
+<div class="container">
+        <h2>${list[0].gameboardtitle }</h2>
+        <div class="meta-info">
+            <span>작성자: <strong>${list[0].gamewrtier }</strong></span> &nbsp;|&nbsp;
+            <span>작성일: ${list[0].game_board_date }</span> &nbsp;|&nbsp;
+            <span>조회수: ${viewCount }</span>
+        </div>
 
-  <form action="/game1BoradInsert.Game1Controller" method="post" id="btnform">
-    <div id="postname" contenteditable="true"></div>
-    <div id="editor"></div>
+        <div class="pre" id="textbox">
+			${list[0].gamecoment }
+        </div>
 
-
-	<input type="hidden" name="title" id="postnameInput">
-  	<input type="hidden" name="coment" id="editorInput">
-  	<input type="hidden" name="gameid" value="${gameid }">
+        <button class="btn-back" id="backList">목록으로</button>
+      	<c:choose>
+   			 <c:when test="${result == 1}">
+   			 	<input type="hidden" id="seq" name="seq" value="${list[0].game_seq }">
+        		<button class="btn-edit" id="updtn">수정하기</button>
+       			 <button class="btn-delete" id="dlebtn">삭제하기</button>
+       			 
+       			<button class="btn-edit" id="complebtn">수정완료</button>
+       			 <button class="btn-delete" id="backbtn">수정취소</button>
+   			 </c:when>
+		</c:choose>
+        
     
-    
-    <div class="btns">
-      <button id="postdone" type="submit">작성완료</button>
-      <button id="cancel" type="button">취소</button>
+       
+        
+
+        <div class="comment-section">
+            <h4>댓글 <small>(${comentCount })</small></h4>
+		
+            <div class="comment-list">
+            <c:forEach var="Cdto" items="${comentList}">
+                <div class="comment-item">
+                    <div class="comment-meta">
+                        <div>${Cdto.game_coment_writer } | ${Cdto.game_coment_date }</div>
+                       
+                       <c:choose>
+   			 				<c:when test="${nickname eq Cdto.game_coment_writer}">
+   			 				<div class="comment-actions">
+                            <button class="comentupbtn">수정</button>
+                            <button class="comentdlebtn">삭제</button>
+                            
+                            <button class="comentcomplbtn">완료</button>
+                            <button class="comentbackbtn">취소</button>
+                           <input type="hidden" class="comentseq" value="${Cdto.game_comet_seq }">
+                        	</div>
+   			 				
+   			 				</c:when>
+   			 			</c:choose>
+                       
+                        
+                    </div>
+                    <div class="comment-contents">${Cdto.game_coment }</div>
+                </div>
+           </c:forEach>
+            </div>
+
+            <form class="comment-form" action="/comentInsert.GameComentController" method="post">
+				<input type="hidden" name="seq" value="${list[0].game_seq }">
+                <textarea placeholder="댓글을 입력하세요..." name="coment" required></textarea>
+                <button type="submit">댓글 등록</button>
+            </form>
+        </div>
     </div>
-  </form>
-</div>
-
-
-
-
 
     <script>
-    $("#btnform").on("submit", function() { //div 내용 뽑아오기
-        $("#postnameInput").val($("#postname").html()); 
-        $("#editorInput").val($("#editor").html()); 
-     });
-    
-    $("#cancel").on("click", function(){
-    	window.location.href = "/game1borad.Game1Controller"
-    });
-
-    const editor = new toastui.Editor({
-        el: document.querySelector('#editor'),
-        height: '500px',
-        initialEditType: 'wysiwyg',
-        previewStyle: 'vertical',
-        language: 'ko-KR', // 한국어 적용
-        placeholder: '내용을 입력하세요',
-             // 이미지가 Base64 형식으로 입력되는 것 가로채주는 옵션
-          hooks: {
-             addImageBlobHook: (blob, callback) => {
-                // blob : Java Script 파일 객체
-                //console.log(blob);
-                
-                const formData = new FormData();
-                 formData.append('image', blob);
-                 
-                 let url = '/images/';
-                  $.ajax({
-                       type: 'POST',
-                       enctype: 'multipart/form-data',
-                       url: '/writeTest.do',
-                       data: formData,
-                       dataType: 'json',
-                       processData: false,
-                       contentType: false,
-                       cache: false,
-                       timeout: 600000,
-                       success: function(data) {
-                          //console.log('ajax 이미지 업로드 성공');
-                          url += data.filename;
-                          
-                          // callback : 에디터(마크다운 편집기)에 표시할 텍스트, 뷰어에는 imageUrl 주소에 저장된 사진으로 나옴
-                       // 형식 : ![대체 텍스트](주소)
-                          callback(url, '사진 대체 텍스트 입력');
-                       },
-                       error: function(e) {
-                          //console.log('ajax 이미지 업로드 실패');
-                          //console.log(e.abort([statusText]));
-                          
-                          callback('image_load_fail', '사진 대체 텍스트 입력');
-                       }
-                    });
-             }
-          }
-      });
+        // 랜덤 별 생성
         function createStars(count, topRange = [0, 100], leftRange = [0, 100], sizeRange = [1, 3]) {
             for (let i = 0; i < count; i++) {
                 const s = document.createElement('div');
@@ -271,12 +283,144 @@
             }
         }
 
+        // 별똥별 생성
+        function createShootingStar() {
+            const star = document.createElement('div');
+            star.className = 'shooting-star';
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.animationDuration = (1 + Math.random() * 1) + 's';
+            document.body.appendChild(star);
+            star.addEventListener('animationend', () => star.remove());
+        }
+
+        createStars(500);
+        setInterval(createShootingStar, 2000);
         
-        // 별 생성
-        createStars(800);
-        createStars(400, [20, 50], [20, 80], [1, 2]);
-
-
+        $("#backList").on("click", function (){ //목록으로
+        	window.location.href = "/game1borad.Game1Controller"
+        });
+        
+        
+        $("#dlebtn").on("click", function (){ //글삭제
+        	 let result = confirm("정말로 삭제하시겠습니까?");
+      	   
+      	   if(result){
+      		   alert("게시물 삭제가 완료되셨습니다.");
+      		   $.ajax({
+         				url: "/delete.Game1Controller",
+         				data: {
+         				seq:$("#seq").val()
+         				},
+         				type: "post",
+         				dataType: "json",
+         				success: function(resp){
+         				if(resp == 1){
+         					window.location.href = "/game1borad.Game1Controller";
+         				}	
+         			}
+         		})  
+      	   }
+        });
+        
+        $(".comentdlebtn").on("click", function(){ //댓글삭제
+        	 let result = confirm("댓글을 삭제하시겠습니까?");
+        	   
+        	   if(result){
+        		   alert("댓글 삭제가 완료되셨습니다.");
+        		   $.ajax({
+           				url: "/delete.GameComentController",
+           				data: {
+           				seq:$(this).siblings(".comentseq").val()
+           				},
+           				type: "post",
+           				dataType: "json",
+           				success: function(resp){
+           				if(resp == 1){
+           					window.location.href = "/game1boradDetil.Game1Controller?seq=${list[0].game_seq }";
+           				}	
+           			}
+           		})  
+        	   }
+        });
+        
+        $("#complebtn, #backbtn").hide(); //글 수정완료/수정취소 버튼
+        
+        $("#updtn").on("click", function(){ //글 수정버튼 클릭시
+        	$("#complebtn, #backbtn").show();
+        	$("#updtn, #dlebtn").hide();
+        	
+        	$("#textbox").attr("contenteditable", true); 
+        	
+        });
+         
+        $("#backbtn").on("click", function(){ //글 수정취소 버튼
+        	$("#complebtn, #backbtn").hide();
+        	$("#updtn, #dlebtn").show();
+        	
+        	$("#textbox").attr("contenteditable", false);
+        	window.location.href = "/game1boradDetil.Game1Controller?seq=${list[0].game_seq }"
+        });
+        
+        $("#complebtn").on("click", function(){ //글 수정완료 버튼
+        	$("#complebtn, #backbtn").show();
+        	$("#updtn, #dlebtn").hide();
+        	$("#textbox").attr("contenteditable", false);
+        	
+        	$.ajax({
+   				url: "/updat.Game1Controller",
+   				data: {
+   				text:$("#textbox").text(),
+   				seq:$("#seq").val()
+   				},
+   				type: "post",
+   				dataType: "json",
+   				success: function(resp){
+   				if(resp == 1){
+   					window.location.href = "/game1boradDetil.Game1Controller?seq=${list[0].game_seq }";
+   				}	
+   			}
+   		})  
+        });
+        
+        $(".comentcomplbtn, .comentbackbtn").hide(); //댓글 수정완료/취소버튼
+        
+        $(".comentupbtn").on("click", function(){ //댓글수정
+        	 // 해당 댓글 버튼이 속한 comment-item 안에서만 적용
+            let commentDiv = $(this).closest(".comment-item").find(".comment-contents");
+            
+            // 버튼 토글
+            $(this).siblings(".comentcomplbtn, .comentbackbtn").show();
+            $(this).siblings(".comentdlebtn").hide();
+            $(this).hide();
+            
+            // 클릭한 댓글만 편집 가능
+            commentDiv.attr("contenteditable", true).focus();
+        	
+        });
+        
+        $(".comentbackbtn").on("click", function(){ //댓글 수정 취소버튼
+        	window.location.href = "/game1boradDetil.Game1Controller?seq=${list[0].game_seq }"
+        });
+        
+        $(".comentcomplbtn").on("click", function(){ //댓글 수정 완료버튼
+        	let commentItem = $(this).closest(".comment-item");
+        	$.ajax({
+   				url: "/updatComent.GameComentController",
+   				data: {
+   				text:commentItem.find(".comment-contents").text(),
+   				seq:commentItem.find(".comentseq").val()
+   				},
+   				type: "post",
+   				dataType: "json",
+   				success: function(resp){
+   				if(resp == 1){
+   					window.location.href = "/game1boradDetil.Game1Controller?seq=${list[0].game_seq }";
+   				}	
+   			}
+   		})  
+        });
+        
+        
     </script>
 </body>
-</html> 
+</html>

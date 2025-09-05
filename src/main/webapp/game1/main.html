@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.90.0/phaser.min.js"></script>
+    <script src="MainScene.js"></script>
+    <script src="Exam03.js"></script>
+    <script src="Exam04.js"></script>
+    <style>
+        #gamebox{
+            border: 1px solid black;
+            width: 500px;
+            height: 500px;
+            background-color: rgba(240, 255, 255, 0.208);
+        }
+
+    </style>
+
+</head>
+<body>
+    <!-- Phaser.js 게임엔진 -->
+    <!-- 프로그램 시작점 : main.html -->
+    <!-- Scene : 게임에 주인공이 활동하는 각 장면들 -->
+    
+    <div id="gamebox"></div>
+
+    <script>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.90.0/phaser.min.js"></script>
+        <script src="MainScene.js"></script>
+        <script src="Exam03.js"></script>
+        <script src="Exam04.js"></script>
+        <style>
+            #gamebox{
+                border: 1px solid black;
+                width: 500px;
+                height: 500px;
+                background-color: rgba(240, 255, 255, 0.208);
+            }
+
+        </style>
+
+    </head>
+    <body>
+        <!-- Phaser.js 게임엔진 -->
+        <!-- 프로그램 시작점 : main.html -->
+        <!-- Scene : 게임에 주인공이 활동하는 각 장면들 -->
+        
+        <div id="gamebox"></div>
+
+        <script>
+            let config = {
+                type: Phaser.AUTO, //고정값
+                parent:"gamebox", //어디에 게임을 넣을건지
+                width:500,
+                height:500,
+                physics:{
+                    default:"arcade", //어떤 물리엔진을 쓸것인가 인데 arcade는 제일 기본적인 물리엔진
+                    // arcade:{
+                    //     gravity:{y:300}
+                    //}
+                    arcade:{
+                        //debug:true
+                    }
+                },
+                scene: [Exam03,Exam04]
+            };
+
+            let game = new Phaser.Game(config);
+        </script>
+    </body>
+    </html>
+    </script>
+</body>
+</html>

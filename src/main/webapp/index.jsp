@@ -340,6 +340,7 @@ html, body {
 	gap: 20px;
 	width: 100%;
 	align-items: flex-start;
+	
 }
 
 .game-card.reverse {
@@ -540,8 +541,12 @@ for(let i=0;i<30;i++){
 				<div class="game-info">
 					<h3>Game 4</h3>
 					<p>유승 게임 입니다용</p>
+					
 				</div>
 			</div>
+			
+			
+			
 
 			<div class="play-btn-container">
 				<button id="play-btn">즐기러 가기</button>
@@ -560,6 +565,11 @@ $("#signup-btn").on("click", function(){ //회원가입 페이지이동
 $("#login-btn").on("click", function(){ //로그인 페이지이동
 	window.location.href = "/loginpgae.MembersController";
 });
+
+
+
+
+
 
 $("#play-btn").on("click", function(){ // 즐기러가기 버튼
 	 $('html, body').animate({ scrollTop: 0 }, 300); // 300ms 동안 부드럽게 스크롤

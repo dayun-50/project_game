@@ -12,6 +12,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import dto.GameBoardDTO;
+import dto.Rankdto;
 
 public class Game1BoardDAO {
 	private static Game1BoardDAO instance;
@@ -163,4 +164,8 @@ public class Game1BoardDAO {
 			return stat.executeUpdate();
 		}
 	}
+	
+	
+	
+	
 }

@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -146,6 +147,7 @@
         color: #4c9aff;
         transform: scale(1.2);
     }
+ 
 </style>
 </head>
 
@@ -158,34 +160,51 @@
         <th>Nick Name</th>
         <th>Score</th>
     </tr>
-    <tr><td onclick="showGame(1)">Game 1</td><td>name 1</td><td>100 p</td></tr>
-    <tr><td onclick="showGame(2)">Game 2</td><td>name 2</td><td>200 p</td></tr>
-    <tr><td onclick="showGame(3)">Game 3</td><td>name 3</td><td>100 p</td></tr>
-    <tr><td onclick="showGame(4)">Game 4</td><td>name 4</td><td>200 p</td></tr>
+      <c:forEach var="rank" items="${rankshow}">
+    <tr>
+    <td>${rank.gameName}</td>
+        <td>${nickname }</td>
+    <td>${rank.score}</td>
+    </tr>
+    </c:forEach>  
 </table>
 
 <div class="tabs">
-    <div class="tab active" onclick="showGame(1)">Game 1</div>
+    <div class="tab active" onclick="showGame(1)">Game 1
+    </div>
     <div class="tab" onclick="showGame(2)">Game 2</div>
     <div class="tab" onclick="showGame(3)">Game 3</div>
     <div class="tab" onclick="showGame(4)">Game 4</div>
 </div>
-
 <div id="gameTableContainer">
     <table id="gameTable">
-        <tr><th>Nick Name</th><th>Score</th></tr>
+        <tr>
+            <th>Nick Name</th>
+            <th>Score</th>
+        </tr>
+         <c:forEach var="rank" items="${ranklist}">
+    <tr>
+      <td>${rank.user_name}</td>
+      <td>${rank.score}</td>
+    </tr>
+ 	 </c:forEach>
+
     </table>
 </div>
 
 <div class="pagination" id="pagination"></div>
 
 <script>
-const gameData = [
-    [{ nick: "name 1", score: "100 p" }, { nick: "name A", score: "90 p" }, { nick: "name 1", score: "100 p" }, { nick: "name 1", score: "100 p" }, { nick: "name 1", score: "100 p" }],
-    [{ nick: "name 2", score: "200 p" }, { nick: "name B", score: "180 p" }, { nick: "name B", score: "180 p" }, { nick: "name B", score: "180 p" }, { nick: "name B", score: "180 p" }],
-    [{ nick: "name 3", score: "100 p" }, { nick: "name C", score: "95 p" }, { nick: "name 3", score: "100 p" }, { nick: "name C", score: "95 p" }, { nick: "name 3", score: "100 p" }, { nick: "name C", score: "95 p" }],
-    [{ nick: "name 4", score: "100 p" }, { nick: "name D", score: "95 p" }, { nick: "name 4", score: "100 p" }, { nick: "name D", score: "95 p" }, { nick: "name 4", score: "100 p" }, { nick: "name D", score: "95 p" }],
-];
+const allRanks = [
+	  <c:forEach var="rank" items="${ranklist}" varStatus="loop">
+	    { gameId: ${rank.game_id}, nick: "${rank.user_name}", score: ${rank.score} }<c:if test="${!loop.last}">,</c:if>
+	  </c:forEach>
+	];
+
+const gameData = [1, 2, 3, 4].map(id => allRanks.filter(r => r.gameId == id));
+
+console.log("GameData:", gameData); // 디버깅용
+
 
 const rowsPerPage = 5;
 let currentPage = 1;
@@ -193,44 +212,60 @@ let currentGame = 1;
 
 function renderTable() {
     const table = document.getElementById('gameTable');
+    
     table.style.opacity = 0;
     setTimeout(() => {
         const start = (currentPage - 1) * rowsPerPage;
         const end = start + rowsPerPage;
         const data = gameData[currentGame - 1].slice(start, end);
 
-        let html = "<tr><th>Nick Name</th><th>Score</th></tr>";
+        // ✅ header는 항상 고정
+        let header = "<tr><th>Nick Name</th><th>Score</th></tr>";
+        let rows = "";
         data.forEach(row => {
-            html += `<tr><td>${row.nick}</td><td>${row.score}</td></tr>`;
+            console.log("Row check:", row.nick, row.score); // ✅ 여기서 찍기
+            rows += `<tr><td>\${row.nick}</td><td>\${row.score}</td></tr>`;
         });
-        table.innerHTML = html;
-        table.style.opacity = 1;
-    }, 1000);
 
-    renderPagination();
+        table.innerHTML = header + rows;
+
+        table.style.opacity = 1;
+
+        renderPagination(); // 페이지네이션도 여기서 호출
+    }, 1000);
 }
+
 
 function renderPagination() {
     const totalPages = Math.ceil(gameData[currentGame - 1].length / rowsPerPage);
     const pagination = document.getElementById('pagination');
     let html = '';
     for (let i = 1; i <= totalPages; i++) {
-        html += `<span class="${i === currentPage ? 'active' : ''}" onclick="goPage(${i})">${i}</span>`;
+        html += '<span class="' + (i === currentPage ? 'active' : '') +
+                '" onclick="goPage(' + i + ')">' + i + '</span>';
     }
     pagination.innerHTML = html;
 }
 
-function goPage(page) { currentPage = page; renderTable(); }
+function goPage(page) {
+    currentPage = page;
+    renderTable();
+}
 
 function showGame(index) {
     currentGame = index;
     currentPage = 1;
-    document.querySelectorAll('.tab').forEach((tab, i) => tab.classList.toggle('active', i === index - 1));
+
+    document.querySelectorAll('.tab').forEach((tab, i) => {
+        tab.classList.toggle('active', i === index - 1);
+    });
     renderTable();
 }
 
+// 초기 로딩
 renderTable();
 
+// 별 배경
 for (let i = 0; i < 150; i++) {
     const s = document.createElement('div'); 
     s.className = 'star';
