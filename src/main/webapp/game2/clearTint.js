@@ -16,7 +16,7 @@ window.ClearTint = class ClearTint extends Phaser.Scene {
     // 프로젝트 경로에 맞게 수정하세요. 예: asset/클리어.png
     // 이미 어딘가에서 로드되어 있다면 중복 로드는 생략 가능.
     if (!this.textures.exists('clear_bg')) {
-      this.load.image('clear_bg', 'asset/클리어.png');
+      this.load.image('clear_bg', '/game2/asset/클리어.png');
     }
   }
 
