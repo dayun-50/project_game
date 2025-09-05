@@ -32,6 +32,31 @@ pre { background: rgba(50, 50, 80, 0.8); border: 1px solid #5e72be; border-radiu
 .savebtn, .cancelbtn { background: none; border: none; color: #87CEEB; cursor: pointer; font-weight: 600; padding: 0; margin: 0 5px; }
 .savebtn:hover, .cancelbtn:hover { text-decoration: underline; }
 .post-content img { max-width: 100%; height: auto; display: block; margin: 10px 0; }
+#editTitle{
+ width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    color: #000;
+    box-sizing: border-box;
+    margin-bottom: 15px; /* 에디터랑 간격 */
+}
+.star {
+        position: fixed;
+        width: 2px;
+        height: 2px;
+        background: white;
+        border-radius: 50%;
+        animation: twinkle 3s infinite ease-in-out;
+        z-index: 0;
+    }
+
+    @keyframes twinkle {
+        0%, 100% { opacity: 0.2; }
+        50% { opacity: 1; }
+    }    
 </style>
 </head>
 <body>
@@ -208,6 +233,16 @@ $(document).on("click", ".deletebtn", function () {
 
     });
 });
+
+//별 배경
+for (let i = 0; i < 150; i++) {
+    const s = document.createElement('div'); 
+    s.className = 'star';
+    s.style.top = Math.random() * 100 + 'vh';
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.animationDuration = (2 + Math.random() * 3) + 's';
+    document.body.appendChild(s);
+}
 </script>
 </body>
 </html>

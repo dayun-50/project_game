@@ -340,30 +340,6 @@ $("#logout-btn").on("click", function() {
     window.location.href = "/logout"; // 서블릿 주소
 });
 
-$("#btn-b").on("click", function() {
-    // 기존 게임 객체가 있으면 삭제
-    if(window.game) {
-        window.game.destroy(true); // 이전 Phaser 캔버스 제거
-    }
-
-    // Phaser 게임 생성
-    let config = {
-        type: Phaser.AUTO,
-        parent: "screen",  // #screen div 안에 캔버스 붙이기
-        width: 1280,
-        height: 720,
-        physics: {
-            default: "arcade",
-            arcade: {}
-        },
-        scene: [gamestart, gameplay, gameover],
-        scale: {
-            mode: Phaser.Scale.RESIZE,  // RESIZE 모드 사용
-            autoCenter: Phaser.Scale.CENTER_BOTH
-        }
-    };
-    window.game = new Phaser.Game(config);
-});
 </script>
 </body>
 </html>

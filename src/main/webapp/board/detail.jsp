@@ -40,6 +40,17 @@ pre { background: rgba(50, 50, 80, 0.8); border: 1px solid #5e72be; border-radiu
 @keyframes twinkle { 0%,100%{opacity:0.1;}25%{opacity:0.6;}50%{opacity:1;}75%{opacity:0.4;} }
 .shooting-star { width: 2px; height: 10px; background: white; animation: shootingStar linear forwards; }
 @keyframes shootingStar { 0%{transform:translateY(-5vh) translateX(0) rotate(0deg);opacity:1;}100%{transform:translateY(120vh) translateX(50px) rotate(45deg);opacity:0;} }
+#editTitle {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    color: #000;
+    box-sizing: border-box;
+    margin-bottom: 15px; /* 에디터랑 간격 */
+}
 </style>
 </head>
 <body>

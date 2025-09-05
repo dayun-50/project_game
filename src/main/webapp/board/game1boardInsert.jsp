@@ -22,6 +22,20 @@
     .btns{ display:flex; gap:10px; justify-content:flex-end; margin-top:14px; }
     button{ height:44px; padding:0 16px; border:none; border-radius:8px; font-weight:700; color:#fff;
             background:linear-gradient(135deg,#9b59b6,#e91e63); cursor:pointer; }
+    .star {
+        position: fixed;
+        width: 2px;
+        height: 2px;
+        background: white;
+        border-radius: 50%;
+        animation: twinkle 3s infinite ease-in-out;
+        z-index: 0;
+    }
+
+    @keyframes twinkle {
+        0%, 100% { opacity: 0.2; }
+        50% { opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -96,6 +110,16 @@
       const gid = document.querySelector('input[name="gameid"]')?.value || 1;
       location.href = `<c:url value='/game1borad.Game1Controller'/>?gameid=${gid}&ts=${Date.now()}`;
     });
+    
+ // 별 배경
+    for (let i = 0; i < 150; i++) {
+        const s = document.createElement('div'); 
+        s.className = 'star';
+        s.style.top = Math.random() * 100 + 'vh';
+        s.style.left = Math.random() * 100 + 'vw';
+        s.style.animationDuration = (2 + Math.random() * 3) + 's';
+        document.body.appendChild(s);
+    }
   </script>
 </body>
 </html>
