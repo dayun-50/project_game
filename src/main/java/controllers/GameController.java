@@ -59,7 +59,13 @@ public class GameController extends HttpServlet {
 				request.setAttribute("ranklist", ranklist);
 			}
 			
-			
+			}else if(cmd.equals("/logout.GameController")) { //로그아웃
+				request.getSession(false);
+				if(session != null){
+		            session.invalidate(); 
+		        }
+				response.sendRedirect("/index.jsp");
+				
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
