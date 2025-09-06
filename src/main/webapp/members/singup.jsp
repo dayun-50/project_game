@@ -318,6 +318,7 @@ opacity
 
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
       let emailValCheck = false;
+	  let emailcerChcek = false;
 
       $("#id").on("input", function() { // id 유효성검사
          idCheck = false;
@@ -401,6 +402,7 @@ opacity
       });
 
       $("#nickname").on("input", function() { // 닉네임 유효성검사
+	emailcerChcek = false;
          nicCheck = false;
          if (nicknameRegex.test($("#nickname").val())) {
             $("#nicknametext").css({
@@ -420,6 +422,7 @@ opacity
       });
 
       $("#nicknamecheck").on("click", function() { // 닉네임 중복검사
+
          if (nicValCheck === false) {
             alert("규정에 맞지 않는 닉네임입니다.");
          } else {
@@ -433,10 +436,12 @@ opacity
                   if (reps == "true") {
                      $("#nickname").val("");
                      alert("사용중인 닉네임입니다.");
+					emailcerChcek = false;
                      nicCheck = false;
                   } else if (reps == "false") {
                      alert("사용가능한 닉네임입니다.");
                      nicCheck = true;
+					emailcerChcek = true;
                   }
                }
             });
