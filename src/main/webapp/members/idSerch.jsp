@@ -186,11 +186,22 @@ body {
 			s.style.animationDuration = (2 + Math.random() * 3) + 's';
 			document.body.appendChild(s);
 		}
-		
+
+		let nameText = false;
+		let emailText = false;
+		let phoneText = false;
+
+
 		$("#btn").on("click", function(){ // 로그인 페이지로 이동
         	window.location.href = "/loginpgae.MembersController";
         });
-		
+
+		$("#name").on("input", function(){
+			
+		});
+
+
+
 		$("#serch-btn").on("click", function(e){ //null값인 경우 폼 차단
 			let name = $("#name").val();
 			let email = $("#email").val();
