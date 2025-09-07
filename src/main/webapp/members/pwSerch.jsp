@@ -169,12 +169,37 @@ $("#btn").on("click", function(){
     window.location.href = "/loginpgae.MembersController";
 });
 
+let nameText = false;
+let idText = false;
+let phoneText = false;
+
+$("#id").("input", function(){
+	idText = true;
+
+});
+
+$("#name").("input", function(){
+	nameText = true;
+
+});
+
+$("#phone").("input", function(){
+	phoneText = true;
+
+});
+
 $("#serch-btn").on("click", function(e){
 	let id = $("#id").val();
 	let name = $("#name").val();
 	let phone = $("#phone").val();
 	
 	if(name==="" || id ==="" || phone === ""){
+		alert("모든 정보를 입력해 주세요.");
+		e.preventDefault();
+		return;
+	}
+
+	if(idText = false || nameText = false || phonText = false){
 		alert("모든 정보를 입력해 주세요.");
 		e.preventDefault();
 		return;
