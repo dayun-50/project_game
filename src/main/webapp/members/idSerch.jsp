@@ -197,7 +197,14 @@ body {
         });
 
 		$("#name").on("input", function(){
-			
+			nameText=true;
+		});
+		$("#email").on("input", function(){
+			emailText=true;
+		});
+
+		$("#phone").on("input", function(){
+			phoneText=true;
 		});
 
 
@@ -212,7 +219,13 @@ body {
 				e.preventDefault();
 				return;
 			}
-			
+
+			if(nameText = false || emailText = false || phoneText = false){
+				alert("모든 정보를 입력해 주세요.");
+				e.preventDefault();
+				return;
+			}
+
 		});
 		
 	</script>
