@@ -339,13 +339,14 @@
         });
 		
 		const nameRegex = /^[가-힣]{2,6}$/; 
-        let nameValCheck = true;
+        let nameValCheck = false;
         
         const phoneRegex = /^010-?[0-9]{4}-?[0-9]{4}$/;
-        let phoneValCheck = true;
+        let phoneValCheck = false;
         
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
-        let emailValCheck = true;
+        let emailValCheck = false;
+		let emailcerCheck = false;
         
         
         $("#btnup").on("click", function () { //정보수정 버튼 클릭시
@@ -377,6 +378,7 @@
         
         $("#email").on("input", function(){ // e-mail 유효성검사
         	emailValCheck = false;
+			emailcerCheck = fasle;
         	if(emailRegex.test($("#email").text())){
         		$("#emailtext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
         		emailValCheck = true;
@@ -463,6 +465,7 @@
 		    if (inputCode === serverAuthCode) {
 		        $("#emailAuthText").html("인증 완료").css("color", "green");
 		        emailValCheck = true; // 회원가입 버튼에서 유효성 검사에 사용
+				emailcerCheck = true;
 		    } else {
 		        $("#emailAuthText").html("인증번호 불일치").css("color", "red");
 		        emailValCheck = false;
