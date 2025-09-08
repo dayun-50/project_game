@@ -181,7 +181,7 @@
         
 
 <c:choose>
-    <c:when test="${name == null}">
+    <c:when test="${empty id}">
     	<div class="page-title">혜빈이와 아이들</div>
         <h1>검색하신 정보가 <br> 존재하지 않습니다.</h1>
     </c:when>

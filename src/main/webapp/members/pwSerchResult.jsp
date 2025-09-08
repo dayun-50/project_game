@@ -253,7 +253,7 @@
        	let pw = $("#pw").val();
        	let pwcheck = $("#pw-check").val();
        	if(pw === pwcheck){
-       		$("#pw-checktext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("입력하신 비밀번호와 일치하지합니다.");
+       		$("#pw-checktext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("입력하신 비밀번호와 일치합니다.");
        		check=true;
        	}else{
        		$("#pw-checktext").css({"color":"red", "font-size":"12px", "padding-top":"10px"}).html("입력하신 비밀번호와 일치하지 않습니다.");	

@@ -19,27 +19,13 @@
 	z-index: 0;
 }
 
-@
-keyframes twinkle { 0%, 100% {
-	opacity: 0.3;
-}
-
-50
-
-
-%
-{
-opacity
-
-
-:
-
-
-1
-;
-
-
-}
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 body {
         background-color: #0d0d1a;
@@ -220,7 +206,7 @@ body {
 				return;
 			}
 
-			if(nameText = false || emailText = false || phoneText = false){
+			if(nameText === false || emailText === false || phoneText === false){
 				alert("모든 정보를 입력해 주세요.");
 				e.preventDefault();
 				return;

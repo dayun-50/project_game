@@ -173,17 +173,17 @@ let nameText = false;
 let idText = false;
 let phoneText = false;
 
-$("#id").("input", function(){
+$("#id").on("input", function(){
 	idText = true;
 
 });
 
-$("#name").("input", function(){
+$("#name").on("input", function(){
 	nameText = true;
 
 });
 
-$("#phone").("input", function(){
+$("#phone").on("input", function(){
 	phoneText = true;
 
 });
@@ -199,7 +199,7 @@ $("#serch-btn").on("click", function(e){
 		return;
 	}
 
-	if(idText = false || nameText = false || phonText = false){
+	if(idText === false || nameText === false || phoneText === false){
 		alert("모든 정보를 입력해 주세요.");
 		e.preventDefault();
 		return;

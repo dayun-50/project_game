@@ -378,7 +378,7 @@
         
         $("#email").on("input", function(){ // e-mail 유효성검사
         	emailValCheck = false;
-			emailcerCheck = fasle;
+			emailcerCheck = false;
         	if(emailRegex.test($("#email").text())){
         		$("#emailtext").css({"color":"green", "font-size":"12px", "padding-top":"10px"}).html("규정에 일치합니다.");
         		emailValCheck = true;

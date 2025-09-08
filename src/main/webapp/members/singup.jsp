@@ -353,6 +353,7 @@ opacity
                if (reps == "true") {
                   alert("사용중인 ID입니다.");
                   $("#id").val("");
+                  $("#idtext").html("");
                   idCheck = false;
                } else if (reps == "false") {
                   alert("사용가능한 ID입니다.");
@@ -435,6 +436,7 @@ opacity
                success : function(reps) {
                   if (reps == "true") {
                      $("#nickname").val("");
+                     $("#nicknametext").html("");
                      alert("사용중인 닉네임입니다.");
 					emailcerChcek = false;
                      nicCheck = false;
@@ -485,6 +487,7 @@ opacity
       });
 
       $("#email").on("input", function() { // e-mail 유효성검사
+    	  emailcerChcek = false;
          if (emailRegex.test($("#email").val())) {
             $("#emailtext").css({
                "color" : "green",
@@ -511,7 +514,7 @@ opacity
                      || pwCheck === false || nicValCheck === false
                      || nameValCheck === false
                      || phoneValCheck === false
-                     || emailValCheck === false) {
+                     || emailValCheck === false || emailcerChcek === false) {
                   alert("모든 입력창에 정보를 알맞게 기입해주세요.");
                   e.preventDefault();
                   return;
@@ -577,10 +580,10 @@ opacity
 
 		    if (inputCode === serverAuthCode) {
 		        $("#emailAuthText").html("인증 완료").css("color", "green");
-		        emailValCheck = true; // 회원가입 버튼에서 유효성 검사에 사용
+		        emailcerChcek = true; // 회원가입 버튼에서 유효성 검사에 사용
 		    } else {
 		        $("#emailAuthText").html("인증번호 불일치").css("color", "red");
-		        emailValCheck = false;
+		        emailcerChcek = false;
 		    }
 		});
 
