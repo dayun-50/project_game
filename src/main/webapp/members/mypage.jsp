@@ -389,7 +389,7 @@
 
         $("#btnup2").on("click", function(e){ //수정 완료 클릭시
         	//유효성검사
-        	if(nameValCheck === false || phoneValCheck === false || emailValCheck === false){
+        	if(nameValCheck === false || phoneValCheck === false || emailValCheck === false || emailcerCheck === false){
         		alert("모든 입력창에 정보를 알맞게 기입해주세요.");
         		e.preventDefault();
         		return;	
