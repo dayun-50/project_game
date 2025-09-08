@@ -151,6 +151,21 @@
             cursor: pointer;
             display: block;
 		}
+
+		#btn1{
+			width: 30%;
+            padding: 10px;
+            margin: 20px auto 0 15px;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(to right, #00ffff, #ff4fc6);
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+		}
+
+
         /* ====== 별, 블록 배경 ====== */
         .star {
             position: fixed;
@@ -187,7 +202,7 @@
         
         <div class="form-group">
         	<button type="button" class="btn-submit" id="main-btn">메인홈페이지</button>
-        	<button id="btn">변경완료</button>
+        	<button id="btn1">로그인</button>
         </div>
     </c:when>
     <c:otherwise>
@@ -260,6 +275,11 @@
        		check=false;
        	}
        });
+
+		$("btn1").on("click", function(){
+			window.location.href = "/loginpgae.MembersController";
+});
+
        
        $("#btn").on("click",function(){
     	   let pw = $("#pw").val();
