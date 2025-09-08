@@ -22,7 +22,7 @@ public class EmailController extends HttpServlet {
 
     // 서버 전용 Naver 계정 (실제 발송용)
     private static final String FROM_EMAIL = "tmd0487@naver.com"; // 서버 전용 네이버 계정
-    private static final String APP_PASSWORD = "2LC7KX3FUWLB";     // 네이버 앱 비밀번호
+    private static final String APP_PASSWORD = "";     // 네이버 앱 비밀번호
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
